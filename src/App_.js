@@ -61,6 +61,15 @@ function App() {
     console.log("XXX")
   }
   
+  // fetch(port + '/saveSession', {
+  //   method: 'POST', // or 'PUT'
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({"filename":name,"data": data}),
+  // })
+
+  const response = fetch('http://localhost:8080/timesheets/upload')
 
   console.log(isAuthenticated)
 
