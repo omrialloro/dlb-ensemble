@@ -58,7 +58,7 @@ function App() {
   }
   else
   {
-    console.log("XXX")
+    console.log(user)
   }
   
 
@@ -98,7 +98,7 @@ function App() {
      </div>
 
           <Routes >
-            <Route path="/" element={<Creator token = {{username:user["nickname"]}}/>} />
+            <Route path="/" element={<Creator token = {{username:user["nickname"],userID:user["name"]}}/>} />
             <Route path="/login" element={<Login setToken={setToken} />} />
             <Route path="/editor" element={<Editorr token = {{username:user["nickname"]}}/>} />
             <Route path="/creator" element={<Creator token = {{username:user["nickname"]}}/>} />

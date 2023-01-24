@@ -30,8 +30,10 @@ import {useSaveAnimation,useExtractToGif} from '../sharedLib/Server/api'
 const dim = [36,36]
 
 // const port = "http://3.69.98.116:3000"
-const port = "https://3.83.83.11:6060"
-// const port = "http://localhost:6060"
+// const port = "https://3.83.83.11:6060"
+
+// const port = "http://35.156.168.188:6060"
+const port = "http://localhost:6060"
 
 
 
@@ -195,6 +197,8 @@ const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
   const [renderedFrames, setRenderedFrames] = useState([currentFrame])
   const [undoData, setUndoData] =useState({historyLen:20,frameArray:[]})
   const [username, setUsername] = useState(token.username)
+  const [userID, setUserID] = useState(token.userID)
+
   const [loggedin, setloggedin] = useState(false)
 
   useEffect(()=>{
@@ -339,15 +343,26 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
       let frames_ = renderAllFrames(frames, stateMapping)
       frames_ = renderAllFrames(frames_, stateMapping)
       let ThumbnailFrame = renderFrame(frames_[0],colorMapping,0)
-      let data ={"username":username,"name":name,"data":frames_,"ThumbnailFrame":ThumbnailFrame}
+      let data ={"userID":userID,
+                "name":name,
+                "data":frames_,
+                "ThumbnailFrame":ThumbnailFrame,
+                "isDeleted":false,
+                "formatType":"row"
+              }
       saveAnimation(data)
       // saveAnimation(port,username,name,frames_,ThumbnailFrame)
     }
     else {
       let ThumbnailFrame = renderFrame(frames_[0],colorMapping,0)
-
       let frames_ = renderAllFrames(frames, colorMapping)
-      let data ={"username":username,"name":name,"frames":frames_,"ThumbnailFrame":ThumbnailFrame}
+      let data ={"userID":userID,
+                "name":name,
+                "frames":frames_,
+                "ThumbnailFrame":ThumbnailFrame,
+                "isDeleted":false,
+                "formatType":"rendered"
+         }
 
       saveAnimation(data)
 
@@ -357,7 +372,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
     // extractToGif(port, renderedFrames, delay)
   }
 
-  const extractToGif = useExtractToGif(username,port)
+  const extractToGif = useExtractToGif(userID,port)
   const handleGifExtraction = ()=>{
     
     // extractToGif(username,port, renderedFrames, delay)
@@ -424,7 +439,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   // }
 
   function addAnimation(d){
-    console.log(d)
+    console.log(d["data"])
     if(typeof d.data[0][0][0]=="string"){//ugly petch
       return 
     }
@@ -450,8 +465,6 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   // setInterval(()=>{
   //   save()
   // },20000)
-
-  console.log(username)
   
   return (
 
@@ -473,7 +486,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
         pickedShape = {coloringState.shape}
         setShape={setShape}/>
         <StoreAnimation onClick={storeAnimation}/>
-        <SavedAnimationLoader port = {port} username = {username} addAnimation = {addAnimation}/>
+        <SavedAnimationLoader port = {port} username = {userID} addAnimation = {addAnimation}/>
         <AnimationPallet data = {renderedAnimations}
                        onAnimationSelect = {(x)=>{setColor(x)}}
                        onAnimationDelete = {onAnimationDelete}
@@ -483,7 +496,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
       </section>
   
           <div style={{display: 'block',margin:"20px"}}>
-            <div onClick={()=>setIsGrid(!isGrid)} style={isGrid?{color:`red`}:{color:`black`}}>grid</div>
+            <div onClick={()=>setIsGrid(!isGrid)} style={isGrid?{color:`red`}:{color:`black`}}>gridddd</div>
         <Screen
           labels ={isPlay?null:stateToLAbels(frameState,animations)}
           id = {"screen"}

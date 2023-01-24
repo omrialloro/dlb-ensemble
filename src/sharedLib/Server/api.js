@@ -60,9 +60,9 @@ function extractToGif(username,port, frames, time_ms){
     body: JSON.stringify(data),
   })
 
-  let aaa =  document.createElement(`a`);
-  aaa.href = port+`/download/${name}/${username}`
-  aaa.click()
+  // let aaa =  document.createElement(`a`);
+  // aaa.href = port+`/download/${name}/${username}`
+  // aaa.click()
 }
 
 
@@ -76,7 +76,7 @@ function useExtractToGif(username,port){
     let name = prefix+String(Date.now())
     let data = {"username":username,"name":name,"speed":Math.round(time_ms),"data": frames,"save_animation":false}
     const token = await getAccessTokenSilently();
-  
+
     fetch(port + '/gif', {
       method: 'POST', // or 'PUT'
       headers: {

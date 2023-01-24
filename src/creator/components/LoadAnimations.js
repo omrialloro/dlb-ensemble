@@ -12,24 +12,37 @@ export function SavedAnimationLoader(props) {
 
   const [filenames,setFilenames] = useState([]);
   const { data, error, loading } = useFetch(port+`/animationsList/${username}`)
+
   useEffect(()=>{
-    // setFilenames(data)
-    console.log(data)
     if(data!==null){
-      setFilenames(data)
+      setFilenames(data["names"])
     }
 
   },[data])
 
+  function name2Id(name){
+
+    console.log(data["names"])
+    let index = data["names"].indexOf(name)
+
+    console.log(data["ids"][index])
+
+    
+    return data["ids"][index]
+  }
+
 
   async function onSelectAnimation(filename){
-    
+    let animationId = name2Id(filename)
+    console.log(animationId)
+
     const token = await getAccessTokenSilently();
-    let  a = await fetch(port + `/loadAnimation/${username}/${filename}`, {method: 'GET',
+    let  a = await fetch(port + `/loadAnimation/${animationId}`, {method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
       },
     } ).then(res => res.json())
+    // console.log(a["data"])
     addAnimation(a)
   }
 
