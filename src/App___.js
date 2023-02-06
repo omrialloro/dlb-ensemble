@@ -20,7 +20,7 @@ function App() {
     const getUserMetadata = async () => {
   try {
     // const accessToken = await getAccessTokenSilently({
-    //   audience: `http://localhost:4000/api`,
+    //   audience: `https://localhost:4000/api`,
     //   scope: "read:current_user",
     // });
     const accessToken = await getAccessTokenSilently();
@@ -28,7 +28,7 @@ function App() {
 
     console.log(accessToken)
 
-    const userDetailsByIdUrl = `http://localhost:4000/api/timesheets/upload`;
+    const userDetailsByIdUrl = `https://localhost:4000/api/timesheets/upload`;
 
     const metadataResponse = await fetch(userDetailsByIdUrl, {
       method: 'POST', 
@@ -57,7 +57,7 @@ getUserMetadata();
 
 
 
-  // fetch('http://localhost:4000/timesheets/upload', {
+  // fetch('https://localhost:4000/timesheets/upload', {
   //   method: 'POST', // or 'PUT'
   //   headers: {
   //     'Content-Type': 'application/json',

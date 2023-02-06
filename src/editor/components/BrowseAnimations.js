@@ -1,9 +1,10 @@
 import React, { useState, useEffect,useRef } from "react";
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useFetch } from "../../sharedLib/Server/useFetch";
 
-// let port = "http://localhost:6060"
-// const port = "http://3.83.83.11:6060"
+const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/"
+
 
 const StyledFrames= styled.div`
 width: 50px;
@@ -46,6 +47,28 @@ export default function BrowseAnimations(props) {
     const username = props.username
     const port = props.port
 
+
+console.log(username)
+    const { data, error, loading } = useFetch(port+`/animationsList/${username}/all`,0)
+    const [animations, setAnimations] = useState([])
+
+    useEffect(()=>{
+      if(data!==null){
+        let animations_ = []
+        for(let i=0;i<data["names"].length;i++){
+          let id = data["ids"][i]
+          animations_.push({
+            "id":id,
+            "name":data["names"][i],
+            "imgUrl":thumbnailsUrl+String(id)+".png",
+          })
+        }
+        setAnimations(animations_)
+
+      }
+      console.log(data)
+    },[data])
+
     const fetchImage = async (filename,username) => {
       const token = await getAccessTokenSilently();
 
@@ -69,41 +92,9 @@ export default function BrowseAnimations(props) {
         },100)
       }
 
-
-      const [filenames,setFilenames] = useState([]);
-
-
-      useEffect(()=>{
-        async function  getAnimationList(){
-          const token = await getAccessTokenSilently();
-          let data = await fetch(port + `/animationsList/${username}`, {method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }, 
-        }).then(res => res.json())
-          setFilenames(data)
-        }
-        getAnimationList()
-      },[])
-
-      // useEffect(()=>{
-      //   async function  loadFilenames(){
-      //     let dd = await fetch(port + `/filenames`, {method: 'GET' }).then(res => res.json())
-      //     setFilenames(dd)
-      //   }
-      //   loadFilenames()
-      // },[])
-
-      const [imgURLs,setImgURLs] = useState([]);
       const [isShow,setIsShow] = useState(false)
 
-      useEffect(()=>{
-        async function fetchAllImage(filenames){
-            setImgURLs(await Promise.all(filenames.map(async (x)=>(fetchImage(x,username)))))
-         }
-         fetchAllImage(filenames)
-         console.log(filenames)
-      },[filenames])
+
 
     return (
         <>
@@ -113,10 +104,10 @@ export default function BrowseAnimations(props) {
           </div> */}
         <StyledBox style={isShow?{visibility:'visible',  transition: 'width 2s, height 4s'}:{visibility:'visible'}}>
         <div className="order" ></div>
-        {imgURLs.map((x,index)=>(
+        {  animations.map((x,index)=>(
             <StyledFrames
                 >
-                <XX src={x} id = {filenames[index]} onClick={()=>{fff(filenames[index])}}></XX>
+                <XX style={x["isChecked"]?{height:'90%'}:{height:'70%'}} src={x["imgUrl"]} id = {x["id"]} onClick={()=>{fff(x["id"])}}></XX>
             </StyledFrames>
         ))}
 

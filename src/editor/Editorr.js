@@ -48,7 +48,9 @@ opacity:${(props)=>props.isDragging?'0.80':'0'};
 z-index: 3;
 `
 
-function Editorr({token}) {
+function Editorr({port,token}) {
+
+
   const [username, setUsername] = useState(token.username)
   const { getAccessTokenSilently } = useAuth0();
 
@@ -140,8 +142,7 @@ function handleOnDragEnd(result) {
     items.splice(index, 0, {"id":new_id,"range":el["range"],"operators":nestedCopy(el["operators"]),"dim":el["dim"],"filename":el["filename"], "content":el["content"]})
     setDATA(items);
   }
-  let port = "http://localhost:6060"
-  // const port = "http://3.83.83.11:6060"
+
   
   function handleSave() {
     const session_name = window.prompt("enter session name");
@@ -235,11 +236,13 @@ function handleOnDragEnd(result) {
     setDATA(d["data"])
   }
 
-  async function handlePickAnimation(filename) {
+  async function handlePickAnimation(animationId) {
 
-    if (!animations.hasOwnProperty(filename)){
+    if (!animations.hasOwnProperty(animationId)){
       const token = await getAccessTokenSilently();
-      let  a = await fetch(port + `/loadAnimation/${username}/${filename}`, {method: 'GET',
+      let  a = await fetch(port + `/loadAnimation/${animationId}`, {method: 'GET',
+
+      // let  a = await fetch(port + `/loadAnimation/${username}/${filename}`, {method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -248,16 +251,16 @@ function handleOnDragEnd(result) {
       // let  a = await fetch(port + `/loadAnimation/${username}/${filename}`, {method: 'GET' }).then(res => res.json())
 
       // let  a = await fetch(port + `/api/${filename}`, {method: 'GET' }).then(res => res.json())
-      addAnimation(a["data"], filename)
+      addAnimation(a["data"], animationId)
     }
     let id  = "x"+Date.now().toString();
     setTimeout(()=>{
-      let frames = animations[filename]
+      let frames = animations[animationId]
       let schemeIndex = 0;
       // let schemeIndex = detectScheme(frames)[0]
       setMainScreen({
       "id":id,
-      "filename":filename,
+      "filename":animationId,
       "dim":[36,36],
       "range":[0,frames.length],
       "operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":schemeIndex}
@@ -336,7 +339,7 @@ return (<SelectedIdProvider>
           {/* <img src="arrow_browse.svg"></img>
           <p>expand</p> */}
     </div>
-    <BrowseAnimations PickAnimation = {handlePickAnimation} username = {username} port = {port}/>
+    <BrowseAnimations PickAnimation = {handlePickAnimation} username = {token.userID} port = {port}/>
     </div>
     </div>
     <Operators operatorsState = {mainScreen["operators"]} updateOperatorsState={updateOperatorsState}/>

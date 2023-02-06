@@ -7,7 +7,13 @@ import Editorr from './editor/Editorr'
 import Creator from './creator/Creator'
 import useToken from './useToken';
 
+
 import { useAuth0 } from "@auth0/auth0-react";
+
+
+// const port = "http://localhost:6060"
+
+const port = "https://18.193.175.134:6060"
 
 
 const LoginButton = () => {
@@ -33,25 +39,12 @@ function App() {
   console.log(error)
 
 
-  // useEffect(()=>{console.log(token)},[token])
-
-  // if(!token) {
-  //   console.log(token)
-  //   console.log(token)
-  //   console.log(token)
-
-  //   return <Login setToken={setToken} />
-  // }
-
   const { isAuthenticated,user } = useAuth0()
 
   useEffect(()=>{console.log(isAuthenticated)},[isAuthenticated,user])
  
  
   const { token, setToken } = useToken({username:user});
-  const { tokenn, setTokenn } = useState({username:user});
-
-  console.log(token)
 
   if(typeof user === 'undefined'){
     console.log("VVV")
@@ -98,10 +91,10 @@ function App() {
      </div>
 
           <Routes >
-            <Route path="/" element={<Creator token = {{username:user["nickname"],userID:user["name"]}}/>} />
+            <Route path="/" element={<Creator port = {port} token = {{username:user["nickname"],userID:user["name"]}}/>} />
             <Route path="/login" element={<Login setToken={setToken} />} />
-            <Route path="/editor" element={<Editorr token = {{username:user["nickname"]}}/>} />
-            <Route path="/creator" element={<Creator token = {{username:user["nickname"]}}/>} />
+            <Route path="/editor" element={<Editorr port = {port} token = {{username:user["nickname"],userID:user["name"]}}/>} />
+            <Route path="/creator" element={<Creator port = {port} token = {{username:user["nickname"],userID:user["name"]}}/>} />
           </Routes>
     </BrowserRouter>
   </>

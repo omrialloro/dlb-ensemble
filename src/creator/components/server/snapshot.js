@@ -1,5 +1,4 @@
-let port = "http://localhost:4000"
-
+// 
 export function saveSnapshot(username,frames,animations,oscillators,coloringState,undoData,FPS){
   let data = {
     frames:frames,

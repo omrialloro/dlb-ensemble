@@ -22,6 +22,7 @@ import {nestedCopy} from './components/utils/Utils'
 import { Loggin } from './components/server/Loggin';
 import {SavedAnimationLoader} from './components/LoadAnimations'
 import {useSaveAnimation,useExtractToGif} from '../sharedLib/Server/api'
+import AnimationLibrary from './components/animationLibrary/AnimationLibrary.js'
 
 //crush when touching playbar and pressing new frame
 
@@ -29,17 +30,14 @@ import {useSaveAnimation,useExtractToGif} from '../sharedLib/Server/api'
 
 const dim = [36,36]
 
-// const port = "http://3.69.98.116:3000"
-// const port = "https://3.83.83.11:6060"
-
-// const port = "http://35.156.168.188:6060"
-const port = "http://localhost:6060"
+function Creator(props) {
+  const token =props.token
+  const port =props.port
 
 
+  console.log(props.token)
+  console.log(props.port)
 
-
-function Creator({token}) {
-  console.log(token)
 
 const [frames, setFrames] = useState([])
 const [animations,setAnimations] = useState([])
@@ -55,7 +53,6 @@ const screenRef = useRef()
 
 const storeAnimation = ()=> {
   if(frames.length>0){
-    console.log(stateMapping)
     let id = 100*(animations.length+1)
     let frames__ = renderAllFrames(frames, stateMapping)
     let frames_ = renderAllFrames(frames__, stateMapping)
@@ -93,10 +90,6 @@ function renderAllAnimations(){
 function createOscillator(id1,id2,numFrames){
   // var data = window.prompt("Enter..."+oscillators.length);
   // let s_data = data.split(' ');
-  console.log(id1)
-  console.log(id2)
-  console.log(numFrames)
-
   setOscillators([...oscillators,
           {animationId1:Number(id1),
           animationId2:Number(id2),
@@ -237,9 +230,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
 
   useEffect(()=>{
     if(frames.length>0){
-      console.log("AAAA")
       setFrameState(frames[frameIndex])
-      console.log("ABBBBBAAA")
     }
  },[isPlay,frameIndex])
 
@@ -354,30 +345,25 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
       // saveAnimation(port,username,name,frames_,ThumbnailFrame)
     }
     else {
-      let ThumbnailFrame = renderFrame(frames_[0],colorMapping,0)
       let frames_ = renderAllFrames(frames, colorMapping)
+      // let ThumbnailFrame = renderFrame(frames_[0],colorMapping,0)
+      let ThumbnailFrame = frames_[0]
+
       let data ={"userID":userID,
                 "name":name,
-                "frames":frames_,
+                "data":frames_,
                 "ThumbnailFrame":ThumbnailFrame,
                 "isDeleted":false,
                 "formatType":"rendered"
          }
 
       saveAnimation(data)
-
-      // saveAnimation(port,username,name,frames_,frames_[0])
     }
-
-    // extractToGif(port, renderedFrames, delay)
   }
 
   const extractToGif = useExtractToGif(userID,port)
   const handleGifExtraction = ()=>{
-    
-    // extractToGif(username,port, renderedFrames, delay)
-    extractToGif(renderedFrames, delay)
-
+        extractToGif(renderedFrames, delay)
   }
   
   const handleSaveProject = () =>{saveSession([],port)}
@@ -391,11 +377,6 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
     const items = Array.from(animations);
     let index =  items.findIndex((el)=>el["id"]==id)
     items.splice(index, 1);
-    console.log("delete")
-
-    console.log(id)
-    console.log(items)
-
     setAnimations(items);
   }
 
@@ -439,7 +420,6 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   // }
 
   function addAnimation(d){
-    console.log(d["data"])
     if(typeof d.data[0][0][0]=="string"){//ugly petch
       return 
     }
@@ -450,6 +430,22 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
       setStateMapping(stateMapping_)
       setAnimations([...animations,{id:id,frames:d.data}])
     }
+  }
+
+  function addAnimations(d){
+    console.log(d)
+    let stateMapping_ = stateMapping
+    let addedAnimations =[]
+
+    for(let i=0;i<d.length;i++){
+      if (d[i].data.length>0){
+        let id = 100*(animations.length+1+i)
+        stateMapping_[id] = animationStateMappingCb(d[i].data)
+        addedAnimations.push({id:id,frames:d[i].data})
+      }
+    }
+    setStateMapping(stateMapping_)
+    setAnimations([...animations,...addedAnimations])
   }
   const [isGrid, setIsGrid] = useState(false)
 
@@ -465,6 +461,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   // setInterval(()=>{
   //   save()
   // },20000)
+  const [browserdOn,setBrowserOn] = useState(false)
   
   return (
 
@@ -486,7 +483,8 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
         pickedShape = {coloringState.shape}
         setShape={setShape}/>
         <StoreAnimation onClick={storeAnimation}/>
-        <SavedAnimationLoader port = {port} username = {userID} addAnimation = {addAnimation}/>
+        <div onClick={()=>setBrowserOn(!browserdOn)} style={{background: "#00688B",height:"53px",width:"103px"}}>browse</div>
+        {/* <SavedAnimationLoader port = {port} username = {userID} addAnimation = {addAnimation}/> */}
         <AnimationPallet data = {renderedAnimations}
                        onAnimationSelect = {(x)=>{setColor(x)}}
                        onAnimationDelete = {onAnimationDelete}
@@ -494,6 +492,8 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
                        pickedIndex = {coloringState.color}
                        />
       </section>
+      <AnimationLibrary username={userID} port={port} addAnimations={addAnimations} browserdOn={browserdOn} setBrowserOn = {setBrowserOn}/>
+
   
           <div style={{display: 'block',margin:"20px"}}>
             <div onClick={()=>setIsGrid(!isGrid)} style={isGrid?{color:`red`}:{color:`black`}}>gridddd</div>

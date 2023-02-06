@@ -132,7 +132,6 @@ function useExtractToGif(username,port){
 
   function saveAnimation(port,username,name, frames,ThumbnailFrame){
     let data = {"username":username,"name":name,"data": frames,"save_animation":true,"ThumbnailFrame":ThumbnailFrame}
-    console.log(frames)
     fetch(port + '/saveAnimation', {
       method: 'POST', // or 'PUT'
       headers: {
@@ -166,7 +165,6 @@ function useExtractToGif(username,port){
                         body: JSON.stringify(data)
                       }
                     )
-                  console.log(data)
               }catch(err){
                   setError(err)
               }finally{

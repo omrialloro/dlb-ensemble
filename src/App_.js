@@ -69,7 +69,7 @@ function App() {
   //   body: JSON.stringify({"filename":name,"data": data}),
   // })
 
-  const response = fetch('http://localhost:8080/timesheets/upload')
+  const response = fetch('https://localhost:8080/timesheets/upload')
 
   console.log(isAuthenticated)
 

@@ -25,21 +25,6 @@ background: #c1c1c1;
 /* margin-top:"2px" */
 `
 
-const StyledBoxx= styled.div`
-
-height:180px;
-width:110px;
-border-radius: 1px;
-border: 1px solid #909090;
-padding: 2px;
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-grid-template-rows: repeat(1, 1fr);
-grid-column-gap: 0;
-overflow: scroll ;
-background: #c1c1c1;
-/* margin-top:"2px" */
-`
 
 const StyledEmptyScreen= styled.div`
 
@@ -90,15 +75,15 @@ const SmallScreen = forwardRef((props, ref) => {
         <Screen 
               ref = {ref}
               onPixelClick = {onClick}
-              screenSize = {isPicked?48:40}
+              screenSize = {isPicked?43:40}
               pausedFrameIndex = {0}
               frames = {frames}
               delay = {delay}
               id = {"s333"+id}
         />
-        {/* <StyledArrange>
+        <StyledArrange>
           <div className="minus" onClick={handleDelete}><img src="delete_frame.svg"></img></div>
-      </StyledArrange> */}
+      </StyledArrange>
     </div>
   )
 }

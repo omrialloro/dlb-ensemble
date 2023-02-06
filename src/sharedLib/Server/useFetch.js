@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useAuth0 } from "@auth0/auth0-react";
 
-export  function useFetch(url){
+export  function useFetch(url,refresh){
 
     const [data,setData] = useState(null)
     const [error,setError] = useState(null)
@@ -30,7 +30,7 @@ export  function useFetch(url){
                 }
             }
         )()
-    }, [url])
+    }, [url,refresh])
 
     
     
