@@ -92,19 +92,25 @@ const StyledSlider = styled(SliderUnstyled)(
 export const PlayBar = (props) => {
 
   const {pausedFrameIndex,length, delay, updateFrameIndex} = props
-
   const onChange = (event, newValue)=>{
     setVal(newValue)
   }
   const onChangeCommitted = (event, newValue)=>{
-    updateFrameIndex(newValue)
+    if(pausedFrameIndex==0){
+      updateFrameIndex(1)
+      // updateFrameIndex(Math.max(newValue,1))
+    }
+    else{
+      updateFrameIndex(Math.max(newValue,1))
+      // updateFrameIndex(newValue)
+    }
+    
   }
-  const [val,setVal] = useState(0)
+  const [val,setVal] = useState(pausedFrameIndex)
 
-  let currentFrameIndex = 0
 
   React.useEffect(()=>{
-     currentFrameIndex = pausedFrameIndex;
+    setVal(pausedFrameIndex)
   },[pausedFrameIndex])
 
   useInterval(() => {
@@ -119,7 +125,7 @@ export const PlayBar = (props) => {
   return (
     <Box sx={{ width: 500 }}>
       <StyledSlider defaultValue={0} value={val} 
-      min={0}
+      min={1}
       max={length}
       onChange= {onChange}
       onChangeCommitted= {onChangeCommitted}

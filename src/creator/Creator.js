@@ -11,21 +11,15 @@ import {NewFrame} from './components/NewFrame'
 import {createDefaultFrameState, renderFrame,renderAllFrames, ShiftFrame,synthOscillator,stateToLAbels} from './components/frameOps/FrameOps'
 import { Errows } from './components/Errows';
 import { StoreAnimation,Reset,oscillateAnimationsColorMappingCb,animationColorMappingCb,animationStateMappingCb } from './components/AnimationOperators';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState,useCallback } from 'react';
 import {PlayBar} from './components/PlayBar';
 import {Fps} from './components/Fps';
 import {SaveAndLoad} from './components/SaveAndLoad';
 import {saveSession, loadSession} from './components/SaveUtils';
 import { AnimationPallet } from './components/Animations/AnimationPallet';
 import {nestedCopy} from './components/utils/Utils'
-// import {saveSnapshot,loadSnapshot} from './components/server/snapshot'
-import { Loggin } from './components/server/Loggin';
-import {SavedAnimationLoader} from './components/LoadAnimations'
 import {useSaveAnimation,useExtractToGif} from '../sharedLib/Server/api'
 import AnimationLibrary from './components/animationLibrary/AnimationLibrary.js'
-
-//crush when touching playbar and pressing new frame
-
 
 
 const dim = [36,36]
@@ -33,41 +27,34 @@ const dim = [36,36]
 function Creator(props) {
   const token =props.token
   const port =props.port
-
-
-  console.log(props.token)
-  console.log(props.port)
-
-
 const [frames, setFrames] = useState([])
 const [animations,setAnimations] = useState([])
 const [oscillators, setOscillators] = useState([])
 const [renderedOscillators, setRenderedOscillators] = useState([])
 
 
-const [frameIndex, setFrameIndex] = useState(-1)
+const [frameIndex, setFrameIndex] = useState(0)
 const [renderedAnimations,setRenderedAnimations] = useState([])
-const [processedAnimations,setProcessedAnimations] = useState([])
-
 const screenRef = useRef()
 
 const storeAnimation = ()=> {
   if(frames.length>0){
-    let id = 100*(animations.length+1)
+    let id = Date.now()
     let frames__ = renderAllFrames(frames, stateMapping)
     let frames_ = renderAllFrames(frames__, stateMapping)
 
     let stateMapping_ = stateMapping
     stateMapping_[id] = animationStateMappingCb(frames_)
     setStateMapping(stateMapping_)
-    setAnimations([...animations,{id:100*(animations.length+1),frames:frames_}])
+    setAnimations([...animations,{id:id,frames:frames_,isDeleted:false}])
+    console.log(animations)
   }
 }
 
 const resetAnimation = () =>{
   setFrames([]);
   setRenderedFrames([currentFrame])
-  setFrameIndex(-1);
+  setFrameIndex(0);
 }
 
 const [coloringState, setColoringState] = useState({color:0, shape:0, scheme:"omri"})
@@ -76,9 +63,13 @@ const [colors,setColors]= useState(getSchemes()[coloringState.scheme])
 function renderAllAnimations(){
   let rendered_animations = []
   for (let i=0;i<animations.length;i++){
-    rendered_animations.push({frames:renderAllFrames(animations[i].frames, colorMapping),id:animations[i].id})
+    if(!animations[i].isDeleted){
+      rendered_animations.push({frames:renderAllFrames(animations[i].frames, colorMapping),id:animations[i].id})
+    }
+    else{
+      console.log(animations[i].isDeleted)
+    }
   }
-
   for (let i=0;i<renderedOscillators.length;i++){
     rendered_animations.push(renderedOscillators[i])
   }
@@ -88,14 +79,13 @@ function renderAllAnimations(){
 
 
 function createOscillator(id1,id2,numFrames){
-  // var data = window.prompt("Enter..."+oscillators.length);
-  // let s_data = data.split(' ');
   setOscillators([...oscillators,
           {animationId1:Number(id1),
           animationId2:Number(id2),
           framesLen: Number(numFrames),
           id:1000*(oscillators.length+1)
           }])
+
 }
 
 useEffect(()=>{
@@ -112,9 +102,7 @@ function initStateMapping(colors){
   return state_mapping
 }
 
-
 const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
-
 
   useEffect(()=>{
     setColorMapping(createColorMapping())
@@ -173,6 +161,7 @@ const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
       ...existingValues,
       shape: shape,
     }))
+    console.log(frameIndex)
   }
 
   const selectScheme = scheme => {
@@ -186,17 +175,59 @@ const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
   const [isPlay, setIsPlay] = useState(false)
   const [isLoop, setIsLoop] = useState(false)
   const [frameState, setFrameState] = useState(createDefaultFrameState(dim[0],dim[1]))
+
   const [currentFrame, setCurrentFrame] = useState(renderFrame(frameState,colorMapping,Math.max(0,frameIndex)))
   const [renderedFrames, setRenderedFrames] = useState([currentFrame])
   const [undoData, setUndoData] =useState({historyLen:20,frameArray:[]})
-  const [username, setUsername] = useState(token.username)
   const [userID, setUserID] = useState(token.userID)
 
-  const [loggedin, setloggedin] = useState(false)
+
+  const sessionData = {
+    "coloringState":coloringState,
+    "frameState":frameState,
+    "frames":frames,
+    "renderedFrames":renderedFrames,
+    "undoData":undoData,
+    "animations":animations,
+    "oscillators":oscillators,
+    "renderedOscillators":renderedOscillators,
+    // "frameIndex":frameIndex,
+    "renderedAnimations":renderedAnimations,
+    "colorMapping":colorMapping,
+  }
+
 
   useEffect(()=>{
-    setloggedin(username!='')
-  },[username])
+    var tt = sessionStorage.getItem("sessionData");
+    let sessionData_ = JSON.parse(tt);
+    if (sessionData_ != null){
+      setColoringState(sessionData_.coloringState)
+      setFrames(sessionData_.frames)
+      setRenderedFrames(sessionData_.renderedFrames)
+      addAnimations(sessionData_.animations.map((x)=>({data:x.frames,id:x.id})))
+      // addAnimations(d)
+      setOscillators(sessionData_.oscillators)
+      setRenderedAnimations(sessionData_.renderedOscillators)
+      sessionData_.frames.length==0?setFrameIndex(0):setFrameIndex(1)
+      setRenderedAnimations(sessionData_.renderedAnimations)
+      setTimeout(()=>{
+        setFrameState(sessionData_.frameState)
+      },10)
+      setUndoData(sessionData_.undoData)
+
+    } 
+  },[])
+
+
+  useEffect(()=>{
+    sessionStorage.setItem("sessionData",JSON.stringify(sessionData));
+    // var tt = sessionStorage.getItem("sessionData");
+    // let sessionData_ = JSON.parse(tt);
+  },[coloringState,frameState
+    ,frames,animations,oscillators,
+    renderedOscillators,frameIndex,
+    renderedAnimations,colorMapping])
+
 
   
 
@@ -212,9 +243,11 @@ function recordUndo(f){
   setUndoData(undoData_)
 }
 
-
 function Undo(){
+  console.log(undoData.frameArray.length)
   let frameArray = undoData.frameArray
+  console.log(frameArray)
+
   if (frameArray.length>0){
     let frame_state = frameArray[frameArray.length-1]
     frameArray = frameArray.slice(0,frameArray.length-1)
@@ -230,7 +263,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
 
   useEffect(()=>{
     if(frames.length>0){
-      setFrameState(frames[frameIndex])
+      setFrameState(frames[frameIndex-1])
     }
  },[isPlay,frameIndex])
 
@@ -258,7 +291,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   }
   function toggleIsPlay(x){
     if(isPlay){
-      setFrameIndex(screenRef.current)
+      setFrameIndex(Math.max(1,screenRef.current))
     }
     setIsPlay(x)
   }
@@ -266,14 +299,15 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   const bodyRef = useRef()
 
   function recordFrame(){
-    setFrameIndex(frameIndex+1)
+    let nextFrameIndex = frames.length==0?1:frameIndex+1
+    setFrameIndex(nextFrameIndex)
     setFrames([...frames,frameState])
     bodyRef.current.style.backgroundColor = "red"
     setTimeout(function(){
       bodyRef.current.style.backgroundColor = "#8c8c8c"
     }
   ,50);
-    setRenderedFrames([...renderedFrames,renderFrame(frameState,colorMapping,frameIndex)])
+  setRenderedFrames([...renderedFrames,renderFrame(frameState,colorMapping,frameIndex)])
   }
 
   useEffect(()=>{
@@ -323,16 +357,34 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
     return colors
   }
 
+  useEffect(()=>{
+    document.addEventListener("keydown",(event)=>{
+      if(event.metaKey&&event.key==='z'){
+        Undo()
+      }
+    })
 
+  },[undoData])
+
+  function isIntersects(A,B){
+    return !A.reduce((t,v)=>!B.includes(v)*t,true)
+  }
+
+  function isContainingOscilators(framems){
+    let all_colors = getAllColors([...frames,frameState])
+    let oscillatorsIds = oscillators.map(x=>x.id)
+    return isIntersects(oscillatorsIds,all_colors)
+  }
 
   const saveAnimation = useSaveAnimation(port)
   const handleSaveAnimation = ()=>{
     const prefix = window.prompt("enter animation name")    
     let name = prefix+String(Date.now())
-    let m = Math.max(...getAllColors(frames))
-    if (m<1000){
+    if (!isContainingOscilators(frames)){
       let frames_ = renderAllFrames(frames, stateMapping)
       frames_ = renderAllFrames(frames_, stateMapping)
+      console.log("kkkk")
+
       let ThumbnailFrame = renderFrame(frames_[0],colorMapping,0)
       let data ={"userID":userID,
                 "name":name,
@@ -342,11 +394,9 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
                 "formatType":"row"
               }
       saveAnimation(data)
-      // saveAnimation(port,username,name,frames_,ThumbnailFrame)
     }
     else {
       let frames_ = renderAllFrames(frames, colorMapping)
-      // let ThumbnailFrame = renderFrame(frames_[0],colorMapping,0)
       let ThumbnailFrame = frames_[0]
 
       let data ={"userID":userID,
@@ -374,74 +424,41 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
     setFrames(frames_.reverse())
   }
   function onAnimationDelete(id){
+    if(coloringState.color==id){
+      setTimeout(()=>{setColor(0)
+      },100)
+    
+      
+      console.log({...coloringState,color:0})
+      //*******
+    }
+    let colors = getAllColors([...frames,frameState])
+    if(colors.includes(id)){
+      console.log(animations.map(x=>x.id==id?{...x,isDeleted:true}:x))
+      setAnimations(animations.map(x=>x.id==id?{...x,isDeleted:true}:x))    
+      return 
+    }
+    console.log(id)
     const items = Array.from(animations);
     let index =  items.findIndex((el)=>el["id"]==id)
     items.splice(index, 1);
     setAnimations(items);
   }
 
-  // const save =()=> saveSnapshot(username,frames,animations,oscillators,coloringState,undoData,FPS)
-  // const save =()=> saveSnapshot(port,renderedFrames,40)
-
-  // const [snapshot,setSnapshot] = useState({loaded:false})
-
-  // const load = async ()=> {
-  //   const result = await loadSnapshot(username)
-  //   setSnapshot({...result.data,loaded:true})
-  // }
-
-  // useEffect(()=>{
-  //   if(loggedin){
-  //     console.log(username)
-  //     load()
-  //   }
-  // },[loggedin])
-  const press = ()=>console.log(undoData)
-
-  // useEffect(()=>{
-  //   // fetchSnapshot()
-  //   console.log(snapshot)
-  //   fetchSnapshot()
-  // },[snapshot])
-
-  // function fetchSnapshot(){
-  //   if(snapshot.loaded){
-  //     console.log(snapshot)
-  //     // console.log(snapshot.oscillators)
-  //     console.log(snapshot.undoData)
-  //     setColoringState(snapshot.coloringState)
-
-  //     setFrames(snapshot.frames)
-  //     setAnimations(snapshot.animations)
-  //     setOscillators(snapshot.oscillators)
-  //     setFPS(snapshot.FPS)
-
-  //   }
-  // }
-
-  function addAnimation(d){
-    if(typeof d.data[0][0][0]=="string"){//ugly petch
-      return 
-    }
-    if (d.data.length>0){
-      let id = 100*(animations.length+1)
-      let stateMapping_ = stateMapping
-      stateMapping_[id] = animationStateMappingCb(d.data)
-      setStateMapping(stateMapping_)
-      setAnimations([...animations,{id:id,frames:d.data}])
-    }
-  }
-
   function addAnimations(d){
     console.log(d)
+    
     let stateMapping_ = stateMapping
     let addedAnimations =[]
 
     for(let i=0;i<d.length;i++){
       if (d[i].data.length>0){
-        let id = 100*(animations.length+1+i)
+        // let id = 100*(animations.length+1+i)
+        // let id = Date.now()
+        let id = Number(d[i].id)
+
         stateMapping_[id] = animationStateMappingCb(d[i].data)
-        addedAnimations.push({id:id,frames:d[i].data})
+        addedAnimations.push({id:id,frames:d[i].data,isDeleted:false})
       }
     }
     setStateMapping(stateMapping_)
@@ -449,18 +466,6 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   }
   const [isGrid, setIsGrid] = useState(false)
 
-
-  // useEffect(()=>{
-  //   console.log(snapshot)
-  //   if(snapshot.loaded){
-  //     console.log("SAVE")
-  //     save()
-  //   }
-  // },[animations,oscillators,colorMapping])
-
-  // setInterval(()=>{
-  //   save()
-  // },20000)
   const [browserdOn,setBrowserOn] = useState(false)
   
   return (
@@ -510,7 +515,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
           />
           <PlayBar delay = {isPlay?delay:null}
                   pausedFrameIndex = {frameIndex}
-                  length = {renderedFrames.length-1}
+                  length = {renderedFrames.length}
                   updateFrameIndex = {setFrameIndex}
           />
           <Play
@@ -552,79 +557,6 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
           </div>
         </body>
       }
-      {/* <body ref = {bodyRef}>
-      <div className='interface'>
-      <main>  
-
-    <section className="action left">
-    <div className="colors">
-      <Scheme onChangeScheme = {selectScheme}/>
-      <Pallet scheme = {coloringState.scheme}
-      setColor={setColor} />
-    </div>
-    <Shapes
-      setShape={setShape}/>
-      <StoreAnimation onClick={storeAnimation}/>
-      <AnimationPallet data = {renderedAnimations}
-                     onAnimationSelect = {(x)=>{setColor(x)}}
-                     onAnimationDelete = {onAnimationDelete}
-                     createOscillator = {createOscillator}
-                     />
-    </section>
-
-        <div style={{display: 'block',margin:"20px"}}>
-      <Screen
-        id = {"screen"}
-        ref = {screenRef}
-        screenSize = {500}
-        pausedFrameIndex = {0}
-        frames = {isPlay?renderedFrames:[currentFrame]}
-        delay = {isPlay?delay:null}
-        onPixelClick = {onPixelClick}
-        />
-        <PlayBar delay = {isPlay?delay:null}
-                pausedFrameIndex = {frameIndex}
-                length = {renderedFrames.length}
-                updateFrameIndex = {setFrameIndex}
-        />
-        <Play
-          isPlay = {isPlay}
-          isLoop = {isLoop}
-          setIsPlay = {toggleIsPlay}
-          setIsLoop = {setIsLoop}
-        />
-        </div>
-
-    <section className="action right">
-      <div className="creation_buttons">
-         <NewFrame recordFrame = {recordFrame}/>
-         <div className="creation_btns">
-            <Reset text= {"reset"} onClick={resetAnimation}/>
-            <Reset text= {"clear"} onClick={clearFrame}/>
-            <Reset text= {"save"} onClick={save}/>
-            <Reset text= {"load"} onClick={load}/>
-            <Reset text= {"press"} onClick={press}/>
-
-
-            <Reset text= {"undo"} onClick={Undo}/>
-            <Reset text= {"reverse"} onClick={reverseFrames}/>
-
-         </div>
-         <Errows pressErrow = {pressErrow}/>
-         <Fps
-          onClick={handleFps}
-          currentFps = {FPS}
-        />
-        <SaveAndLoad
-          handleGifExtraction = {handleGifExtraction}
-          handleSaveProject = {handleSaveProject}
-          handleLoadProject = {handleLoadProject}
-        />
-      </div>
-    </section>
-        </main>
-        </div>
-      </body> */}
     </div>
   );
 }

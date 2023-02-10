@@ -44,9 +44,6 @@ function stateToLAbels(frame, animations){
 }
 
 
-
-
-
 function copyFrame(ref_frame){
   let num_column = ref_frame[0].length
   let num_rows = ref_frame.length
@@ -82,40 +79,18 @@ function renderFrame(frame,color_mapping,frameIndex){
 function renderAllFrames(frames,color_mapping){
   let renderedFrames = []
   for(let i=0;i<frames.length;i++){
+    console.log("iii")
     renderedFrames.push(renderFrame(frames[i],color_mapping,i))
   }
   return renderedFrames
 }
 
-
-// function renderAllAnimations(animations,color_mapping){
-//   let rendered_animations = []
-//   for (let i=0;i<animations.length;i++){
-//     rendered_animations.push({frames:renderAllFrames(animations[i].frames, color_mapping),id:animations[i].id})
-//   }
-//   return rendered_animations
-// }
-
-// function renderAllOscillators(){
-//   let renderedOscillators_ = renderedOscillators;
-//   let renderedIds = renderedOscillators_.map((x)=>(x.id))
-//   for(let i=0;i<oscillators.length;i++){
-//     let id = oscillators[i].id
-//     if(!renderedIds.includes(id)){
-
-//       if(id in colorMapping){
-//         let synthFrames = synthOscillator(dim[0],dim[1],id,colorMapping,2*oscillators[i].framesLen)
-//         renderedOscillators_.push({frames:synthFrames,id:id})
-//       }
-//     }
-//   }
-
-// }
-
 function synthOscillator(num_column,num_rows,oscillator_id,color_mapping,num_frames){
   const constFrame= createConstFrameState(num_column,num_rows,oscillator_id)
   let synthFrames = []
   for (let i = 0; i < num_frames; i++){
+    console.log("ttt")
+
     synthFrames.push(renderFrame(constFrame,color_mapping,i))
   }
   return synthFrames

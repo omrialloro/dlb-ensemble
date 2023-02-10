@@ -39,6 +39,7 @@ export function NewFrame(props) {
   document.body.onkeyup = function(e){
     if(e.keyCode == 13){
       e.preventDefault();
+      console.log("HRERE")
       recordFrame()
     }
   }

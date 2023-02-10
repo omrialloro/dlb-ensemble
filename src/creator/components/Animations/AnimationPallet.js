@@ -68,7 +68,6 @@ const SmallScreen = forwardRef((props, ref) => {
 
   return (
     <div id ={id} 
-      onClick = {onClick}
       onMouseOver={()=>{setDelay(40)}}
       onMouseLeave={()=>{setDelay(null)}}
       >
