@@ -18,7 +18,7 @@ import {SaveAndLoad} from './components/SaveAndLoad';
 import {saveSession, loadSession} from './components/SaveUtils';
 import { AnimationPallet } from './components/Animations/AnimationPallet';
 import {nestedCopy} from './components/utils/Utils'
-import {useSaveAnimation,useExtractToGif} from '../sharedLib/Server/api'
+import {useSaveAnimation,useExtractToGif,useSaveStoredAnimations} from '../sharedLib/Server/api'
 import AnimationLibrary from './components/animationLibrary/AnimationLibrary.js'
 
 
@@ -91,6 +91,13 @@ function createOscillator(id1,id2,numFrames){
 useEffect(()=>{
   setColors(getSchemes()[coloringState.scheme])
 },[coloringState])
+
+const saveStoredAnimations = useSaveStoredAnimations(port)
+
+useEffect(()=>{
+  saveStoredAnimations({animations:animations,
+    oscillators:oscillators})
+},[animations,oscillators])
 
 const [colorMapping, setColorMapping] = useState(createColorMapping())
 
@@ -427,10 +434,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
     if(coloringState.color==id){
       setTimeout(()=>{setColor(0)
       },100)
-    
-      
       console.log({...coloringState,color:0})
-      //*******
     }
     let colors = getAllColors([...frames,frameState])
     if(colors.includes(id)){

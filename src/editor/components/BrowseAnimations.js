@@ -69,20 +69,20 @@ console.log(username)
       console.log(data)
     },[data])
 
-    const fetchImage = async (filename,username) => {
-      const token = await getAccessTokenSilently();
+    // const fetchImage = async (filename,username) => {
+    //   const token = await getAccessTokenSilently();
 
-        let imageUrl = port + `/thumbnail/${filename}/${username}`;
-        const res = await fetch(imageUrl,{ 
-          headers: {
-             Authorization: `Bearer ${token}`,
-           },
-          }
-        );
-        const imageBlob = await res.blob();
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-        return imageObjectURL
-      };
+    //     let imageUrl = port + `/thumbnail/${filename}/${username}`;
+    //     const res = await fetch(imageUrl,{ 
+    //       headers: {
+    //          Authorization: `Bearer ${token}`,
+    //        },
+    //       }
+    //     );
+    //     const imageBlob = await res.blob();
+    //     const imageObjectURL = URL.createObjectURL(imageBlob);
+    //     return imageObjectURL
+    //   };
 
       function fff(e){
         document.getElementById(e).style.height = '80%'

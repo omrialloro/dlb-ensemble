@@ -21,6 +21,8 @@ import {Operators} from "./views/Operators"
 import {renderAllFramesToScheme} from "../sharedLib/frameOps/FrameOps"
 import {getSchemes} from "../sharedLib/schemes/Schemes"
 import { useAuth0 } from "@auth0/auth0-react";
+import {useSaveAnimation,useExtractToGif} from '../sharedLib/Server/api'
+
 
 // import {extractToGif,useSaveAnimation} from '../sharedLib/Server/api'
 
@@ -48,17 +50,30 @@ opacity:${(props)=>props.isDragging?'0.80':'0'};
 z-index: 3;
 `
 
+const StyledSave= styled.div`
+width: 14vh;
+padding: 14px 2px;
+border: 1px solid;
+border-radius: 0;
+background-color: #f4261e;
+text-align: center;
+`;
+
 function Editorr({port,token}) {
 
 
-  const [username, setUsername] = useState(token.username)
+
+
+
+  // const [username, setUsername] = useState(token.username)
+  const [userID, setUserID] = useState(token.userID)
+
   const { getAccessTokenSilently } = useAuth0();
 
 
   let num_frames = 50
   let dim = [36,36]
   const [animations, setAnimations] = useState({"gray":createGrayFrames(num_frames)})
-  console.log("APP")
 
 const ref1 = useRef();
 const ref2 = useRef();
@@ -71,13 +86,42 @@ const handleUploadMusic = ()=>{
   ref2.current.click()
 }
 
+const saveAnimation = useSaveAnimation(port)
+
+const extractToGif = useExtractToGif(userID,port)
+const handleMakeGif = ()=>{
+      extractToGif(proccesedFrames, delay)
+}
+const handleSaveEditedFrames = ()=>{
+  const prefix = window.prompt("enter animation name")    
+  let name = prefix+String(Date.now())
+  let ThumbnailFrame = proccesedFrames[0]
+
+  let data ={"userID":userID,
+            "name":name,
+            "data":proccesedFrames,
+            "ThumbnailFrame":ThumbnailFrame,
+            "isDeleted":false,
+            "formatType":"edited"
+      }
+
+  saveAnimation(data)
+}
+
 function fireEndAnimationEvent(){
   const { ref1, ref2,ref3 } = AudioRef.current;
   ref1.current();
 }
 
 function prepareFrames(data){
-  let raw_frames = nestedCopy(animations[data["filename"]])
+  // console.log(data["filename"])
+  let raw_frames = []
+  if(!animations.hasOwnProperty(data["filename"])){
+     raw_frames = nestedCopy(animations["gray"])
+  }else{
+     raw_frames = nestedCopy(animations[data["filename"]])
+  }
+  // let raw_frames = nestedCopy(animations[data["filename"]])
   let operators = data["operators"]
   if(operators["reflect"]==1){
     raw_frames = raw_frames.map((x)=>(reflectFrame(x)))
@@ -90,14 +134,11 @@ function prepareFrames(data){
       raw_frames = raw_frames.map((x)=>(rotateFrame(x)))
     }
   }
-  // if(operators["scheme"]>=0){
-  // let colors = schemes_array[operators["scheme"]]
+
   if(typeof raw_frames[0][0][0]=='number'){
     raw_frames = renderAllFramesToScheme(raw_frames,schemes_array[operators["scheme"]])
   }
-  // let colorMapping = createColorMapping(schemes_array[operators["scheme"]])
-  //   raw_frames = changeFrameScheme(raw_frames, scheme)
-  // }
+
   return raw_frames
 }
 
@@ -125,6 +166,8 @@ function handleOnDragEnd(result) {
       items.splice(result.destination.index, 0, reorderedItem);
       setDATA(items);
     }    
+    console.log(DATA)
+
   }
 
   function deletAnimation(id){
@@ -204,7 +247,7 @@ function handleOnDragEnd(result) {
       start_frame +=range[1]
       outFrames = outFrames.concat(prepareFrames(element).slice(range[0],range[1]))
     });
-    console.log(outFrames[55])
+    // console.log(outFrames[55])
     setProccesedFrames(outFrames)
     SetTimeCodes(timeCodes_)
   }
@@ -224,33 +267,26 @@ function handleOnDragEnd(result) {
   }
 
 
-  async function PrepareSession(){
-    let d = await loadSession(port)
-    for (const el of d["data"]){
+  async function PrepareSession(data){
+    for (const el of data){
       let filename = el["filename"]
       if (!animations.hasOwnProperty(filename)){
-        let  a = await fetch(port + `/api/${filename}`, {method: 'GET' }).then(res => res.json())
-        addAnimation(a["data"], filename)
+        await handlePickAnimation(filename)
       }
     }
-    setDATA(d["data"])
   }
 
   async function handlePickAnimation(animationId) {
-
     if (!animations.hasOwnProperty(animationId)){
       const token = await getAccessTokenSilently();
       let  a = await fetch(port + `/loadAnimation/${animationId}`, {method: 'GET',
 
-      // let  a = await fetch(port + `/loadAnimation/${username}/${filename}`, {method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       } ).then(res => res.json())
 
-      // let  a = await fetch(port + `/loadAnimation/${username}/${filename}`, {method: 'GET' }).then(res => res.json())
 
-      // let  a = await fetch(port + `/api/${filename}`, {method: 'GET' }).then(res => res.json())
       addAnimation(a["data"], animationId)
     }
     let id  = "x"+Date.now().toString();
@@ -258,7 +294,7 @@ function handleOnDragEnd(result) {
       let frames = animations[animationId]
       let schemeIndex = 0;
       // let schemeIndex = detectScheme(frames)[0]
-      setMainScreen({
+      setMainScreen_({
       "id":id,
       "filename":animationId,
       "dim":[36,36],
@@ -276,14 +312,33 @@ let frammmes = prepareFrames(mainScreen)
 const [proccesedFrames, setProccesedFrames] = useState(prepareFrames(mainScreen))
 
 
-// function setCurrentTimecodeIndex(index){
-//   console.log(DATA[index]["id"])
-// }
+const editData = {
+  // "animations":animations,
+  "mainScreen":mainScreen,
+  "DATA":DATA,
+  // "proccesedFrames":proccesedFrames,
+  // "offsetSec":offsetSec,
+}
+
+useEffect( ()=>{
+  var tt = sessionStorage.getItem("editData");
+  let editData_ = JSON.parse(tt);
+  console.log(editData_)
+  if (editData_ != null){
+     PrepareSession(editData_.DATA)
+     setDATA(editData_.DATA)
+  } 
+},[])
+
+useEffect(()=>{
+  sessionStorage.setItem("editData",JSON.stringify(editData));
+},[mainScreen,DATA])
+
+
 
 const [offsetSec, setOffsetSec] = useState(0)
 
 function passCurrentOffsetSec(t){
-  console.log(t)
   setOffsetSec(t)
 
 }
@@ -375,13 +430,18 @@ return (<SelectedIdProvider>
                 // setCurrentTimecodeIndex = {setCurrentTimecodeIndex}
                 passPlayState ={setIsPlay}
                 passCurrentOffsetSec = {passCurrentOffsetSec}
-                />
+                /><div style={{display:"flex"}}>
+                       <StyledSave onClick={handleSaveEditedFrames}>SAVE</StyledSave>
+                       <StyledSave onClick={handleMakeGif}> MAKE GIF </StyledSave>
+                  </div>
+                
              </div>
           <AudioInput
            ref = {AudioRef}
            isPlay = {isPlay}
            offsetSec = {offsetSec}
            />
+    
 
       </div>
   </div>

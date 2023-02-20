@@ -175,4 +175,32 @@ function useExtractToGif(username,port){
   // }, [port, data])
 }
 
-export {saveAnimation, saveSession,loadSession, extractToGif,useAnimationList,useSaveAnimation,useExtractToGif}
+function useSaveStoredAnimations(port){
+  const { getAccessTokenSilently } = useAuth0();
+  const [error,setError] = useState(null)
+  const [loading,setLoading] = useState(false)
+  return  async function(data){
+    console.log(data)
+      try{
+          setLoading(true)
+          const token = await getAccessTokenSilently();
+          await fetch(port+"/saveAnimationsSession"
+              ,
+              {
+                method: 'POST', // or 'PUT'
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+              }
+            )
+      }catch(err){
+          setError(err)
+      }finally{
+          setLoading(false)
+      }
+  }
+}
+
+export {saveAnimation, saveSession,loadSession, extractToGif,useAnimationList,useSaveAnimation,useExtractToGif,useSaveStoredAnimations}
