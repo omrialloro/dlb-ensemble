@@ -70,29 +70,29 @@ export function Errows(props) {
      <StyledErrows>
       <div>
         <StyledErrowButtons onClick={()=>{pressErrow("up")}}>
-          <div class="msg">
+          <div className="msg">
             <img src="up.svg"/>
-            <span class="tooltiptext">	Shift up (&#8593;)</span>
+            <span className="tooltiptext">	Shift up (&#8593;)</span>
           </div>
         </StyledErrowButtons>
       </div>
-      <div class="errows_bottom" style = {{display:'flex'}}>
+      <div className="errows_bottom" style = {{display:'flex'}}>
         <StyledErrowButtons onClick={()=>{pressErrow("left")}}>
-            <div class="msg">
+            <div className="msg">
               <img src="left.svg"/>
-              <span class="tooltiptext">	Shift left (&#8592;) </span>
+              <span className="tooltiptext">	Shift left (&#8592;) </span>
             </div>
         </StyledErrowButtons>
         <StyledErrowButtons onClick={()=>{pressErrow("down")}}>
-          <div class="msg">
+          <div className="msg">
             <img src="down.svg"/>
-            <span class="tooltiptext"> 	Shift down(&#8595;)</span>
+            <span className="tooltiptext"> 	Shift down(&#8595;)</span>
           </div>
         </StyledErrowButtons>
         <StyledErrowButtons onClick={()=>{pressErrow("right")}}>
-          <div class="msg">
+          <div className="msg">
               <img src="right.svg"/>
-              <span class="tooltiptext">Shift right (&#8594;)</span>
+              <span className="tooltiptext">Shift right (&#8594;)</span>
           </div>
         </StyledErrowButtons>
       </div>

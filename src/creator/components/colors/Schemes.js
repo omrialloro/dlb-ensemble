@@ -58,7 +58,7 @@ function Scheme(props) {
     <form action="/action_page.php">
           <select className="schemes" id="scheme" onChange={e=>{onChangeScheme(e.target.value)}}>
             {Object.keys(schemes).map((x)=>
-               <option value={x}><p>{x}</p></option>
+               <option value={x} key = {x+"scheme"}>{x}</option>
             )}
           </select>
     </form>

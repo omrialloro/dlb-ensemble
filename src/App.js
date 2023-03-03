@@ -35,8 +35,8 @@ const LogoutButton = () => {
 
 function App() {
   const { isg, error,logout } = useAuth0();
-  console.log(isg)
-  console.log(error)
+  // console.log(isg)
+  // console.log(error)
 
 
   const { isAuthenticated,user } = useAuth0()
@@ -47,11 +47,11 @@ function App() {
   const { token, setToken } = useToken({username:user});
 
   if(typeof user === 'undefined'){
-    console.log("VVV")
+    // console.log("VVV")
   }
   else
   {
-    console.log(user)
+    // console.log(user)
   }
   
 
@@ -67,7 +67,6 @@ function App() {
   }
 
   else {
-    console.log(user["nickname"])
   return (
   <>
 

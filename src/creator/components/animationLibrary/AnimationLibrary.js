@@ -78,7 +78,6 @@ export default function AnimationLibrary(props) {
           })
         }
         setAnimations(animations_)
-        console.log(animations_)
         setFilenames(data["names"])
         setImgURLs(data["ids"].map(id=>(thumbnailsUrl+String(id)+".png")))
         setIsCheckedArray(data["ids"].map(id=>(false)))
@@ -149,7 +148,6 @@ export default function AnimationLibrary(props) {
         resetChecked()
       }
 
-      useEffect(()=>{console.log(isCheckedArray)},[isCheckedArray])
 
       const [filenames,setFilenames] = useState([]);
 
@@ -175,9 +173,9 @@ export default function AnimationLibrary(props) {
         <StyledBox style={browserdOn?{visibility:'visible',  transition: 'width 2s, height 4s'}:{visibility:'hidden'}}>
         <div className="order" ></div>
         {animations.map((x,index)=>(
-            <StyledFrames
+            <StyledFrames key = {"llll"+x["id"]}
                 >
-                <XX style={x["isChecked"]?{height:'90%'}:{height:'70%'}} src={x["imgUrl"]} id = {x["id"]} onClick={()=>{fff(index)}}></XX>
+                <XX style={x["isChecked"]?{height:'90%'}:{height:'70%'}} src={x["imgUrl"]} key = {"ll"+x["id"]} id = {x["id"]} onClick={()=>{fff(index)}}></XX>
             </StyledFrames>
         )
         )}

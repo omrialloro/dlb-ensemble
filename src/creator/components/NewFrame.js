@@ -48,7 +48,7 @@ export function NewFrame(props) {
     <div style={{display:'flex'}}>
         <StyledNewFrame onClick={recordFrame}>
       <div className="msg">
-        <svg id="Layer_1" data-name="Layer 1" xmlns="https://www.w3.org/2000/svg" viewBox="0 0 49 49"><defs><style>.cls-1</style></defs><polygon class="cls-1" points="49 21 28 21 28 0 21 0 21 21 0 21 0 28 21 28 21 49 28 49 28 28 49 28 49 21"/></svg>
+        <svg id="Layer_1" data-name="Layer 1" xmlns="https://www.w3.org/2000/svg" viewBox="0 0 49 49"><defs><style>.cls-1</style></defs><polygon className="cls-1" points="49 21 28 21 28 0 21 0 21 21 0 21 0 28 21 28 21 49 28 49 28 28 49 28 49 21"/></svg>
         <StyledTooltipText> Create new frame (&#9166;)</StyledTooltipText>
       </div>
 

@@ -26,6 +26,7 @@ export  function useFetch(url,refresh){
                 }catch(err){
                     setError(err)
                 }finally{
+
                     setLoading(false)
                 }
             }

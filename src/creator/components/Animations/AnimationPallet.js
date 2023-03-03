@@ -169,7 +169,7 @@ export function AnimationPallet(props) {
     <>
   <StyledBox>
     {data.map((e,index)=>(
-    <div  id = {e.id}     draggable = {true}
+    <div  id = {e.id}   draggable = {true}
     onDragStart = {drag}>
     <SmallScreen 
         isPicked = {e.id ==pickedIndex}

@@ -1,36 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 
-
-
-// const [imgURLs,setImgURLs] = useState([]);
-
-// useEffect(()=>{
-//   async function fetchAllImage(filenames){
-//       setImgURLs(await Promise.all(filenames.map(async (x)=>(fetchImage(x)))))
-//     }
-//     fetchAllImage(filenames)
-// },[filenames])
-
-
-// useEffect(()=>{
-//   async function  loadFilenames(){
-//     let dd = await fetch(port + `/filenames`, {method: 'GET' }).then(res => res.json())
-//     setFilenames(dd)
-//   }
-//   loadFilenames()
-// },[])
-
-
-const fetchImage = async (filename,port) => {
-  let imageUrl = port + `/thumbnail/${filename}`;
-  const res = await fetch(imageUrl);
-  const imageBlob = await res.blob();
-  const imageObjectURL = URL.createObjectURL(imageBlob);
-  return imageObjectURL
-};
-
-
 async function saveSession(name, data, port){
   fetch(port + '/saveSession', {
     method: 'POST', // or 'PUT'
@@ -93,30 +63,6 @@ function useExtractToGif(username,port){
 
   }
 
-// const port =  props.port;
-// const username =  props.username;
-// const addAnimation =  props.addAnimation;
-
-
-  // const [filenames,setFilenames] = useState([]);
-
-  // useEffect(()=>{
-  //   async function  getAnimationList(){
-  //     let data = await fetch(port + `/animationsList/${username}`, {method: 'GET' }).then(res => res.json())
-  //     setFilenames(data)
-  //   }
-  //   getAnimationList()
-  // },[])
-
-  // useEffect(()=>{
-  //   console.log(filenames)
-  // },[filenames])
-
-  // async function onSelectAnimation(filename,username,port){
-  //   let  a = await fetch(port + `/loadAnimation/${username}/${filename}`, {method: 'GET' }).then(res => res.json())
-  //   addAnimation(a)
-  //   // console.log(a)
-  // }
 
   async function  useAnimationList(port, username){
     useEffect(()=>{
@@ -141,6 +87,28 @@ function useExtractToGif(username,port){
     })
   }
 
+  function useDeleteAnimationFromServer(port){
+    const { getAccessTokenSilently } = useAuth0();
+    return  async function(animationId){
+    const token = await getAccessTokenSilently();
+    console.log("ZZZZ")
+    fetch(port+"/deleteStoredAnimation"
+        ,
+        {
+          method: 'POST', // or 'PUT'
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({"animationId":animationId})
+        })
+      }
+  }
+
+
+
+
+
 
   function useSaveAnimation(port){
     const { getAccessTokenSilently } = useAuth0();
@@ -160,7 +128,6 @@ function useExtractToGif(username,port){
                         headers: {
                           Authorization: `Bearer ${token}`,
                           'Content-Type': 'application/json',
-
                         },
                         body: JSON.stringify(data)
                       }
@@ -180,11 +147,10 @@ function useSaveStoredAnimations(port){
   const [error,setError] = useState(null)
   const [loading,setLoading] = useState(false)
   return  async function(data){
-    console.log(data)
       try{
           setLoading(true)
           const token = await getAccessTokenSilently();
-          await fetch(port+"/saveAnimationsSession"
+          await fetch(port+"/saveStoredAnimations"
               ,
               {
                 method: 'POST', // or 'PUT'
@@ -203,4 +169,4 @@ function useSaveStoredAnimations(port){
   }
 }
 
-export {saveAnimation, saveSession,loadSession, extractToGif,useAnimationList,useSaveAnimation,useExtractToGif,useSaveStoredAnimations}
+export {saveAnimation, saveSession,loadSession, extractToGif,useAnimationList,useSaveAnimation,useExtractToGif,useDeleteAnimationFromServer,useSaveStoredAnimations}

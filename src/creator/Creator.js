@@ -18,19 +18,37 @@ import {SaveAndLoad} from './components/SaveAndLoad';
 import {saveSession, loadSession} from './components/SaveUtils';
 import { AnimationPallet } from './components/Animations/AnimationPallet';
 import {nestedCopy} from './components/utils/Utils'
-import {useSaveAnimation,useExtractToGif,useSaveStoredAnimations} from '../sharedLib/Server/api'
+import {useSaveAnimation,useExtractToGif,useSaveStoredAnimations,useDeleteAnimationFromServer} from '../sharedLib/Server/api'
 import AnimationLibrary from './components/animationLibrary/AnimationLibrary.js'
+import { useAuth0 } from "@auth0/auth0-react";
+
 
 
 const dim = [36,36]
 
+
 function Creator(props) {
+
+  const [start_time,setStart_time] = useState(0)
+
+  useEffect(()=>{
+    setStart_time(Date.now())
+  },[])
+
   const token =props.token
   const port =props.port
 const [frames, setFrames] = useState([])
 const [animations,setAnimations] = useState([])
+
+// const [animationsIds,setAnimationsIds] = useState(JSON.parse(sessionStorage.getItem("animationsIds")))
+const [animationsIds,setAnimationsIds] = useState([])
+
 const [oscillators, setOscillators] = useState([])
 const [renderedOscillators, setRenderedOscillators] = useState([])
+
+const { getAccessTokenSilently } = useAuth0();
+
+const saveAnimation = useSaveAnimation(port)
 
 
 const [frameIndex, setFrameIndex] = useState(0)
@@ -40,14 +58,25 @@ const screenRef = useRef()
 const storeAnimation = ()=> {
   if(frames.length>0){
     let id = Date.now()
+    console.log(id)
     let frames__ = renderAllFrames(frames, stateMapping)
     let frames_ = renderAllFrames(frames__, stateMapping)
+    let ThumbnailFrame = renderFrame(frames_[0],colorMapping,0)
+    
 
+    let data ={"userID":userID,
+                "name":String(id),
+                "data":frames_,
+                "ThumbnailFrame":ThumbnailFrame,
+                "isDeleted":false,
+                "formatType":"row",
+                "saved":false,
+           }
+    saveAnimation(data)
     let stateMapping_ = stateMapping
     stateMapping_[id] = animationStateMappingCb(frames_)
     setStateMapping(stateMapping_)
     setAnimations([...animations,{id:id,frames:frames_,isDeleted:false}])
-    console.log(animations)
   }
 }
 
@@ -95,9 +124,12 @@ useEffect(()=>{
 const saveStoredAnimations = useSaveStoredAnimations(port)
 
 useEffect(()=>{
-  saveStoredAnimations({animations:animations,
-    oscillators:oscillators})
+  saveStoredAnimations({"userID":userID,
+              "data":{"animations":animations,
+                     "oscillators":oscillators}})
 },[animations,oscillators])
+
+
 
 const [colorMapping, setColorMapping] = useState(createColorMapping())
 
@@ -189,56 +221,173 @@ const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
   const [userID, setUserID] = useState(token.userID)
 
 
-  const sessionData = {
-    "coloringState":coloringState,
-    "frameState":frameState,
-    "frames":frames,
-    "renderedFrames":renderedFrames,
-    "undoData":undoData,
-    "animations":animations,
-    "oscillators":oscillators,
-    "renderedOscillators":renderedOscillators,
-    // "frameIndex":frameIndex,
-    "renderedAnimations":renderedAnimations,
-    "colorMapping":colorMapping,
+
+  async function loadAnimation(animationId){
+    const token = await getAccessTokenSilently();
+    let  a = await fetch(port + `/loadAnimation/${animationId}`, {method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    } ).then(res => res.json())
+    console.log(a)
+    return a
+  }
+  
+
+  async function loadStoredAnimations(animationsIds_){
+    console.log(animationsIds_)
+    let rejectedIds = addAnimations(await Promise.all(animationsIds_.map(async (id) => (loadAnimation(id)))))
+    let frames_ = JSON.parse(sessionStorage.getItem("frames"))
+    if(frames_!=null){
+      let cols = getAllColors(frames_)
+      if (!isIntersects(cols,rejectedIds)){
+        setFrames(frames_)
+      }
+    }
+    // let frameState_ = JSON.parse(sessionStorage.getItem("frameState"))
+    // console.log(frameState_)
+    // if(frameState_!=null){
+    //   setFrameState(frameState_);
+    // }
+    return  1
+  }
+  
+
+function assertStoredDataConsistence(){
+  let frames_ = JSON.parse(sessionStorage.getItem("frames"))
+  let animationsIds_ = JSON.parse(sessionStorage.getItem("animationsIds"))
+  let oscillators_ = JSON.parse(sessionStorage.getItem("oscillators"))
+  if((frames_!=null)&&(animationsIds_!=null)){
+    let framesColors = getAllColors(frames_)
+    let colorsIds = [...Array.from(Array(6).keys()),...animationsIds_]
+    return isSubset(framesColors,colorsIds)
+  }
+  else{
+    resetStorage()
+  }
+}
+// console.log(assertStoredDataConsistence())
+
+  const [isStoredLoaded, setIsStoredLoaded] = useState(false)
+
+  function resetStorage(){
+    sessionStorage.setItem("animationsIds",'');
+    sessionStorage.setItem("frames",'');
+    sessionStorage.setItem("frameIndex",'');
+    sessionStorage.setItem("frameState",'');
   }
 
 
-  useEffect(()=>{
-    var tt = sessionStorage.getItem("sessionData");
-    let sessionData_ = JSON.parse(tt);
-    if (sessionData_ != null){
-      setColoringState(sessionData_.coloringState)
-      setFrames(sessionData_.frames)
-      setRenderedFrames(sessionData_.renderedFrames)
-      addAnimations(sessionData_.animations.map((x)=>({data:x.frames,id:x.id})))
-      // addAnimations(d)
-      setOscillators(sessionData_.oscillators)
-      setRenderedAnimations(sessionData_.renderedOscillators)
-      sessionData_.frames.length==0?setFrameIndex(0):setFrameIndex(1)
-      setRenderedAnimations(sessionData_.renderedAnimations)
-      setTimeout(()=>{
-        setFrameState(sessionData_.frameState)
-      },10)
-      setUndoData(sessionData_.undoData)
-
-    } 
-  },[])
-
 
   useEffect(()=>{
-    sessionStorage.setItem("sessionData",JSON.stringify(sessionData));
-    // var tt = sessionStorage.getItem("sessionData");
-    // let sessionData_ = JSON.parse(tt);
-  },[coloringState,frameState
-    ,frames,animations,oscillators,
-    renderedOscillators,frameIndex,
-    renderedAnimations,colorMapping])
+    let frameIndex_str = sessionStorage.getItem("frameIndex")
+        if(isStoredLoaded&&frameIndex_str!=''){
+          let frameIndex_ = JSON.parse(frameIndex_str)
+          if(frames.length>=frameIndex_){
+            setFrameIndex(frameIndex_);
+          }
+        }
+  },[isStoredLoaded])
+
+  useEffect(()=>{
+
+    let frameState_str = sessionStorage.getItem("frameState")
+        if(isStoredLoaded&&frameState_str!=''&&frameState_str!=undefined){
+          let frameState_ = JSON.parse(frameState_str)
+          setTimeout(()=>{
+            setFrameState(frameState_);
+
+          },100)
+        }
+
+  },[isStoredLoaded])
+
+
 
 
   
 
+
+  useEffect( ()=>{
+    
+    async function ffff(animationsIds_){
+      console.log(animationsIds_)
+     const r =  await loadStoredAnimations(animationsIds_)
+     console.log(r)
+     setIsStoredLoaded(true)
+
+    }
+    if(!isStoredLoaded){
+      var animationsIds_str = sessionStorage.getItem("animationsIds");
+      if (animationsIds_str!=undefined&&animationsIds_str!=''&&animationsIds_str!=null){
+        var animationsIds_ = JSON.parse(animationsIds_str);
+        console.log("animationsIds_")
+        console.log(animationsIds_)
+        ffff(animationsIds_) 
+      }
+      else{
+        console.log("FFFF")
+        setIsStoredLoaded(true)
+      }
+    }
+  },[])
+
+  useEffect(()=>{
+    console.log(isStoredLoaded)
+    if(isStoredLoaded){
+      sessionStorage.setItem("animationsIds",JSON.stringify(animationsIds));
+    }
+  },[animationsIds])
+
+  useEffect(()=>{
+    if(isStoredLoaded){
+      sessionStorage.setItem("frames",JSON.stringify(frames));
+    }
+  },[isStoredLoaded,frames])
+
+
+  useEffect(()=>{
+    if(isStoredLoaded){
+      sessionStorage.setItem("frameIndex",JSON.stringify(frameIndex));
+    }
+  },[isStoredLoaded,frameIndex])
+
+
+  useEffect(()=>{
+    console.log(undoData)
+
+  },[isStoredLoaded,undoData])
+
+
+
+
+
+    useEffect(()=>{
+      console.log(coloringState)
+      setTimeout(()=>{
+        sessionStorage.setItem("coloringState",JSON.stringify(coloringState));
+      },100)
+  },[coloringState])
+
+  useEffect(()=>{
+    let  coloringState_ = JSON.parse(sessionStorage.getItem("coloringState"))
+    if(coloringState_!=null){
+      setColoringState(coloringState_)
+    }
+},[])
+
+  useEffect(()=>{    
+    if(isStoredLoaded&&(Date.now()-start_time)/1000>5){
+      sessionStorage.setItem("frameState",JSON.stringify(frameState));
+    }
+  },[frameState,isStoredLoaded])
+
+
+  
+  
+
 function recordUndo(f){
+  console.log("F")
   let frameArray = undoData.frameArray
   let historyLen = undoData.historyLen
   if (historyLen<frameArray.length){
@@ -247,6 +396,7 @@ function recordUndo(f){
   frameArray.push(f)
   let undoData_ = undoData
   undoData_.frameArray = frameArray
+  console.log("dddd")
   setUndoData(undoData_)
 }
 
@@ -270,7 +420,8 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
 
   useEffect(()=>{
     if(frames.length>0){
-      setFrameState(frames[frameIndex-1])
+      let m = Math.max(frameIndex-1,0)
+      setFrameState(frames[m])
     }
  },[isPlay,frameIndex])
 
@@ -340,6 +491,10 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
     setDelay(Math.round(1000/FPS))
   },[FPS])
 
+  useEffect(()=>{
+    setAnimationsIds(animations.map(a=>(a.id)))
+  },[animations])
+
   function handleFps(action){
     if((action=="plus")&&(FPS<60)){
       setFPS(FPS+1)
@@ -376,21 +531,22 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   function isIntersects(A,B){
     return !A.reduce((t,v)=>!B.includes(v)*t,true)
   }
+  function isSubset(A,B){
+    return A.every(val => B.includes(val));
+  }
 
-  function isContainingOscilators(framems){
+  function isContainingOscilators(frames){
     let all_colors = getAllColors([...frames,frameState])
     let oscillatorsIds = oscillators.map(x=>x.id)
     return isIntersects(oscillatorsIds,all_colors)
   }
 
-  const saveAnimation = useSaveAnimation(port)
   const handleSaveAnimation = ()=>{
     const prefix = window.prompt("enter animation name")    
     let name = prefix+String(Date.now())
     if (!isContainingOscilators(frames)){
       let frames_ = renderAllFrames(frames, stateMapping)
       frames_ = renderAllFrames(frames_, stateMapping)
-      console.log("kkkk")
 
       let ThumbnailFrame = renderFrame(frames_[0],colorMapping,0)
       let data ={"userID":userID,
@@ -398,7 +554,8 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
                 "data":frames_,
                 "ThumbnailFrame":ThumbnailFrame,
                 "isDeleted":false,
-                "formatType":"row"
+                "formatType":"row",
+                "saved":true,
               }
       saveAnimation(data)
     }
@@ -411,7 +568,9 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
                 "data":frames_,
                 "ThumbnailFrame":ThumbnailFrame,
                 "isDeleted":false,
-                "formatType":"rendered"
+                "formatType":"rendered",
+                "saved":true,
+
          }
 
       saveAnimation(data)
@@ -423,18 +582,15 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
         extractToGif(renderedFrames, delay)
   }
   
-  const handleSaveProject = () =>{saveSession([],port)}
-  const handleLoadProject = () =>{loadSession(port)}
-
   function reverseFrames(){
     let frames_ = nestedCopy(frames)
     setFrames(frames_.reverse())
   }
+  const deleteAnimationFromServer = useDeleteAnimationFromServer(port)
   function onAnimationDelete(id){
     if(coloringState.color==id){
       setTimeout(()=>{setColor(0)
       },100)
-      console.log({...coloringState,color:0})
     }
     let colors = getAllColors([...frames,frameState])
     if(colors.includes(id)){
@@ -442,31 +598,33 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
       setAnimations(animations.map(x=>x.id==id?{...x,isDeleted:true}:x))    
       return 
     }
-    console.log(id)
     const items = Array.from(animations);
     let index =  items.findIndex((el)=>el["id"]==id)
     items.splice(index, 1);
     setAnimations(items);
+    console.log(deleteAnimationFromServer)
+    console.log(saveAnimation)
+
+    deleteAnimationFromServer(id)
   }
 
   function addAnimations(d){
-    console.log(d)
-    
-    let stateMapping_ = stateMapping
+        let stateMapping_ = stateMapping
     let addedAnimations =[]
-
+    let rejectedIds = []
     for(let i=0;i<d.length;i++){
       if (d[i].data.length>0){
-        // let id = 100*(animations.length+1+i)
-        // let id = Date.now()
         let id = Number(d[i].id)
-
         stateMapping_[id] = animationStateMappingCb(d[i].data)
         addedAnimations.push({id:id,frames:d[i].data,isDeleted:false})
+      }
+      else{
+        rejectedIds.push(d[i].id)
       }
     }
     setStateMapping(stateMapping_)
     setAnimations([...animations,...addedAnimations])
+    return rejectedIds
   }
   const [isGrid, setIsGrid] = useState(false)
 
@@ -535,13 +693,8 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
            <NewFrame numFrames = {frames.length} recordFrame = {recordFrame}/>
            <div className="creation_btns">
               <Reset text= {"reset"} onClick={resetAnimation}/>
-              <Reset text= {"clear"} onClick={clearFrame}/>
-              {/* <Reset text= {"save"} onClick={save}/> */}
-              {/* <Reset text= {"load"} onClick={load}/>
-              <Reset text= {"press"} onClick={press}/> */}
-  
-  
-              <Reset text= {"undo"} onClick={Undo}/>
+              <Reset text= {"clear"} onClick={clearFrame}/>  
+              <Reset text= {"undo"} onClick={()=>{console.log(animations)}}/>
               <Reset text= {"reverse"} onClick={reverseFrames}/>
   
            </div>
@@ -553,7 +706,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
           <SaveAndLoad
             handleGifExtraction = {handleGifExtraction}
             handleSaveProject = {handleSaveAnimation}
-            handleLoadProject = {handleLoadProject}
+            handleLoadProject = {()=>{console.log(undoData)}}
           />
         </div>
       </section>
