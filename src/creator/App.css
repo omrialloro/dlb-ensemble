@@ -179,16 +179,16 @@ main {
 }
 
 .action {
-  height: 84vh;
-  width: 18vh;
+  /* height: 960px; */
+  width: 340px;
   margin:0 15px;
 }
 
   section.action.left {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 section.action.right {
@@ -199,8 +199,8 @@ section.action.right {
 }
 
 .colors {
-  width: 14vh;
-  height: 14vh;
+  /* width: 21px;
+  height: 21px; */
   margin-bottom: 16px;
   border-bottom: 0.5px solid #000;
 }
@@ -286,6 +286,13 @@ cursor: pointer;
   margin: 2px;
   background-color: #C4C4C4;
   cursor: grabbing;
+}
+
+.browse_btn {
+  padding: 12px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 
@@ -397,3 +404,9 @@ margin: 3.6vh 0;
     .undo:hover {
     visibility: visible;
   }
+
+  .msg img {
+    height: 22px;
+    width: 22px;  
+  }
+ 

@@ -46,7 +46,7 @@ const StyledBox= styled.div`
   box-shadow: 0 0 1px rgba(255, 255, 255, .5);
 }
 
-height:33px;
+height:63px;
 width:450px;
 border-radius: 12px;
 border: 1px solid #909090;

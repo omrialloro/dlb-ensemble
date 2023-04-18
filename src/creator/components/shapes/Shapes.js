@@ -4,18 +4,18 @@ import styled from "styled-components";
 
 const StyledShapes= styled.div`
   /* width: 14vh; */
-  width: 100px;
+  /* width: 100px; */
 
-  height: 320px;
-
+  /* height: 320px; */
 `;
 
 const StyledShape= styled.div`
   width: ${(props)=>props.size}vh;
   height: ${(props)=>props.size}vh;
-  width: 6vh;
-  height: 6vh;
-  border: ${(props)=>props.size}px solid #000;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #000;
+  margin:2px;
   /* margin: 1px; */
   background-color: #C4C4C4;
   cursor: grabbing;
@@ -24,7 +24,7 @@ const StyledShape= styled.div`
 const StyledShapeSelector= styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   width: 14vh;
 `;
 

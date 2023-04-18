@@ -42,11 +42,12 @@ position:absolute;
 // border:3px solid salmon;
 `
 const StyledBtn = styled.div`
-background: #C99700;
-height:53px;
-width:73px;
-padding:10px;
-margin:10px;
+background:#f3f1e0;
+/* height:53px; */
+width:100%;
+padding: 12px;
+margin-bottom: 24px;
+
 `
 
 export default function AnimationLibrary(props) {

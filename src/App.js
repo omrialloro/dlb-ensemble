@@ -6,14 +6,15 @@ import {Login} from './login/Login'
 import Editorr from './editor/Editorr'
 import Creator from './creator/Creator'
 import useToken from './useToken';
+import Intro from './Intro';
+
 
 
 import { useAuth0 } from "@auth0/auth0-react";
 
 
-// const port = "http://localhost:6060"
-
-const port = "https://18.193.175.134:6060"
+const port = process.env.REACT_APP_SERVER_ADDRESS
+console.log('port', port);
 
 
 const LoginButton = () => {
@@ -35,27 +36,11 @@ const LogoutButton = () => {
 
 function App() {
   const { isg, error,logout } = useAuth0();
-  // console.log(isg)
-  // console.log(error)
-
-
   const { isAuthenticated,user } = useAuth0()
 
   useEffect(()=>{console.log(isAuthenticated)},[isAuthenticated,user])
  
- 
   const { token, setToken } = useToken({username:user});
-
-  if(typeof user === 'undefined'){
-    // console.log("VVV")
-  }
-  else
-  {
-    // console.log(user)
-  }
-  
-
-  console.log(isAuthenticated)
 
 
   if(!isAuthenticated) {
@@ -68,8 +53,8 @@ function App() {
 
   else {
   return (
+    // <Intro></Intro>
   <>
-
     <BrowserRouter>
     <div className = "header" >
       {/* {token.username} */}

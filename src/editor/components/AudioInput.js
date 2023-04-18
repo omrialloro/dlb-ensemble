@@ -35,7 +35,10 @@ React.useEffect(() => {
 },false);
 }, [source])
 
-  const { ref1, ref2,ref3 } = ref.current;
+
+console.log(ref.current)
+
+const { ref1, ref2,ref3 } = ref.current;
 
 
 
@@ -66,13 +69,13 @@ React.useEffect(() => {
   }
 
   ref1.current = tuneAudio
-
-
+  
 
   const timeSecRef = useRef(0.0)
 
   return (
     <div className="AudioInput" hidden = {!is_music_on}>
+
       
 <div className="music_section">
 
@@ -97,8 +100,7 @@ React.useEffect(() => {
         />
       )}
 
-      {/* <button ref = {ref2} onClick={TogglePlay} hidden = {true}></button> */}
-      {/* <button ref = {ref3} onClick={tuneAudio} hidden = {true}></button> */}
+      <button ref = {ref3} onClick={tuneAudio} hidden = {true}></button>
 
       <div style={{display:'flex'}}>
 

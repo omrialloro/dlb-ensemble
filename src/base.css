@@ -24,9 +24,14 @@ footer, header, hgroup, menu, nav, section {
   display: block;
 }
 body {
-  font-family: "Helvetica Neue", 'roboto', Helvetica,Arial,"Lucida Grande",sans-serif;
-  font-size: 12px;
+  line-height: 1;
 }
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
 ol, ul {
   list-style: none;
 }
@@ -43,10 +48,10 @@ table {
   border-spacing: 0;
 }
 
-/* img, iframe {
+img, iframe {
   vertical-align: bottom;
   max-width: 100%;
-} */
+}
 
 input, textarea, select {
   font: inherit;

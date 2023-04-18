@@ -24,7 +24,6 @@ const [FPS,SetFPS] = useState(Math.round(44))
 const [delay,setDelay] = useState(Math.round(1000/FPS))
 const [isPlay, setIsPlay] = useState(false)
 const [isTime,setIsTime] = useState(true)
-console.log("preview")
 
 useEffect(() => {
   updateDelay(delay)

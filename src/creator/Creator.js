@@ -21,6 +21,7 @@ import {nestedCopy} from './components/utils/Utils'
 import {useSaveAnimation,useExtractToGif,useSaveStoredAnimations,useDeleteAnimationFromServer} from '../sharedLib/Server/api'
 import AnimationLibrary from './components/animationLibrary/AnimationLibrary.js'
 import { useAuth0 } from "@auth0/auth0-react";
+import CreateOscillator from './components/CreateOscillator'
 
 
 
@@ -99,9 +100,11 @@ function renderAllAnimations(){
       console.log(animations[i].isDeleted)
     }
   }
+  console.log()
   for (let i=0;i<renderedOscillators.length;i++){
     rendered_animations.push(renderedOscillators[i])
   }
+  console.log(rendered_animations)
   setRenderedAnimations(rendered_animations)
 }
 
@@ -127,6 +130,7 @@ useEffect(()=>{
   saveStoredAnimations({"userID":userID,
               "data":{"animations":animations,
                      "oscillators":oscillators}})
+
 },[animations,oscillators])
 
 
@@ -148,7 +152,9 @@ const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
   },[coloringState,colors,animations, oscillators])
 
   useEffect(()=>{
-    let renderedOscillators_ = renderedOscillators;
+    // let renderedOscillators_ = renderedOscillators;
+    let renderedOscillators_ = [];
+
     let renderedIds = renderedOscillators_.map((x)=>(x.id))
     for(let i=0;i<oscillators.length;i++){
       let id = oscillators[i].id
@@ -187,6 +193,30 @@ const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
     }
     return color_mapping
   }
+  function renderOscillator(id1,id2,numFrames){
+    console.log(id1)
+    console.log(id2)
+
+    let color_mapping_ = {};
+    console.log(animations)
+    let A1 = animations.filter((x)=>x.id == id1)[0]
+    let A2 = animations.filter((x)=>x.id == id2)[0]
+    console.log(A1.frames.length)
+    console.log(A2.frames.length)
+
+
+    console.log(numFrames)
+
+
+    // console.log(animations.id[id1])
+    // console.log(animations.id[id2])
+
+    color_mapping_[-1] = oscillateAnimationsColorMappingCb(A1,A2,numFrames,colors)
+    console.log(color_mapping_)
+    return synthOscillator(dim[0],dim[1],-1,color_mapping_,2*numFrames)
+    // return []
+
+  }
 
   const setColor = color => {
     setColoringState(existingValues => ({
@@ -220,7 +250,18 @@ const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
   const [undoData, setUndoData] =useState({historyLen:20,frameArray:[]})
   const [userID, setUserID] = useState(token.userID)
 
+async function test_server(){
+  console.log("check")
+  console.log(port)
+  const token = await getAccessTokenSilently();
 
+  
+  let  a = await fetch(port + `/check`, {method: 'GET',
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+}
 
   async function loadAnimation(animationId){
     const token = await getAccessTokenSilently();
@@ -244,11 +285,6 @@ const [stateMapping,setStateMapping] = useState(initStateMapping(colors))
         setFrames(frames_)
       }
     }
-    // let frameState_ = JSON.parse(sessionStorage.getItem("frameState"))
-    // console.log(frameState_)
-    // if(frameState_!=null){
-    //   setFrameState(frameState_);
-    // }
     return  1
   }
   
@@ -290,6 +326,11 @@ function assertStoredDataConsistence(){
   },[isStoredLoaded])
 
   useEffect(()=>{
+    let oscillators_str = sessionStorage.getItem("oscillators")
+    if(isStoredLoaded&&oscillators_str!=''&&oscillators_str!=undefined&&oscillators_str!=null){
+      let oscillators_ = JSON.parse(oscillators_str)
+      setOscillators(oscillators_);
+    }
 
     let frameState_str = sessionStorage.getItem("frameState")
         if(isStoredLoaded&&frameState_str!=''&&frameState_str!=undefined){
@@ -299,13 +340,7 @@ function assertStoredDataConsistence(){
 
           },100)
         }
-
   },[isStoredLoaded])
-
-
-
-
-  
 
 
   useEffect( ()=>{
@@ -321,12 +356,10 @@ function assertStoredDataConsistence(){
       var animationsIds_str = sessionStorage.getItem("animationsIds");
       if (animationsIds_str!=undefined&&animationsIds_str!=''&&animationsIds_str!=null){
         var animationsIds_ = JSON.parse(animationsIds_str);
-        console.log("animationsIds_")
         console.log(animationsIds_)
         ffff(animationsIds_) 
       }
       else{
-        console.log("FFFF")
         setIsStoredLoaded(true)
       }
     }
@@ -344,6 +377,12 @@ function assertStoredDataConsistence(){
       sessionStorage.setItem("frames",JSON.stringify(frames));
     }
   },[isStoredLoaded,frames])
+
+  useEffect(()=>{
+    if(isStoredLoaded){
+      sessionStorage.setItem("oscillators",JSON.stringify(oscillators));
+    }
+  },[isStoredLoaded,oscillators])
 
 
   useEffect(()=>{
@@ -481,6 +520,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
 
 
   useEffect(()=>{
+    console.log("ccc")
     renderAllAnimations()
   },[animations,renderedOscillators,oscillators,colorMapping])
 
@@ -505,6 +545,7 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
     }
   }
 
+
   function getAllColors(frames){
     let colors = []
     frames.forEach(frame => {
@@ -516,8 +557,28 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
         });
       });
     });
+
+    // let oscillatorsIds = oscillators.map(x=>x.id)
+    // let intersctedId = intersection(oscillatorsIds, colors)
+    console.log()
+
+    // let intersctedList = oscillators.filter(t=>{colors.includes(2000)})
+    let intersctedList = oscillators.filter(t=>true)
+    console.log(intersctedList)
+
+    console.log(oscillators)
+    console.log(colors.includes(2000))
+
+    let idsArray = []
+    for(let i=0;i<intersctedList.length;i++){
+      let id1 = intersctedList[i].animationId1
+      let id2 = intersctedList[i].animationId2
+      idsArray = [...idsArray,id1,id2]
+    }
+    console.log(idsArray)
     return colors
   }
+
 
   useEffect(()=>{
     document.addEventListener("keydown",(event)=>{
@@ -533,6 +594,10 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   }
   function isSubset(A,B){
     return A.every(val => B.includes(val));
+  }
+
+  function intersection(A,B){
+    return  A.filter(value => B.includes(value));
   }
 
   function isContainingOscilators(frames){
@@ -598,14 +663,36 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
       setAnimations(animations.map(x=>x.id==id?{...x,isDeleted:true}:x))    
       return 
     }
+    let items_os = Array.from(oscillators);
+    let index_os =  items_os.findIndex((el)=>el["id"]==id)
+
+    if(index_os!=-1){
+      let id1 = oscillators[index_os].animationId1
+      let id2 = oscillators[index_os].animationId2
+
+      if(colors.includes(id1)||colors.includes(id2)){
+        console.log(id1)
+        console.log(id2)
+        setOscillators(oscillators.map(x=>x.id==id?{...x,isDeleted:true}:x))    
+        return
+      }
+    }
+
     const items = Array.from(animations);
     let index =  items.findIndex((el)=>el["id"]==id)
-    items.splice(index, 1);
-    setAnimations(items);
-    console.log(deleteAnimationFromServer)
-    console.log(saveAnimation)
 
-    deleteAnimationFromServer(id)
+    if(index==-1){
+      console.log("ssdsdd")
+       index =  items_os.findIndex((el)=>el["id"]==id)
+       items_os.splice(index, 1);
+       console.log(items_os)
+       setOscillators(items_os)
+    }
+    else{
+      items.splice(index, 1);
+      setAnimations(items);
+      deleteAnimationFromServer(id)
+    }
   }
 
   function addAnimations(d){
@@ -629,6 +716,11 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
   const [isGrid, setIsGrid] = useState(false)
 
   const [browserdOn,setBrowserOn] = useState(false)
+  const [createOscillatorOn,setCreateOscillatorOn] = useState(false)
+
+  const closeOscillatorWindow = ()=>{setCreateOscillatorOn(false)}
+
+
   
   return (
 
@@ -650,7 +742,10 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
         pickedShape = {coloringState.shape}
         setShape={setShape}/>
         <StoreAnimation onClick={storeAnimation}/>
-        <div onClick={()=>setBrowserOn(!browserdOn)} style={{background: "#00688B",height:"53px",width:"103px"}}>browse</div>
+        <div className="browse_btn" onClick={()=>setBrowserOn(!browserdOn)} >
+          <div><p>Browse</p></div>
+          <div><img src="arrow_browse.svg"/></div>
+        </div>
         {/* <SavedAnimationLoader port = {port} username = {userID} addAnimation = {addAnimation}/> */}
         <AnimationPallet data = {renderedAnimations}
                        onAnimationSelect = {(x)=>{setColor(x)}}
@@ -660,6 +755,13 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
                        />
       </section>
       <AnimationLibrary username={userID} port={port} addAnimations={addAnimations} browserdOn={browserdOn} setBrowserOn = {setBrowserOn}/>
+      <CreateOscillator createOscillatorOn = {createOscillatorOn}
+                        animations = {renderedAnimations} 
+                        closeWindow ={closeOscillatorWindow}
+                        buildOscillator={renderOscillator}
+                        createOscillator = {createOscillator}
+                        
+                         />
 
   
           <div style={{display: 'block',margin:"20px"}}>
@@ -696,7 +798,9 @@ const clearFrame = ()=>{setFrameState(createDefaultFrameState(dim[0],dim[1]))}
               <Reset text= {"clear"} onClick={clearFrame}/>  
               <Reset text= {"undo"} onClick={()=>{console.log(animations)}}/>
               <Reset text= {"reverse"} onClick={reverseFrames}/>
-  
+              <Reset text= {"os"} onClick={()=>setCreateOscillatorOn(true)}/>
+              <Reset text= {"test"} onClick={test_server}/>
+
            </div>
            <Errows pressErrow = {pressErrow}/>
            <Fps

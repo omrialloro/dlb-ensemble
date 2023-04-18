@@ -33,17 +33,11 @@ export function Play(props) {
     <StyledPlay>
     <StyledButton onClick={()=>setIsPlay(!isPlay)}>
         <div className="msg">
-          <img src={isPlay?"up.svg":"play.svg"}/>
+          <img src={isPlay?"pause_icon.svg":"play.svg"}/>
           <span className="tooltiptext">  play / stop (&blank;) </span>
         </div>
     </StyledButton>
-    <StyledButton onClick={()=>setIsLoop(!isLoop)}>
-      <div className="msg">
-        <img src={isLoop?"right.svg":"loop.svg"}/>
-        <span className="tooltiptext">  Loop </span>
-      </div>
-    </StyledButton>
-    {/* <div>{frameIndex}</div> */}
+
     </StyledPlay>
 
   )

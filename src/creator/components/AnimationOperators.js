@@ -7,11 +7,11 @@ const StyledStoreAnimation= styled.div`
   /* background-color: #f22a2a; */
   background-color: #ff471a;
 
-  color: #fff;
-  color: blueviolet;
+  color: #000;
 
   padding: 10px;
-  margin-bottom: 10px;
+  margin-top: 24px;
+  margin-bottom: 24px;
   border-radius: 5px;
   cursor: pointer;
 `;

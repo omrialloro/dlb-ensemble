@@ -27,21 +27,6 @@ export const SmallScreen = forwardRef((props, ref) => {
   const handleDelete = props.handleDelete
   const handleDuplicate = props.handleDuplicate
 
-
-
-  function setScreen(){
-
-  }
-
-  // function setSelectId(selected_id){
-  //   setSeleced(id==selected_id)
-  // }
-
-  // ref.current = setSelectId
-
-  // const [bold, setBold] = useState(false)
-  // const duplicateAnimation = props.duplicateAnimation
-  // const deleteAnimation = props.deleteAnimation
   return (
     <div id ={id} 
       className="position2"

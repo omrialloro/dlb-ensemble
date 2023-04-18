@@ -85,7 +85,7 @@ export function Errows(props) {
         </StyledErrowButtons>
         <StyledErrowButtons onClick={()=>{pressErrow("down")}}>
           <div className="msg">
-            <img src="down.svg"/>
+            <img src="down_arrow.svg"/>
             <span className="tooltiptext"> 	Shift down(&#8595;)</span>
           </div>
         </StyledErrowButtons>

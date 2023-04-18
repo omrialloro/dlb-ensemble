@@ -7,12 +7,13 @@ import { ScrollMenu } from 'react-horizontal-scrolling-menu';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styled from "styled-components";
 import {nestedCopy} from "./components/Utils";
-import {changeFrameScheme, getSchemesArray,detectScheme} from "./components/ColorSchemes";
 import {grayRGB} from "./components/RGB";
 import AudioInput from "./components/AudioInput";
 import BrowseAnimations from "./components/BrowseAnimations"
-import {saveSession,loadSession,extractToGif} from "./components/SaveUtils";
 import {Preview} from "./views/preview/Preview"
+import {FullScreen} from "./views/fullScreen/FullScreen.js"
+
+
 import {Editor} from "./views/editor/Editor"
 import {SmallScreen} from "./views/smallScreen/SmallScreen"
 import {SelectedIdProvider} from "./contexts/SelectedIdContext"
@@ -22,10 +23,6 @@ import {renderAllFramesToScheme} from "../sharedLib/frameOps/FrameOps"
 import {getSchemes} from "../sharedLib/schemes/Schemes"
 import { useAuth0 } from "@auth0/auth0-react";
 import {useSaveAnimation,useExtractToGif} from '../sharedLib/Server/api'
-
-
-// import {extractToGif,useSaveAnimation} from '../sharedLib/Server/api'
-
 
 
 let schemes_array = Object.values(getSchemes())
@@ -60,6 +57,9 @@ text-align: center;
 `;
 
 function Editorr({port,token}) {
+  
+
+  const [fullScreenState, setFullScreenState] = useState(false)
 
 
 
@@ -83,6 +83,7 @@ const AudioRef = React.useRef({ref1,ref2,ref3});
 
 const handleUploadMusic = ()=>{
   const { ref1, ref2, ref3 } = AudioRef.current;
+  console.log("FFF")
   ref2.current.click()
 }
 
@@ -186,12 +187,6 @@ function handleOnDragEnd(result) {
     setDATA(items);
   }
 
-  
-  function handleSave() {
-    const session_name = window.prompt("enter session name");
-    saveSession(session_name, DATA, port)
-  }
-
   function updateRange(range)  {
     let mainScreen_ = mainScreen
     mainScreen_["range"] = range
@@ -247,7 +242,6 @@ function handleOnDragEnd(result) {
       start_frame +=range[1]
       outFrames = outFrames.concat(prepareFrames(element).slice(range[0],range[1]))
     });
-    // console.log(outFrames[55])
     setProccesedFrames(outFrames)
     SetTimeCodes(timeCodes_)
   }
@@ -285,15 +279,12 @@ function handleOnDragEnd(result) {
           Authorization: `Bearer ${token}`,
         },
       } ).then(res => res.json())
-
-
       addAnimation(a["data"], animationId)
     }
     let id  = "x"+Date.now().toString();
     setTimeout(()=>{
       let frames = animations[animationId]
       let schemeIndex = 0;
-      // let schemeIndex = detectScheme(frames)[0]
       setMainScreen_({
       "id":id,
       "filename":animationId,
@@ -313,11 +304,8 @@ const [proccesedFrames, setProccesedFrames] = useState(prepareFrames(mainScreen)
 
 
 const editData = {
-  // "animations":animations,
   "mainScreen":mainScreen,
   "DATA":DATA,
-  // "proccesedFrames":proccesedFrames,
-  // "offsetSec":offsetSec,
 }
 
 useEffect( ()=>{
@@ -334,18 +322,7 @@ useEffect(()=>{
   sessionStorage.setItem("editData",JSON.stringify(editData));
 },[mainScreen,DATA])
 
-
-
 const [offsetSec, setOffsetSec] = useState(0)
-
-function passCurrentOffsetSec(t){
-  setOffsetSec(t)
-
-}
-
-function updateDelay(d){
-  setDelay(d)
-}
 
 useEffect(()=>{
   console.log(isPlay)
@@ -354,15 +331,10 @@ useEffect(()=>{
 
 return (<SelectedIdProvider>
 <div className = "bodyInner">
-{/* <div className = "header">
- <ul>
-   <li onClick={handleUploadMusic}>upload music</li>
-   <li  onClick={()=>extractToGif(port,proccesedFrames, 30)}>create gif</li>
-   <li onClick={handleSave}>save session</li>
-   <li onClick={()=>PrepareSession()}>load session</li>
- </ul>
-</div> */}
 
+  {fullScreenState?
+  <FullScreen frames={proccesedFrames} delay = {isPlay?delay:null} toggleFullScreen = {setFullScreenState} />
+:
 <DragDropContext  onDragEnd={handleOnDragEnd}>
 <Droppable droppableId="droppable" direction="horizontal">
     {(provided) => {return (
@@ -386,7 +358,7 @@ return (<SelectedIdProvider>
               {provided.placeholder}
             
                             </StyledBox>
-                            <Editor frames = {frammmes} border = {mainScreen["range"]} delay = {30} updateRange = {updateRange}></Editor>
+                            <Editor frames = {frammmes} border = {mainScreen["range"]} delay = {delay} updateRange = {updateRange}></Editor>
         {provided.placeholder}
     </div>
     <div className="library" >
@@ -424,15 +396,20 @@ return (<SelectedIdProvider>
               </ScrollMenu>
               <div className="screen">
                 <Preview frames = {proccesedFrames}
-                 updateDelay = {updateDelay}
+                delay = {delay}
+                 updateDelay = {setDelay}
                  fireEndAnimationEvent = {fireEndAnimationEvent}
                 timeCodes = {timeCodes}
                 // setCurrentTimecodeIndex = {setCurrentTimecodeIndex}
                 passPlayState ={setIsPlay}
-                passCurrentOffsetSec = {passCurrentOffsetSec}
+                passCurrentOffsetSec = {setOffsetSec}
                 /><div style={{display:"flex"}}>
                        <StyledSave onClick={handleSaveEditedFrames}>SAVE</StyledSave>
                        <StyledSave onClick={handleMakeGif}> MAKE GIF </StyledSave>
+                       <StyledSave onClick={()=>{setFullScreenState(true)}}> FULL SCREEN </StyledSave>
+                       <StyledSave onClick={handleUploadMusic}> Upload Music</StyledSave>
+
+
                   </div>
                 
              </div>
@@ -450,8 +427,13 @@ return (<SelectedIdProvider>
 )}}
 </Droppable>
 </DragDropContext>
+  
+}
+
 </div>
 </SelectedIdProvider>
+
+
   );
 }
 
