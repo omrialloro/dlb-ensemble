@@ -27,7 +27,7 @@ jobs:
     - name: npm install
       run: |
         npm ci
-        npm run build
+        CI=false npm run build
     - name: deploy
       run: |
         aws s3 sybc ./public s3://${{env.BUCKET_NAME}} --delete
