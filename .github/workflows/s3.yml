@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
 
 env:
+  PUBLIC_URL: ${{ vars.PUBLIC_URL}}
   BUCKET_NAME: dlb-web          # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
 
