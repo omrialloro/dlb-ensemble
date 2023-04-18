@@ -28,6 +28,7 @@ jobs:
     - name: npm install
       run: |
         npm ci
+        echo $PUBLIC_URL
         CI=false npm run build
     - name: deploy
       run: |
