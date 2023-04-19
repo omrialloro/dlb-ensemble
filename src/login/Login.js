@@ -1,53 +1,46 @@
-import Form from "react-bootstrap/Form"
+import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import React, { useState } from "react";
 import "./Login.css";
 
+function Login({ setToken, isRegister }) {
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
 
-async function loginUser(credentials) {
-  console.log(JSON.stringify(credentials))
-  return fetch('https://localhost:4000/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(credentials)
-  })
-    .then(data => data.json())
-    // .then(data => data.json())
-    // .then(data => credentials)
-
-
- }
- 
-
-function Login({setToken}) {
-
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = await loginUser({
-      username,
-      password
-    });
+    if (isRegister) {
+      const token = await loginUser({
+        username,
+        password,
+        isRegister,
+      });
+    } else {
+    }
     setToken(token);
-    setToken({token:{
-      username,
-      password
-    }});
-
-  }
-
+    setToken({
+      token: {
+        username,
+        password,
+      },
+    });
+  };
 
   function validateForm() {
-    return username.length > 0 && password.length > 0;
+    return (
+      username.length > 0 &&
+      password.length > 0 &&
+      isRegister &&
+      confirmation === password
+    );
   }
 
-  return (
+  const title = isRegister ? "Register new User" : "Login existing user";
 
+  return (
     <div className="login-wrapper">
+      <h1>{title}</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email">
           <Form.Label>username</Form.Label>
@@ -57,7 +50,6 @@ function Login({setToken}) {
             value={username}
             onChange={(e) => setUserName(e.target.value)}
           />
-
         </Form.Group>
         <Form.Group size="lg" controlId="password">
           <Form.Label>Password</Form.Label>
@@ -67,15 +59,22 @@ function Login({setToken}) {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
+        {isRegister && (
+          <Form.Group size="lg" controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="confirmation"
+              value={confirmation}
+              onChange={(e) => setConfirmation(e.target.value)}
+            />
+          </Form.Group>
+        )}
         <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Login
+          {isRegister ? "Register" : "Login"}
         </Button>
       </Form>
     </div>
   );
 }
 
-export {Login}
-
-
-
+export { Login };

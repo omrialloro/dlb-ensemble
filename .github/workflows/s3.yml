@@ -2,12 +2,13 @@ name: Build and deploy
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
 
 env:
   PUBLIC_URL: ${{ vars.PUBLIC_URL}}
-  BUCKET_NAME: dlb-web          # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+  BUCKET_NAME:
+    dlb-web # set this to the name of the container in the
+    # containerDefinitions section of your task definition
 
 jobs:
   deploy:
@@ -16,20 +17,19 @@ jobs:
     environment: production
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
 
-    - name: npm install
-      run: |
-        npm ci
-        echo $PUBLIC_URL
-        CI=false npm run build
-    - name: deploy
-      run: |
-        aws s3 sync ./build s3://${{env.BUCKET_NAME}} --delete
+      - name: npm install
+        run: |
+          npm ci
+          CI=false npm run build
+      - name: deploy
+        run: |
+          aws s3 sync ./build s3://${{env.BUCKET_NAME}} --delete
