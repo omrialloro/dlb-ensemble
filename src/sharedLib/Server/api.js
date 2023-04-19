@@ -1,172 +1,178 @@
-import { useEffect, useState } from 'react';
-import { useAuth0 } from "@auth0/auth0-react";
+import { useContext, useEffect, useState } from "react";
+import { serverUrl } from "../../settings";
+import { AuthContext } from "../../login/authContext";
 
-async function saveSession(name, data, port){
-  fetch(port + '/saveSession', {
-    method: 'POST', // or 'PUT'
+async function useFetch(url, options) {
+  const { token } = useContext(AuthContext);
+  const response = await fetch(serverUrl + url, {
+    ...options,
     headers: {
-      'Content-Type': 'application/json',
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({"filename":name,"data": data}),
-  })
+  });
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return response;
 }
 
-
-async function loadSession(port){
-  const session_name = window.prompt("Enter session name from the following list" );
-  let data = await fetch(port + `/loadSession/${session_name}`, {method: 'GET' }).then(res => res.json())
-  return data
-}
-
-function extractToGif(username,port, frames, time_ms){
-  const prefix = window.prompt("enter gif name")
-  let name = prefix+String(Date.now())
-  let data = {"username":username,"name":name,"speed":Math.round(time_ms),"data": frames,"save_animation":false}
-  fetch(port + '/gif', {
-    method: 'POST', // or 'PUT'
+async function useSaveSession(name, data, port) {
+  useFetch("/saveSession", {
+    method: "POST", // or 'PUT'
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ filename: name, data: data }),
+  });
+}
+
+function extractToGif(username, frames, time_ms) {
+  const prefix = window.prompt("enter gif name");
+  let name = prefix + String(Date.now());
+  let data = {
+    username: username,
+    name: name,
+    speed: Math.round(time_ms),
+    data: frames,
+    save_animation: false,
+  };
+  fetch(serverUrl + "/gif", {
+    method: "POST", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  })
-
-  // let aaa =  document.createElement(`a`);
-  // aaa.href = port+`/download/${name}/${username}`
-  // aaa.click()
+  });
 }
 
+function useExtractToGif() {
+  const { token } = useContext(AuthContext);
 
+  return async function (frames, time_ms) {
+    const prefix = window.prompt("enter gif name");
+    let name = prefix + String(Date.now());
+    let data = {
+      username: username,
+      name: name,
+      speed: Math.round(time_ms),
+      data: frames,
+      save_animation: false,
+    };
 
-function useExtractToGif(username,port){
-
-  const { getAccessTokenSilently } = useAuth0();
-
-  return async function (frames,time_ms){
-    const prefix = window.prompt("enter gif name")
-    let name = prefix+String(Date.now())
-    let data = {"username":username,"name":name,"speed":Math.round(time_ms),"data": frames,"save_animation":false}
-    const token = await getAccessTokenSilently();
-
-    fetch(port + '/gif', {
-      method: 'POST', // or 'PUT'
+    useFetch(serverUrl + "/gif", {
+      method: "POST", // or 'PUT'
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    let aaa = document.createElement(`a`);
+    aaa.href = serverUrl + `/download/${name}/${username}`;
+    aaa.click();
+  };
+}
+
+async function useAnimationList(username) {
+  useEffect(() => {
+    (async function () {
+      const response = fetch(serverUrl + `/animationsList/${username}`, {
+        method: "GET",
+      }).then((res) => res.json());
+    })();
+    // let data = await fetch(port + `/animationsList/${username}`, {method: 'GET' }).then(res => res.json())
+  }, [port, username]);
+}
+
+function saveAnimation(username, name, frames, ThumbnailFrame) {
+  let data = {
+    username: username,
+    name: name,
+    data: frames,
+    save_animation: true,
+    ThumbnailFrame: ThumbnailFrame,
+  };
+  fetch(serverUrl + "/saveAnimation", {
+    method: "POST", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+}
+
+function useDeleteAnimationFromServer() {
+  const { token } = useContext(AuthContext);
+  return async function (animationId) {
+    fetch(serverUrl + "/deleteStoredAnimation", {
+      method: "POST", // or 'PUT'
+      headers: {
         Authorization: `Bearer ${token}`,
-
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
-    })
-    let aaa =  document.createElement(`a`);
-    aaa.href = port+`/download/${name}/${username}`
-    aaa.click()
-  }
+      body: JSON.stringify({ animationId: animationId }),
+    });
+  };
+}
 
-  }
-
-
-  async function  useAnimationList(port, username){
-    useEffect(()=>{
-      (
-        async function(){
-           const response = fetch(port + `/animationsList/${username}`, {method: 'GET' }).then(res => res.json())
-        }
-     )()
-      // let data = await fetch(port + `/animationsList/${username}`, {method: 'GET' }).then(res => res.json())
-
-    },[port,username])
-  }
-
-  function saveAnimation(port,username,name, frames,ThumbnailFrame){
-    let data = {"username":username,"name":name,"data": frames,"save_animation":true,"ThumbnailFrame":ThumbnailFrame}
-    fetch(port + '/saveAnimation', {
-      method: 'POST', // or 'PUT'
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-  }
-
-  function useDeleteAnimationFromServer(port){
-    const { getAccessTokenSilently } = useAuth0();
-    return  async function(animationId){
-    const token = await getAccessTokenSilently();
-    console.log("ZZZZ")
-    fetch(port+"/deleteStoredAnimation"
-        ,
-        {
-          method: 'POST', // or 'PUT'
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({"animationId":animationId})
-        })
-      }
-  }
-
-
-
-
-
-
-  function useSaveAnimation(port){
-    const { getAccessTokenSilently } = useAuth0();
-    const [error,setError] = useState(null)
-    const [loading,setLoading] = useState(false)
-    // useEffect(() => {
-    //   (
-         return  async function(data){
-          console.log(data)
-              try{
-                  setLoading(true)
-                  const token = await getAccessTokenSilently();
-                  await fetch(port+"/saveAnimation"
-                      ,
-                      {
-                        method: 'POST', // or 'PUT'
-                        headers: {
-                          Authorization: `Bearer ${token}`,
-                          'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
-                      }
-                    )
-              }catch(err){
-                  setError(err)
-              }finally{
-                  setLoading(false)
-              }
-          }
+function useSaveAnimation() {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  // useEffect(() => {
+  //   (
+  const saveAnimation = async function (data) {
+    console.log(data);
+    try {
+      setLoading(true);
+      useFetch("/saveAnimation", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return { saveAnimation, error, loading };
   //     )()
   // }, [port, data])
 }
 
-function useSaveStoredAnimations(port){
-  const { getAccessTokenSilently } = useAuth0();
-  const [error,setError] = useState(null)
-  const [loading,setLoading] = useState(false)
-  return  async function(data){
-      try{
-          setLoading(true)
-          const token = await getAccessTokenSilently();
-          await fetch(port+"/saveStoredAnimations"
-              ,
-              {
-                method: 'POST', // or 'PUT'
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-              }
-            )
-      }catch(err){
-          setError(err)
-      }finally{
-          setLoading(false)
-      }
-  }
+function useSaveStoredAnimations() {
+  const { token } = useContext(AuthContext);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  return async function (data) {
+    try {
+      setLoading(true);
+      const token = await getAccessTokenSilently();
+      await fetch(serverUrl + "/saveStoredAnimations", {
+        method: "POST", // or 'PUT'
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 }
 
-export {saveAnimation, saveSession,loadSession, extractToGif,useAnimationList,useSaveAnimation,useExtractToGif,useDeleteAnimationFromServer,useSaveStoredAnimations}
+export {
+  saveAnimation,
+  loadSession,
+  extractToGif,
+  useAnimationList,
+  useSaveAnimation,
+  useExtractToGif,
+  useDeleteAnimationFromServer,
+  useSaveStoredAnimations,
+};
