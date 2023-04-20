@@ -14,15 +14,16 @@ export function useFetch(url, refresh) {
     (async function () {
       try {
         setLoading(true);
-        await fetch(serverUrl + url, {
+        const res = await fetch(serverUrl + url, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        })
-          .then((res) => res.json())
-          .then((d) => {
-            setData(d);
-          });
+        });
+        if (!res.ok) {
+          setError(await res.json());
+        } else {
+          setData(await res.json());
+        } 
       } catch (err) {
         setError(err);
       } finally {

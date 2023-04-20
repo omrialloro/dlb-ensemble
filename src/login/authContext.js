@@ -28,6 +28,7 @@ export function useLoginOrRegister() {
 
 export function AuthProvider({ children }) {
   const [auth, setAuth] = useState({});
+
   async function loginOrRegister(credentials) {
     const response = await fetch(`${serverUrl}/auth`, {
       method: "POST",
@@ -47,10 +48,21 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // check localStorage
+
+    const check = async (auth) => {
+      const res = await fetch(serverUrl + `/check`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+      if (res.ok) setAuth(auth);
+    };
+
     try {
       console.log("loading auth from storage", localStorage.getItem("auth"));
       const auth = JSON.parse(localStorage.getItem("auth"));
-      setAuth(auth);
+      check(auth);
     } catch {
       console.error("could not read auth from storage");
     }

@@ -26,6 +26,7 @@ import {
 import AnimationLibrary from "./components/animationLibrary/AnimationLibrary.js";
 import CreateOscillator from "./components/CreateOscillator";
 import { AuthContext } from "../login/authContext";
+import { serverUrl } from "../settings";
 
 const dim = [36, 36];
 
@@ -279,15 +280,18 @@ function Creator() {
     // })
   }
 
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
+
   async function loadAnimation(animationId) {
-    // let a = await fetch(port + `/loadAnimation/${animationId}`, {
-    //   method: "GET",
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // }).then((res) => res.json());
-    // console.log(a);
-    // return a;
+     const res = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
+       method: "GET",
+       headers: {
+         Authorization: `Bearer ${token}`,
+       },
+     });
+     return res.json();
   }
 
   async function loadStoredAnimations(animationsIds_) {

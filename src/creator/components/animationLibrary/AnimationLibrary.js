@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { useFetch } from "../../../sharedLib/Server/useFetch";
+import { serverUrl } from "../../../settings";
+import { AuthContext } from "../../../login/authContext";
 
 const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/";
 
@@ -50,34 +52,35 @@ export default function AnimationLibrary(props) {
   const [imgURLs, setImgURLs] = useState([]);
   const [isCheckedArray, setIsCheckedArray] = useState([]);
 
-  const addAnimations = props.addAnimations;
-  const username = props.username;
-  const browserdOn = props.browserdOn;
-  const setBrowserOn = props.setBrowserOn;
+  const { setBrowserOn, browserdOn, addAnimations } = props;
+
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
 
   const { data, error, loading } = useFetch(
     `/animationsList?type=row`,
     browserdOn
   );
+  console.log("error", error);
   const [animations, setAnimations] = useState([]);
 
   useEffect(() => {
-    if (data !== null) {
-      let animations_ = [];
-      for (let i = 0; i < data["names"].length; i++) {
-        let id = data["ids"][i];
-        animations_.push({
-          id: id,
-          name: data["names"][i],
-          imgUrl: thumbnailsUrl + String(id) + ".png",
-          isChecked: false,
-        });
-      }
-      setAnimations(animations_);
-      setFilenames(data["names"]);
-      setImgURLs(data["ids"].map((id) => thumbnailsUrl + String(id) + ".png"));
-      setIsCheckedArray(data["ids"].map((id) => false));
+    if (!data || error) return;
+    let animations_ = [];
+    for (let i = 0; i < data["names"].length; i++) {
+      let id = data["ids"][i];
+      animations_.push({
+        id: id,
+        name: data["names"][i],
+        imgUrl: thumbnailsUrl + String(id) + ".png",
+        isChecked: false,
+      });
     }
+    setAnimations(animations_);
+    setFilenames(data["names"]);
+    setImgURLs(data["ids"].map((id) => thumbnailsUrl + String(id) + ".png"));
+    setIsCheckedArray(data["ids"].map((id) => false));
   }, [data]);
 
   function fff(index) {
@@ -108,7 +111,7 @@ export default function AnimationLibrary(props) {
 
   function submitDelete() {
     // async function markAsDeleted(list, port) {
-    //   usefzetch("/markAsDeleted", {
+    //   useFetch("/markAsDeleted", {
     //     method: "POST", // or 'PUT'
     //     headers: {
     //       "Content-Type": "application/json",
@@ -129,23 +132,23 @@ export default function AnimationLibrary(props) {
   }
 
   async function submitSelect() {
-    // const checkedAnimations = animations
-    //   .filter((x) => x["isChecked"])
-    //   .map((x) => x["id"]);
-    // async function fetchAnimation(animationId) {
-    //   let a = await fetch(port + `/loadAnimation/${animationId}`, {
-    //     method: "GET",
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   }).then((res) => res.json());
-    //   return a;
-    // }
-    // addAnimations(
-    //   await Promise.all(checkedAnimations.map(async (id) => fetchAnimation(id)))
-    // );
-    // setBrowserOn(false);
-    // resetChecked();
+    const checkedAnimations = animations
+      .filter((x) => x["isChecked"])
+      .map((x) => x["id"]);
+    async function fetchAnimation(animationId) {
+      const res = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.json();
+    }
+    addAnimations(
+      await Promise.all(checkedAnimations.map(async (id) => fetchAnimation(id)))
+    );
+    setBrowserOn(false);
+    resetChecked();
   }
 
   const [filenames, setFilenames] = useState([]);
