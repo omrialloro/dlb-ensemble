@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useFetch } from "../../sharedLib/Server/useFetch";
 import { serverUrl } from "../../settings";
 

@@ -1,40 +1,31 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import React, { useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import "./Login.css";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext, useLoginOrRegister } from "./authContext";
 
 function Login({ setToken, isRegister }) {
-  const [username, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
+  const { loginOrRegister, error, loading } = useLoginOrRegister();
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (isRegister) {
-      const token = await loginUser({
-        username,
-        password,
-        isRegister,
-      });
-    } else {
-    }
-    setToken(token);
-    setToken({
-      token: {
-        username,
-        password,
-      },
-    });
-  };
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      await loginOrRegister({ email, password, isRegister });
+      navigate("/creator");
+    },
+    [loginOrRegister, email, password, isRegister, navigate]
+  );
 
-  function validateForm() {
-    return (
-      username.length > 0 &&
-      password.length > 0 &&
-      isRegister &&
-      confirmation === password
-    );
-  }
+  const isValidForm =
+    email.length > 0 &&
+    password.length > 0 &&
+    (isRegister ? confirmation === password : true);
 
   const title = isRegister ? "Register new User" : "Login existing user";
 
@@ -43,12 +34,12 @@ function Login({ setToken, isRegister }) {
       <h1>{title}</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email">
-          <Form.Label>username</Form.Label>
+          <Form.Label>E-mail</Form.Label>
           <Form.Control
             autoFocus
-            type="username"
-            value={username}
-            onChange={(e) => setUserName(e.target.value)}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
         <Form.Group size="lg" controlId="password">
@@ -61,7 +52,7 @@ function Login({ setToken, isRegister }) {
         </Form.Group>
         {isRegister && (
           <Form.Group size="lg" controlId="password">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>Confirm Password</Form.Label>
             <Form.Control
               type="confirmation"
               value={confirmation}
@@ -69,10 +60,20 @@ function Login({ setToken, isRegister }) {
             />
           </Form.Group>
         )}
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
+        {isRegister ? (
+          <div>
+            Already have a user? <Link to="/login">Login</Link>
+          </div>
+        ) : (
+          <div>
+            Don't have a user? <Link to="/register">Register</Link>
+          </div>
+        )}
+        <Button block size="lg" type="submit" disabled={!isValidForm}>
           {isRegister ? "Register" : "Login"}
         </Button>
       </Form>
+      {loading && <div>Loading</div>}
     </div>
   );
 }

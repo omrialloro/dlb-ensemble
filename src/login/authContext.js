@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { serverUrl } from "../settings";
 
 export const AuthContext = createContext({
@@ -6,9 +6,29 @@ export const AuthContext = createContext({
   token: undefined,
 });
 
+export function useLoginOrRegister() {
+  const { loginOrRegister } = useContext(AuthContext);
+  const [message, setMessage] = useState();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const loginOrRegisterCallback = async (credentials) => {
+    setLoading(true);
+    try {
+      await loginOrRegister(credentials);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+    setError();
+    setLoading(false);
+  };
+  return { loginOrRegister: loginOrRegisterCallback };
+}
+
 export function AuthProvider({ children }) {
-  const [auth, setAuth] = useState(sessionStorage.getItem("auth"));
-  async function registerOrLogin(credentials) {
+  const [auth, setAuth] = useState({});
+  async function loginOrRegister(credentials) {
     const response = await fetch(`${serverUrl}/auth`, {
       method: "POST",
       headers: {
@@ -18,12 +38,27 @@ export function AuthProvider({ children }) {
     });
     if (!response.ok) {
       setAuth();
+      const { message } = await response.json();
+      throw new Error(message);
     }
     setAuth(await response.json());
+    return true;
   }
 
   useEffect(() => {
-    sessionStorage.setItem("auth", JSON.stringify(auth));
+    // check localStorage
+    try {
+      console.log("loading auth from storage", localStorage.getItem("auth"));
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      setAuth(auth);
+    } catch {
+      console.error("could not read auth from storage");
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("storing auth", auth);
+    localStorage.setItem("auth", JSON.stringify(auth));
   }, [auth]);
 
   async function logout() {
@@ -32,7 +67,12 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated: !!auth, auth, registerOrLogin, logout }}
+      value={{
+        isAuthenticated: !!auth?.token,
+        auth,
+        loginOrRegister,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
