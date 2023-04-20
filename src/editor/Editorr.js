@@ -22,6 +22,7 @@ import { renderAllFramesToScheme } from "../sharedLib/frameOps/FrameOps";
 import { getSchemes } from "../sharedLib/schemes/Schemes";
 import { useSaveAnimation, useExtractToGif } from "../sharedLib/Server/api";
 import { AuthContext } from "../login/authContext";
+import { serverUrl } from "../settings";
 
 let schemes_array = Object.values(getSchemes());
 
@@ -83,7 +84,7 @@ function Editorr({ token }) {
     ref2.current.click();
   };
 
-  const extractToGif = useExtractToGif(userID);
+  const extractToGif = useExtractToGif();
   const handleMakeGif = () => {
     extractToGif(proccesedFrames, delay);
   };
@@ -93,7 +94,7 @@ function Editorr({ token }) {
     let ThumbnailFrame = proccesedFrames[0];
 
     let data = {
-      userID: userID,
+      userID: email,
       name: name,
       data: proccesedFrames,
       ThumbnailFrame: ThumbnailFrame,
@@ -297,8 +298,7 @@ function Editorr({ token }) {
 
   async function handlePickAnimation(animationId) {
     if (!animations.hasOwnProperty(animationId)) {
-      const token = await getAccessTokenSilently();
-      let a = await fetch(port + `/loadAnimation/${animationId}`, {
+      let a = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
         method: "GET",
 
         headers: {
@@ -409,7 +409,6 @@ function Editorr({ token }) {
                             <BrowseAnimations
                               PickAnimation={handlePickAnimation}
                               username={token.userID}
-                              port={port}
                             />
                           </div>
                         </div>

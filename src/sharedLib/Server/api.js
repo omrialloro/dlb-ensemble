@@ -4,6 +4,14 @@ import { AuthContext } from "../../login/authContext";
 
 async function useFetch(url, options) {
   const { token } = useContext(AuthContext);
+
+  const {
+    auth: {
+      payload: {
+        user: { email },
+      },
+    },
+  } = useContext(AuthContext);
   const response = await fetch(serverUrl + url, {
     ...options,
     headers: {
@@ -47,13 +55,19 @@ function extractToGif(username, frames, time_ms) {
 }
 
 function useExtractToGif() {
-  const { token } = useContext(AuthContext);
+  const {
+    auth: {
+      payload: {
+        user: { email },
+      },
+    },
+  } = useContext(AuthContext);
 
   return async function (frames, time_ms) {
     const prefix = window.prompt("enter gif name");
     let name = prefix + String(Date.now());
     let data = {
-      username: username,
+      username: email,
       name: name,
       speed: Math.round(time_ms),
       data: frames,
@@ -84,9 +98,9 @@ async function useAnimationList(username) {
   }, [port, username]);
 }
 
-function saveAnimation(username, name, frames, ThumbnailFrame) {
+function saveAnimation(email, name, frames, ThumbnailFrame) {
   let data = {
-    username: username,
+    username: email,
     name: name,
     data: frames,
     save_animation: true,
@@ -149,7 +163,6 @@ function useSaveStoredAnimations() {
   return async function (data) {
     try {
       setLoading(true);
-      const token = await getAccessTokenSilently();
       await fetch(serverUrl + "/saveStoredAnimations", {
         method: "POST", // or 'PUT'
         headers: {
@@ -168,7 +181,6 @@ function useSaveStoredAnimations() {
 
 export {
   saveAnimation,
-  loadSession,
   extractToGif,
   useAnimationList,
   useSaveAnimation,
