@@ -9,6 +9,7 @@ env:
   BUCKET_NAME:
     dlb-web # set this to the name of the container in the
     # containerDefinitions section of your task definition
+  REACT_APP_SERVER_ADDRESS: ${{ vars.REACT_APP_SERVER_ADDRESS }}
 
 jobs:
   deploy:
