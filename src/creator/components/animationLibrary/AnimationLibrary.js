@@ -110,25 +110,25 @@ export default function AnimationLibrary(props) {
   }
 
   function submitDelete() {
-    // async function markAsDeleted(list, port) {
-    //   useFetch("/markAsDeleted", {
-    //     method: "POST", // or 'PUT'
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     body: JSON.stringify(list),
-    //   });
-    // }
-    // const checkedAnimationsIds = animations
-    //   .filter((x) => x["isChecked"])
-    //   .map((x) => x["id"]);
-    // if (window.confirm("Are you sure you want to delete?")) {
-    //   markAsDeleted(checkedAnimationsIds, port);
-    //   setBrowserOn(false);
-    // }
-    // // setBrowserOn(false);
-    // resetChecked();
+    async function markAsDeleted(list) {
+      fetch(serverUrl + "/markAsDeleted", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(list),
+      });
+    }
+    const checkedAnimationsIds = animations
+      .filter((x) => x["isChecked"])
+      .map((x) => x["id"]);
+    if (window.confirm("Are you sure you want to delete?")) {
+      markAsDeleted(checkedAnimationsIds);
+      setBrowserOn(false);
+    }
+    // setBrowserOn(false);
+    resetChecked();
   }
 
   async function submitSelect() {
@@ -142,6 +142,7 @@ export default function AnimationLibrary(props) {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("ressss");
       return res.json();
     }
     addAnimations(

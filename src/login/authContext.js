@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { serverUrl } from "../settings";
+console.log(serverUrl);
 
 export const AuthContext = createContext({
   isAuthenticated: false,
