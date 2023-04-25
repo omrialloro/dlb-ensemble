@@ -55,7 +55,7 @@ const StyledSave = styled.div`
   text-align: center;
 `;
 
-function Editorr({ token }) {
+function Editorr() {
   const {
     auth: {
       payload: {
@@ -63,6 +63,11 @@ function Editorr({ token }) {
       },
     },
   } = useContext(AuthContext);
+
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
+
   const { saveAnimation } = useSaveAnimation();
   const [fullScreenState, setFullScreenState] = useState(false);
 
@@ -274,6 +279,9 @@ function Editorr({ token }) {
   }
 
   function addAnimation(animation, id) {
+    console.log(animation);
+    console.log(id);
+
     if (!animation.hasOwnProperty(id)) {
       let animations_ = animations;
       animations_[id] = animation;
@@ -297,6 +305,7 @@ function Editorr({ token }) {
   }
 
   async function handlePickAnimation(animationId) {
+    console.log(serverUrl);
     if (!animations.hasOwnProperty(animationId)) {
       let a = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
         method: "GET",
@@ -305,6 +314,7 @@ function Editorr({ token }) {
           Authorization: `Bearer ${token}`,
         },
       }).then((res) => res.json());
+      console.log(a);
       addAnimation(a["data"], animationId);
     }
     let id = "x" + Date.now().toString();
@@ -408,7 +418,7 @@ function Editorr({ token }) {
                             </div>
                             <BrowseAnimations
                               PickAnimation={handlePickAnimation}
-                              username={token.userID}
+                              // username={token.userID}
                             />
                           </div>
                         </div>

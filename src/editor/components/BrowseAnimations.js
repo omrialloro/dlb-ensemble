@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useFetch } from "../../sharedLib/Server/useFetch";
 import { serverUrl } from "../../settings";
+import useContext from "react";
+
+import { AuthContext } from "../../login/authContext";
 
 const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/";
 
@@ -40,14 +43,9 @@ const StyledBox = styled.div`
 
 export default function BrowseAnimations(props) {
   const PickAnimation = props.PickAnimation;
-  const username = props.username;
-  const port = serverUrl;
 
-  console.log(username);
-  const { data, error, loading } = useFetch(
-    port + `/animationsList/${username}/all`,
-    0
-  );
+  const { data, error, loading } = useFetch(`/animationsList?type=all`, true);
+
   const [animations, setAnimations] = useState([]);
 
   useEffect(() => {
