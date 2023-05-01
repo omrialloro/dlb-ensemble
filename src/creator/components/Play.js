@@ -1,23 +1,22 @@
 
 import styled from "styled-components";
+import {Fps} from "./Fps"
+
 
 const StyledPlay= styled.div`
   display: flex;
   justify-content: space-between;
   align-content: center;
-  height: 5.5vh;
-  width: 14vh;
-  margin: 3.6vh 0;
+
   
 `;
 
 const StyledButton= styled.div`
-  height: 5vh;
-  width: 5vh;
+  height: 32px;
+  width: 32px;
   border-radius: 50%;
   background-color: #9DF49D;
   border: 1px solid #000;
-  margin:5px;
 `;
 
 
@@ -28,15 +27,23 @@ export function Play(props) {
   const setIsLoop = props.setIsLoop
   // const frameIndex = props.frameIndex
 
+  const FPS = 24
+
 
   return (
     <StyledPlay>
-    <StyledButton onClick={()=>setIsPlay(!isPlay)}>
-        <div className="msg">
+
+      <div className="player_functions">
+      <StyledButton onClick={()=>setIsPlay(!isPlay)}>
+        <div className="play-btn">
           <img src={isPlay?"pause_icon.svg":"play.svg"}/>
           <span className="tooltiptext">  play / stop (&blank;) </span>
         </div>
     </StyledButton>
+
+    <Fps  currentFps={FPS} />
+      </div>
+  
 
     </StyledPlay>
 

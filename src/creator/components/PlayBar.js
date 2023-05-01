@@ -123,7 +123,7 @@ export const PlayBar = (props) => {
   }, delay);
   
   return (
-    <Box sx={{ width: 500 }}>
+    <Box sx={{ width: '100%' }}>
       <StyledSlider defaultValue={0} value={val} 
       min={1}
       max={length}
@@ -135,9 +135,9 @@ export const PlayBar = (props) => {
         color: '#fff',
         WebkitAppearance: 'slider-vertical',
         '& .MuiSlider-thumb': {
-          width: "12px",
+          width: "8px",
           height: '24px',
-          borderRadius: '0%',
+          borderRadius: '12px',
           background: '#ff002c',
           text:"fff",
         },

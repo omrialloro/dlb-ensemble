@@ -1,11 +1,12 @@
 import styled from "styled-components";
 
 const StyledErrowButtons= styled.div`
-    margin: 0 5px;
-    height: 3.8vh;
-    width: 3.8vh;
-    background-color: #AAD5FF;
-    border: 1px solid black;
+margin: 2px;
+height: 32px;
+border-radius: 4px;
+width: 32px;
+background-color: #aafffb;
+border: 1px solid black;
 `;
 
 const StyledErrows= styled.div`
@@ -70,7 +71,7 @@ export function Errows(props) {
      <StyledErrows>
       <div>
         <StyledErrowButtons onClick={()=>{pressErrow("up")}}>
-          <div className="msg">
+          <div className="arrows">
             <img src="up.svg"/>
             <span className="tooltiptext">	Shift up (&#8593;)</span>
           </div>
@@ -78,19 +79,19 @@ export function Errows(props) {
       </div>
       <div className="errows_bottom" style = {{display:'flex'}}>
         <StyledErrowButtons onClick={()=>{pressErrow("left")}}>
-            <div className="msg">
+            <div className="arrows">
               <img src="left.svg"/>
               <span className="tooltiptext">	Shift left (&#8592;) </span>
             </div>
         </StyledErrowButtons>
         <StyledErrowButtons onClick={()=>{pressErrow("down")}}>
-          <div className="msg">
+          <div className="arrows">
             <img src="down_arrow.svg"/>
             <span className="tooltiptext"> 	Shift down(&#8595;)</span>
           </div>
         </StyledErrowButtons>
         <StyledErrowButtons onClick={()=>{pressErrow("right")}}>
-          <div className="msg">
+          <div className="arrows">
               <img src="right.svg"/>
               <span className="tooltiptext">Shift right (&#8594;)</span>
           </div>

@@ -25,7 +25,7 @@ const XX = styled.img`
   left: 12%;
 `;
 const StyledBox = styled.div`
-  height: 530px;
+  height: 330px;
   width: 330px;
   border-radius: 12px;
   border: 1px solid #909090;
@@ -37,6 +37,7 @@ const StyledBox = styled.div`
   overflow: scroll;
   background: #c1c1c1;
   visibility: hidden;
+  transform: translatE(3% ,35%);
   position: absolute;
   // border:3px solid salmon;
 `;

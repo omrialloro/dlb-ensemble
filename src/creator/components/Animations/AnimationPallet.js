@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 
 const StyledBox= styled.div`
-  height:160px;
+  height:110px;
   width:110px;
   border-radius: 1px;
   padding: 2px;

@@ -18,14 +18,15 @@ const StyledStoreAnimation= styled.div`
 
 
 const StyledAnimationOps= styled.div`
-height: 6.6vh;
-width: 6.6vh;
+height: 55px;
+width: 55px;
 background-color: #f7b947;
 border-radius: 50%;
 border: 1px solid black;
 text-align: center;
-line-height: 6.6vh;
-font-size: 1.3vh;
+line-height: 55px;
+margin: 2px;
+font-size: 11px;
 font-weight: 600;
 text-transform: uppercase;
   cursor: pointer;

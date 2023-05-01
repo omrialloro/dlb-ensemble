@@ -32,9 +32,23 @@ nav {
     /* background-color: #fff; */
   }
 
+.logo-creater {
+  position: absolute;
+  top: 0;
+  left: 0;
+  text-align: left;
+  padding: 12px;
+  z-index: 4;
+}
+
+.logo-creater img {
+  width: 120px;
+}
+
+
 h1 {
 font-family: 'Baloo Bhai';
-font-size: 32px;
+font-size: 160px;
 line-height: 30px;
 position: absolute;
 margin: 10px 20px;
@@ -43,6 +57,22 @@ left: -205%; */
 width: 250px;
 display: inline;
 }
+
+
+
+/* .header {
+  background-color: #fff;
+  width: 640px;
+  height: 24px;
+  margin: 0 auto;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translateX(50%);
+  z-index: 3;
+} */
+
 
 .info_btn h3 {
 top: 0;
@@ -119,7 +149,7 @@ strong {
   justify-content: space-evenly;
   flex-wrap: wrap;
   align-items: center;
-  height: 160px;
+  height: 120px;
   margin-bottom: 28px;
 }
 
@@ -223,9 +253,9 @@ section.action.right {
 
 
 #scheme {
-  font-size: 14px;
+  font-size: 16px;
   font-family: 'Baloo Bhai 2', sans-serif;
-  width: 14vh;
+  width: 140px;
   height:30px;
   border: 2px solid #000;
   background-color: #C4C4C4;
@@ -309,10 +339,39 @@ cursor: pointer;
 
 }
 
+
+.grid-on {
+  background-color:#8c7373;
+  color:  #1c0f0f;
+  padding: 4px;
+  width: fit-content;
+  text-align: center;
+  margin: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  display: flex;
+  justify-content: flex-end;
+  cursor: pointer;
+  border: 1px solid #1c0f0f;
+}
+
+
+.creation_buttons {
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 button {
   width: 2.8vh;
   height: 2.8vh;
   border: 0.5px solid grey;
+}
+
+play-btn {
+  width: 32px;
 }
 
 
@@ -334,6 +393,12 @@ margin: 3.6vh 0;
   margin:5px;
 }
 
+.arrows img {
+  width: 32px !important;
+}
+
+
+
 
 .fps {
   width: 3.5vh;
@@ -345,11 +410,53 @@ margin: 3.6vh 0;
   border-radius: 50%;
 }
 
+.fps_plus {
+  width: 16px;
+    border: 1px solid black;
+    line-height: 16px;
+    border-radius: 50%;
+    margin-right: 2px;
+}
+
+.fps_plus:hover {
+  background-color: rgb(255, 149, 149);
+  transition: 0.3s ease-in-out;
+}
+.fps_plus:active {
+  background-color: rgb(155, 0, 0);
+  transition: 0.2s ease-in;
+}
+
+.fps_minus {
+    width: 16px;
+      border: 1px solid black;
+      line-height: 16px;
+      border-radius: 50%;
+      margin-right: 2px;
+  }
+  .fps_minus:hover {
+    background-color: rgb(255, 149, 149);
+  }
+
+  .fps_minus:active {
+    background-color: rgb(155, 0, 0);
+    transition: 0.2s ease-in;
+  }
+
 
 .fps_count_co p {
   text-align: center;
+  font-size: 10px;
+  font-weight: 800;
 }
 
+
+.player_functions {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
 
   .extract h3 {
     font-size: 16px;
@@ -406,7 +513,7 @@ margin: 3.6vh 0;
   }
 
   .msg img {
-    height: 22px;
-    width: 22px;  
+    height: 40px;
+    width: 40px;
   }
  

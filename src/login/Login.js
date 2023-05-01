@@ -29,11 +29,15 @@ function Login({ setToken, isRegister }) {
 
   const title = isRegister ? "Register new User" : "Login existing user";
 
+
+    
   return (
     <div className="login-wrapper">
-      <h1>{title}</h1>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group size="lg" controlId="email">
+      <div className="logo-login">
+    <img src="logo-in-line.svg"/>
+      </div>
+    <Form className="form-wrap" onSubmit={handleSubmit}>
+        <Form.Group size="lg" controlId="email" className="e-mail login-item">
           <Form.Label>E-mail</Form.Label>
           <Form.Control
             autoFocus
@@ -42,7 +46,7 @@ function Login({ setToken, isRegister }) {
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
-        <Form.Group size="lg" controlId="password">
+        <Form.Group size="lg" controlId="password" className="password login-item">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
@@ -61,18 +65,21 @@ function Login({ setToken, isRegister }) {
           </Form.Group>
         )}
         {isRegister ? (
-          <div>
+          <div className="user login-item">
             Already have a user? <Link to="/login">Login</Link>
           </div>
         ) : (
-          <div>
+          <div className="user">
             Don't have a user? <Link to="/register">Register</Link>
           </div>
         )}
-        <Button block size="lg" type="submit" disabled={!isValidForm}>
+        
+        <Button className="login-btn" block size="lg" type="submit" disabled={!isValidForm}>
           {isRegister ? "Register" : "Login"}
         </Button>
       </Form>
+
+     
       {loading && <div>Loading</div>}
     </div>
   );

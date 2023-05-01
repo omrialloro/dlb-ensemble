@@ -9,11 +9,12 @@ const StyledSaveLoad= styled.div`
   `;
 
 const StyledSave= styled.div`
-  background-color: #CEB0D1;
-  width: 6vh;
-  height: 6vh;
-  border-radius: 15%;
-  border: 2px solid #000;
+background-color: #CEB0D1;
+width: 40px;
+height: 40px;
+margin: 2px;
+border-radius: 15%;
+border: 1px solid #000;
 `;
 const StyledGif= styled.div`
     height: 10vh;
@@ -60,14 +61,14 @@ export function SaveAndLoad(props) {
             </span>
          </div>
        </StyledSave>
-       <StyledSave onClick={handleLoadProject}>
+       {/* <StyledSave onClick={handleLoadProject}>
          <div className="msg">
            <img src="save_temp.svg"/>
            <span className="tooltiptext"> 
                Load
            </span>
          </div>
-       </StyledSave>
+       </StyledSave> */}
     </StyledSaveLoad>
   </>
   )

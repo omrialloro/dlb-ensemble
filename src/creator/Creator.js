@@ -736,6 +736,14 @@ function Creator() {
     <div className="App">
       {
         <body ref={bodyRef}>
+
+      <div className="logo-creater">
+            <h1>
+            <img src="logo_block.svg"/>
+          </h1>
+      </div>
+          
+
           <div className="interface">
             <main>
               <section className="action left">
@@ -785,24 +793,26 @@ function Creator() {
                 createOscillator={createOscillator}
               />
 
-              <div style={{ display: "block", margin: "20px" }}>
-                <div
-                  onClick={() => setIsGrid(!isGrid)}
-                  style={isGrid ? { color: `red` } : { color: `black` }}
-                >
-                  gridddd
-                </div>
+              <div style={{ display: "block", margin: "0" }}>
+               
                 <Screen
                   labels={isPlay ? null : stateToLAbels(frameState, animations)}
                   id={"screen"}
                   ref={screenRef}
-                  screenSize={500}
+                  screenSize={560}
                   pausedFrameIndex={0}
                   frames={isPlay ? renderedFrames : [currentFrame]}
                   delay={isPlay ? delay : null}
                   onPixelClick={onPixelClick}
                   withGrid={isGrid}
                 />
+
+                {/* <div class="grid-on"
+                  onClick={() => setIsGrid(!isGrid)}
+                  style={isGrid ? { background: '#F72C2C'  } : { background: '#8c7373' }}
+                >
+                  Grid 
+                </div> */}
                 <PlayBar
                   delay={isPlay ? delay : null}
                   pausedFrameIndex={frameIndex}
@@ -825,22 +835,23 @@ function Creator() {
                   />
                   <div className="creation_btns">
                     <Reset text={"reset"} onClick={resetAnimation} />
-                    <Reset text={"clear"} onClick={clearFrame} />
                     <Reset
                       text={"undo"}
                       onClick={() => {
                         console.log(animations);
                       }}
-                    />
+                     />
+                    <Reset text={"clear"} onClick={clearFrame} />
+                  
                     <Reset text={"reverse"} onClick={reverseFrames} />
-                    <Reset
+                    {/* <Reset
                       text={"os"}
                       onClick={() => setCreateOscillatorOn(true)}
-                    />
-                    <Reset text={"test"} onClick={test_server} />
+                    /> */}
+                    {/* <Reset text={"test"} onClick={test_server} /> */}
                   </div>
                   <Errows pressErrow={pressErrow} />
-                  <Fps onClick={handleFps} currentFps={FPS} />
+                  {/* <Fps onClick={handleFps} currentFps={FPS} /> */}
                   <SaveAndLoad
                     handleGifExtraction={handleGifExtraction}
                     handleSaveProject={handleSaveAnimation}
@@ -848,7 +859,14 @@ function Creator() {
                       console.log(undoData);
                     }}
                   />
+                    <div class="grid-on"
+                  onClick={() => setIsGrid(!isGrid)}
+                  style={isGrid ? { background: '#F72C2C'  } : { background: '#8c7373' }}
+                >
+                  Grid 
                 </div>
+                </div>
+                
               </section>
             </main>
           </div>

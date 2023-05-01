@@ -11,6 +11,8 @@ function App() {
   const { isAuthenticated } = useContext(AuthContext);
   console.log("isAuthenticated", isAuthenticated);
 
+  // const isAuthenticated = true;
+
   if (!isAuthenticated)
     return (
       <BrowserRouter>

@@ -8,16 +8,14 @@ const StyledPallet= styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
   padding: 5px 0;
-  width: 14vh;
+  width: 140px;
 `;
 
 const StyledColor= styled.div`
- width: ${(props)=>props.size}vh;
- height: ${(props)=>props.size}vh;
-
-/* 
-  width: 3.5vh;
-  height: 3.5vh; */
+transform: scale(${(props)=>props.scale});
+ transition: 0.3s;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 2px solid #000;
   margin: 3px;
@@ -34,7 +32,8 @@ export function Pallet(props) {
 
 
   return(<StyledPallet>
-    {colors_pallet.map((color,index)=>(<StyledColor  size ={pickedIndex==index?4:3.3}
+    {colors_pallet.map((color,index)=>(<StyledColor  s
+    scale ={pickedIndex==index?1.2:1}
     key = {"color"+index}
     onClick={()=>setColor(index)}
     style={{backgroundColor:color}}/>))

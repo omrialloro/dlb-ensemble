@@ -2,23 +2,22 @@
 import styled from "styled-components";
 
 const StyledFpsCount= styled.div`
-  background-color: #C4C4C4;
-  width: 50;
-  height: 45px;
-  width: 60px;
-  text-align: center;
-  line-height: 45px;
-  margin-bottom: 5px;
-  margin-top: 22px;
-  border: 2px solid #000;
+background-color: #C4C4C4;
+text-align: center;
+padding: 4px 8px;
+margin-bottom: 5px;
+margin-top: 22px;
+border: 1px solid #000;
 `;
 
 const StyledFpsBtns= styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 14vh;
-  margin-bottom: 50px;
+  width: 96px;
+  font-size: 16px;
+  line-height: 16px;
+  // margin: 24px auto;
 `;
 
 
