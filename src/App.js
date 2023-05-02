@@ -17,7 +17,7 @@ function App() {
     return (
       <BrowserRouter>
         <Routes>
-          <Route path="/*" element={<Navigate to="/login" />} />} />
+          <Route path="/*" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login isRegister={false} />} />
           <Route path="/register" element={<Login isRegister={true} />} />
         </Routes>
