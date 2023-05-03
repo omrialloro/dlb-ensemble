@@ -85,7 +85,7 @@ function useExtractToGif() {
       delay: delay,
     };
 
-    fetch(serverUrl + "/gif", {
+    fetch(serverUrl + "/saveAnimation", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -93,6 +93,7 @@ function useExtractToGif() {
       },
       body: JSON.stringify(data),
     }).then((response) => {
+      console.log("flllll");
       const filename = "mygif.gif";
       response.blob().then((blob) => {
         const url = URL.createObjectURL(blob);
