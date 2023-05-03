@@ -128,7 +128,7 @@ function saveAnimation(email, name, frames, ThumbnailFrame) {
     save_animation: true,
     ThumbnailFrame: ThumbnailFrame,
   };
-  fetch(serverUrl + "/saveAnimationn", {
+  fetch(serverUrl + "/saveAnimation", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -163,7 +163,7 @@ function useSaveAnimation() {
     console.log(data);
     try {
       setLoading(true);
-      fetch(serverUrl + "/saveAnimationn", {
+      fetch(serverUrl + "/saveAnimation", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
