@@ -163,7 +163,7 @@ function useSaveAnimation() {
     console.log(data);
     try {
       setLoading(true);
-      fetch(serverUrl + "/saveAnimation", {
+      fetch(serverUrl + "/saveAnimationn", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
