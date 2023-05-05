@@ -120,22 +120,22 @@ async function useAnimationList(username) {
   // }, [port, username]);
 }
 
-function saveAnimation(email, name, frames, ThumbnailFrame) {
-  let data = {
-    username: email,
-    name: name,
-    data: frames,
-    save_animation: true,
-    ThumbnailFrame: ThumbnailFrame,
-  };
-  fetch(serverUrl + "/saveAnimation", {
-    method: "POST", // or 'PUT'
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-}
+// function saveAnimation(email, name, frames, ThumbnailFrame) {
+//   let data = {
+//     username: email,
+//     name: name,
+//     data: frames,
+//     save_animation: true,
+//     ThumbnailFrame: ThumbnailFrame,
+//   };
+//   fetch(serverUrl + "/saveAnimation", {
+//     method: "POST", // or 'PUT'
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(data),
+//   });
+// }
 
 function useDeleteAnimationFromServer() {
   const { token } = useContext(AuthContext);
@@ -163,8 +163,8 @@ function useSaveAnimation() {
     console.log(data);
     try {
       setLoading(true);
-      // fetch(serverUrl + "/saveAnimation", {
-      fetch(serverUrl + "/gif", {
+      fetch(serverUrl + "/saveAnimation", {
+        // fetch(serverUrl + "/gif", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -205,7 +205,7 @@ function useSaveStoredAnimations() {
 }
 
 export {
-  saveAnimation,
+  // saveAnimation,
   // extractToGif,
   useAnimationList,
   useSaveAnimation,
