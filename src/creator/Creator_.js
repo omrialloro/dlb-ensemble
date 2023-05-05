@@ -26,7 +26,7 @@ import {
 } from "./components/AnimationOperators";
 import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { PlayBar } from "./components/PlayBar";
-// import { Fps } from "./components/Fps";
+import { Fps } from "./components/Fps";
 import { SaveAndLoad } from "./components/SaveAndLoad";
 import { AnimationPallet } from "./components/Animations/AnimationPallet";
 import { nestedCopy } from "./components/utils/Utils";
@@ -749,12 +749,11 @@ function Creator() {
     <div className="App">
       {
         <body ref={bodyRef}>
-          {/* <div className="logo-creater">
+          <div className="logo-creater">
             <h1>
-            <img src="logo_inline.svg"/>
-          </h1>
-      </div>
-           */}
+              <img src="logo_block.svg" />
+            </h1>
+          </div>
 
           <div className="interface">
             <main>
@@ -831,6 +830,8 @@ function Creator() {
                   updateFrameIndex={setFrameIndex}
                 />
                 <Play
+                  handleFps={handleFps}
+                  FPS={FPS}
                   isPlay={isPlay}
                   isLoop={isLoop}
                   setIsPlay={toggleIsPlay}
@@ -864,9 +865,8 @@ function Creator() {
                   <Errows pressErrow={pressErrow} />
                   {/* <Fps onClick={handleFps} currentFps={FPS} /> */}
                   <SaveAndLoad
-                    // handleGifExtraction={handleGifExtraction}
+                    handleGifExtraction={handleGifExtraction}
                     handleSaveProject={handleSaveAnimation}
-                    handleGifExtraction={handleSaveAnimation}
                     handleLoadProject={() => {
                       console.log(undoData);
                     }}
