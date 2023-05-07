@@ -660,9 +660,48 @@ function Creator() {
     }
   };
 
-  const extractToGif = useExtractToGif(email);
+  const { saveAnimation: extractToGif } = useExtractToGif(email);
+
+  console.log(extractToGif);
+
+  // const handleGifExtraction = () => {
+  //   extractToGif(renderedFrames, delay);
+  // };
+
   const handleGifExtraction = () => {
-    extractToGif(renderedFrames, delay);
+    const prefix = window.prompt("enter animation name");
+    let name = prefix + String(Date.now());
+    if (!isContainingOscilators(frames)) {
+      let frames_ = renderAllFrames(frames, stateMapping);
+      frames_ = renderAllFrames(frames_, stateMapping);
+
+      let ThumbnailFrame = renderFrame(frames_[0], colorMapping, 0);
+      let data = {
+        userID: email,
+        name: name,
+        data: frames_,
+        ThumbnailFrame: ThumbnailFrame,
+        isDeleted: false,
+        formatType: "row",
+        saved: true,
+      };
+      extractToGif(data);
+    } else {
+      let frames_ = renderAllFrames(frames, colorMapping);
+      let ThumbnailFrame = frames_[0];
+
+      let data = {
+        userID: email,
+        name: name,
+        data: frames_,
+        ThumbnailFrame: ThumbnailFrame,
+        isDeleted: false,
+        formatType: "rendered",
+        saved: true,
+      };
+
+      extractToGif(data);
+    }
   };
 
   function reverseFrames() {
@@ -866,7 +905,7 @@ function Creator() {
                   <SaveAndLoad
                     // handleGifExtraction={handleGifExtraction}
                     handleSaveProject={handleSaveAnimation}
-                    handleGifExtraction={handleSaveAnimation}
+                    handleGifExtraction={handleGifExtraction}
                     handleLoadProject={() => {
                       console.log(undoData);
                     }}
