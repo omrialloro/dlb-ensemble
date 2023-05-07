@@ -76,39 +76,39 @@ async function useSaveSession(name, data, port) {
 //    // };
 //  }
 
-// function useExtractToGif() {
-//   const {
-//     auth: { token },
-//   } = useContext(AuthContext);
-//   return async function (frames, delay) {
-//     let data = {
-//       frames: frames,
-//       delay: delay,
-//     };
+function useExtractToGif() {
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
+  return async function (frames, delay) {
+    let data = {
+      frames: frames,
+      delay: delay,
+    };
 
-//     fetch(serverUrl + "/gif", {
-//       method: "POST",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(data),
-//     }).then((response) => {
-//       const filename = "mygif.gif";
-//       response.blob().then((blob) => {
-//         const url = URL.createObjectURL(blob);
-//         console.log(url);
-//         const link = document.createElement("a");
-//         link.href = url;
-//         link.download = filename;
-//         document.body.appendChild(link);
-//         link.click();
-//         document.body.removeChild(link);
-//         URL.revokeObjectURL(url);
-//       });
-//     });
-//   };
-// }
+    fetch(serverUrl + "/gif", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).then((response) => {
+      const filename = "mygif.gif";
+      response.blob().then((blob) => {
+        const url = URL.createObjectURL(blob);
+        console.log(url);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      });
+    });
+  };
+}
 
 async function useAnimationList(username) {
   // useEffect(() => {
@@ -182,34 +182,34 @@ function useSaveAnimation() {
   return { saveAnimation, error, loading };
 }
 
-function useExtractToGif() {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const {
-    auth: { token },
-  } = useContext(AuthContext);
-  console.log("token", token);
+// function useExtractToGif() {
+//   const [error, setError] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const {
+//     auth: { token },
+//   } = useContext(AuthContext);
+//   console.log("token", token);
 
-  const saveAnimation = async function (data) {
-    console.log(data);
-    try {
-      setLoading(true);
-      fetch(serverUrl + "/gif", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-  return { saveAnimation, error, loading };
-}
+//   const saveAnimation = async function (data) {
+//     console.log(data);
+//     try {
+//       setLoading(true);
+//       fetch(serverUrl + "/gif", {
+//         method: "POST", // or 'PUT'
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify(data),
+//       });
+//     } catch (err) {
+//       setError(err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+//   return { saveAnimation, error, loading };
+// }
 
 function useSaveStoredAnimations() {
   const { token } = useContext(AuthContext);
