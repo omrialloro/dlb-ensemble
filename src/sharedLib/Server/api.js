@@ -93,20 +93,21 @@ function useExtractToGif() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then((response) => {
-      const filename = "mygif.gif";
-      // response.blob().then((blob) => {
-      //   const url = URL.createObjectURL(blob);
-      //   console.log(url);
-      //   const link = document.createElement("a");
-      //   link.href = url;
-      //   link.download = filename;
-      //   document.body.appendChild(link);
-      //   link.click();
-      //   document.body.removeChild(link);
-      //   URL.revokeObjectURL(url);
-      // });
     });
+    // .then((response) => {
+    //   const filename = "mygif.gif";
+    //   // response.blob().then((blob) => {
+    //   //   const url = URL.createObjectURL(blob);
+    //   //   console.log(url);
+    //   //   const link = document.createElement("a");
+    //   //   link.href = url;
+    //   //   link.download = filename;
+    //   //   document.body.appendChild(link);
+    //   //   link.click();
+    //   //   document.body.removeChild(link);
+    //   //   URL.revokeObjectURL(url);
+    //   // });
+    // });
   };
 }
 
