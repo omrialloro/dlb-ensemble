@@ -37,7 +37,7 @@ const StyledBox = styled.div`
   overflow: scroll;
   background: #c1c1c1;
   visibility: hidden;
-  transform: translatE(3% ,35%);
+  transform: translatE(3%, 35%);
   position: absolute;
   // border:3px solid salmon;
 `;

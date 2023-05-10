@@ -82,8 +82,8 @@ function useExtractToGif() {
   } = useContext(AuthContext);
   return async function (frames, delay) {
     let data = {
-      frames: frames,
-      delay: delay,
+      frames,
+      delay,
     };
 
     fetch(serverUrl + "/gif", {
