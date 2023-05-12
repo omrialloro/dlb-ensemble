@@ -660,6 +660,44 @@ function Creator() {
     }
   };
 
+  function downloadGif(url, filename) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        const blob = xhr.response;
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+      }
+    };
+
+    xhr.send();
+  }
+
+  function downloadImage(url, filename) {
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create a temporary anchor element
+        const anchor = document.createElement("a");
+        anchor.href = URL.createObjectURL(blob);
+        anchor.download = filename;
+
+        // Trigger a click event on the anchor element
+        anchor.click();
+
+        // Clean up
+        URL.revokeObjectURL(anchor.href);
+      })
+      .catch((error) => {
+        console.error("Error occurred while downloading the image:", error);
+      });
+  }
+
   const extractToGif = useExtractToGif(email);
 
   console.log(extractToGif);
@@ -862,7 +900,15 @@ function Creator() {
                       text={"os"}
                       onClick={() => setCreateOscillatorOn(true)}
                     /> */}
-                    {/* <Reset text={"test"} onClick={test_server} /> */}
+                    <Reset
+                      text={"test"}
+                      onClick={() =>
+                        downloadGif(
+                          "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/gifs/ooo1683837945419.gif",
+                          "test.gif"
+                        )
+                      }
+                    />
                   </div>
                   <Errows pressErrow={pressErrow} />
                   {/* <Fps onClick={handleFps} currentFps={FPS} /> */}
