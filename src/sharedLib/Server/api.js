@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { serverUrl } from "../../settings";
 import { AuthContext } from "../../login/authContext";
 
+const gifPath = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/gifs/ooo";
+
 //  async function useFetch(url, options) {
 //    const {
 //      auth: { token },
@@ -76,6 +78,24 @@ async function useSaveSession(name, data, port) {
 //    // };
 //  }
 
+function downloadGif(url, filename) {
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", url, true);
+  xhr.responseType = "blob";
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      const blob = xhr.response;
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+  };
+
+  xhr.send();
+}
+
 function useExtractToGif() {
   const {
     auth: { token },
@@ -86,27 +106,37 @@ function useExtractToGif() {
       delay,
     };
 
-    fetch(serverUrl + "/gif", {
+    let gifId = await fetch(serverUrl + "/gif", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then((response) => {
-      const filename = "mygif.gif";
-      response.blob().then((blob) => {
-        const url = URL.createObjectURL(blob);
-        console.log(url);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      });
-    });
+    }).then((res) => res.json());
+
+    console.log(gifId);
+
+    let gifUrl = gifPath + gifId + ".gif";
+    console.log(gifUrl);
+
+    downloadGif(gifUrl, `${gifId}.gif`);
+    // console.log(res.json());;
+
+    // .then((response) => {
+    //   const filename = "mygif.gif";
+    //   response.blob().then((blob) => {
+    //     const url = URL.createObjectURL(blob);
+    //     console.log(url);
+    //     const link = document.createElement("a");
+    //     link.href = url;
+    //     link.download = filename;
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //     URL.revokeObjectURL(url);
+    //   });
+    // });
   };
 }
 
