@@ -4,80 +4,6 @@ import { AuthContext } from "../../login/authContext";
 
 const gifPath = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/gifs/ooo";
 
-//  async function useFetch(url, options) {
-//    const {
-//      auth: { token },
-//    } = useContext(AuthContext);
-//    const fetch = (url, options) => {};
-//    return fetch(serverUrl + url, {
-//      ...options,
-//      headers: {
-//        ...options.headers,
-//        Authorization: `Bearer ${token}`,
-//      },
-//    });
-//  }
-
-async function useSaveSession(name, data, port) {
-  //  useFetch("/saveSession", {
-  //    method: "POST", // or 'PUT'
-  //    headers: {
-  //      "Content-Type": "application/json",
-  //    },
-  //    body: JSON.stringify({ filename: name, data: data }),
-  //  });
-}
-
-// function extractToGif(username, frames, time_ms) {
-//   const prefix = window.prompt("enter gif name");
-//   let name = prefix + String(Date.now());
-//   let data = {
-//     username: username,
-//     name: name,
-//     speed: Math.round(time_ms),
-//     data: frames,
-//     save_animation: false,
-//   };
-//   fetch(serverUrl + "/gif", {
-//     method: "POST", // or 'PUT'
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(data),
-//   });
-// }
-
-//  function useExtractToGif() {
-//    // const {
-//    //   auth: {
-//    //     payload: {
-//    //       user: { email },
-//    //     },
-//    //   },
-//    // } = useContext(AuthContext);
-//    // return async function (frames, time_ms) {
-//    //   const prefix = window.prompt("enter gif name");
-//    //   let name = prefix + String(Date.now());
-//    //   let data = {
-//    //     username: email,
-//    //     name: name,
-//    //     speed: Math.round(time_ms),
-//    //     data: frames,
-//    //     save_animation: false,
-//    //   };
-//    //   useFetch(serverUrl + "/gif", {
-//    //     method: "POST", // or 'PUT'
-//    //     headers: {
-//    //       "Content-Type": "application/json",
-//    //     },
-//    //     body: JSON.stringify(data),
-//    //   });
-//    //   let aaa = document.createElement(`a`);
-//    //   aaa.href = serverUrl + `/download/${name}/${username}`;
-//    //   aaa.click();
-//    // };
-//  }
-
 function downloadGif(url, filename) {
   const xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
@@ -121,52 +47,8 @@ function useExtractToGif() {
     console.log(gifUrl);
 
     downloadGif(gifUrl, `${gifId}.gif`);
-    // console.log(res.json());;
-
-    // .then((response) => {
-    //   const filename = "mygif.gif";
-    //   response.blob().then((blob) => {
-    //     const url = URL.createObjectURL(blob);
-    //     console.log(url);
-    //     const link = document.createElement("a");
-    //     link.href = url;
-    //     link.download = filename;
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    //     URL.revokeObjectURL(url);
-    //   });
-    // });
   };
 }
-
-async function useAnimationList(username) {
-  // useEffect(() => {
-  //   (async function () {
-  //     const response = fetch(serverUrl + `/animationsList/${username}`, {
-  //       method: "GET",
-  //     }).then((res) => res.json());
-  //   })();
-  //   // let data = await fetch(port + `/animationsList/${username}`, {method: 'GET' }).then(res => res.json())
-  // }, [port, username]);
-}
-
-// function saveAnimation(email, name, frames, ThumbnailFrame) {
-//   let data = {
-//     username: email,
-//     name: name,
-//     data: frames,
-//     save_animation: true,
-//     ThumbnailFrame: ThumbnailFrame,
-//   };
-//   fetch(serverUrl + "/saveAnimation", {
-//     method: "POST", // or 'PUT'
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(data),
-//   });
-// }
 
 function useDeleteAnimationFromServer() {
   const { token } = useContext(AuthContext);
@@ -236,9 +118,6 @@ function useSaveStoredAnimations() {
 }
 
 export {
-  // saveAnimation,
-  // extractToGif,
-  useAnimationList,
   useSaveAnimation,
   useExtractToGif,
   useDeleteAnimationFromServer,
