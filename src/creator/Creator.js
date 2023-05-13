@@ -900,15 +900,7 @@ function Creator() {
                       text={"os"}
                       onClick={() => setCreateOscillatorOn(true)}
                     /> */}
-                    <Reset
-                      text={"test"}
-                      onClick={() =>
-                        downloadGif(
-                          "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/gifs/ooo1683837945419.gif",
-                          "test.gif"
-                        )
-                      }
-                    />
+                    {/* <Reset text={"test"} /> */}
                   </div>
                   <Errows pressErrow={pressErrow} />
                   {/* <Fps onClick={handleFps} currentFps={FPS} /> */}
