@@ -896,10 +896,10 @@ function Creator() {
                     <Reset text={"clear"} onClick={clearFrame} />
 
                     <Reset text={"reverse"} onClick={reverseFrames} />
-                    {/* <Reset
+                    <Reset
                       text={"os"}
                       onClick={() => setCreateOscillatorOn(true)}
-                    /> */}
+                    />
                     {/* <Reset text={"test"} /> */}
                   </div>
                   <Errows pressErrow={pressErrow} />
