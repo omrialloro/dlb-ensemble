@@ -699,12 +699,9 @@ function Creator() {
   }
 
   const extractToGif = useExtractToGif(email);
-
-  console.log(extractToGif);
-
-  const handleGifExtraction = () => {
-    extractToGif(renderedFrames, delay);
-  };
+  const handleGifExtraction = useCallback(async () => {
+    await extractToGif(renderedFrames, delay);
+  }, [extractToGif, renderedFrames, delay]);
 
   function reverseFrames() {
     let frames_ = nestedCopy(frames);

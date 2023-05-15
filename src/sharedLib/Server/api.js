@@ -32,21 +32,20 @@ function useExtractToGif() {
       delay,
     };
 
-    let gifId = await fetch(serverUrl + "/gif", {
+    let gifResponse = await fetch(serverUrl + "/gif", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then((res) => res.json());
-
-    console.log(gifId);
-
-    let gifUrl = gifPath + gifId + ".gif";
-    console.log(gifUrl);
-
-    downloadGif(gifUrl, `${gifId}.gif`);
+    });
+    let gifBlob = await gifResponse.blob();
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(gifBlob);
+    link.download = "animation.gif";
+    link.click();
+    URL.revokeObjectURL(link.href);
   };
 }
 
