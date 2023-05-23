@@ -1,235 +1,279 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Screen } from "./Screen";
-import { ScrollMenu } from 'react-horizontal-scrolling-menu';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { ScrollMenu } from "react-horizontal-scrolling-menu";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { OscillatorAnimation } from "./OscillatorAnimation";
+import { createDefaultFramesRendered } from "./frameOps/FrameOps";
 
+const StyledFrames = styled.div`
+  width: 30px;
+  height: 30px;
+  top: 70px;
+  left: 10px;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  background-color: black;
+`;
 
+const StyledScroll = styled.div`
+  width: 150px;
+  height: 45px;
+  position: absolute;
+  overflow: scroll;
+  align-items: center;
+  display: flex;
+  background-color: #86acac;
+  margin: 4px;
+  left: 10px;
+`;
 
-const StyledFrames= styled.div`
-width: 50px;
-height: 50px;
-position: relative;
-overflow: hidden;
-align-items: center;
-`
-
-const StyledScroll= styled.div`
-width: 220px;
-height: 55px;
-position: relative;
-overflow: scroll;
-align-items: center;
-display:flex;
-margin: 4px;
-`
-
-
-const StyledEmptyScreen= styled.div`
-
-height:140px;
-width:70px;
-border-radius: 1px;
-border: 1px solid #909090;
-padding: 2px;
-grid-column-gap: 0;
-background: #c1c1c1;
-display:flex;
-/* position:absolute;
+const StyledEmptyScreen = styled.div`
+  height: 100px;
+  width: 50px;
+  border-radius: 1px;
+  border: 1px solid #909090;
+  padding: 2px;
+  grid-column-gap: 0;
+  background: #c1c1c1;
+  display: flex;
+  /* position:absolute;
 bottom:0;
 right:0; */
-`
+`;
 
+const StyledOscillatorWindow = styled.div`
+  height: 280px;
+  width: 260px;
+  border-radius: 12px;
+  border: 3px solid #c99700;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /* grid-template-rows: repeat(50, 1fr); */
+  grid-column-gap: 0;
+  overflow: scroll;
+  background: #a4c1c1;
+  visibility: hidden;
+  position: absolute;
 
-const StyledOscillatorWindow= styled.div`
-
-height:280px;
-width:280px;
-border-radius: 12px;
-border: 1px solid #909090;
-padding: 12px;
-display: grid;
-grid-template-columns: repeat(5, 1fr);
-grid-template-rows: repeat(50, 1fr);
-grid-column-gap: 0;
-overflow: scroll ;
-background: #c1c1c1;
-visibility: hidden;
-position:absolute;
-// border:3px solid salmon;
-`
+  // border:3px solid salmon;
+`;
 const StyledClose = styled.div`
-background: #C99700;
-height:23px;
-width:23px;
-padding:10px;
-margin:10px;
-position:absolute;
-top:0;
-right:0;
-`
+  background: #c99700;
+
+  height: 23px;
+  width: 23px;
+  padding: 5px;
+  margin: 5px;
+  position: absolute;
+  border-radius: 50%;
+  top: 0;
+  right: 0;
+`;
 const StyledBtn = styled.div`
-background: #ff6666;
-height:43px;
-width:80px;
-padding:10px;
-margin:10px;
-position:relative;
-bottom:0;
-left:0;
-`
+  background: #ff6666;
+  height: 33px;
+  width: 60px;
+  padding: 6px;
+  margin: 10px;
+  position: relative;
+  border-radius: 10%;
+  border: 3px solid #c99700;
+
+  bottom: 0;
+  left: 0;
+`;
 
 export default function CreateOscillator(props) {
-  const animations = props.animations
-  const createOscillatorOn = props.createOscillatorOn
-  const closeWindow = props.closeWindow
-  const buildOscillator = props.buildOscillator
-  const createOscillator = props.createOscillator
+  const animations = props.animations;
+  const createOscillatorOn = props.createOscillatorOn;
+  const closeWindow = props.closeWindow;
+  const buildOscillator = props.buildOscillator;
+  const createOscillator = props.createOscillator;
 
+  const rrrr = useRef();
+  const rr = useRef();
 
+  const [data, setData] = useState([-1, -1]);
+  const [numFrames, setNumFrames] = useState(10);
+  const [frames, setFrames] = useState(createDefaultFramesRendered(36, 36));
 
-  const rrrr = useRef()
-  const rr = useRef()
+  const [frames1, setFrames1] = useState(createDefaultFramesRendered(36, 36));
+  const [frames2, setFrames2] = useState(createDefaultFramesRendered(36, 36));
 
-
-  const [data,setData] = useState([-1,-1])
-  const [numFrames,setNumFrames] = useState(10)
-  const [frames,setFrames] = useState([])
-
-  function handleOnDragEnd(result){
-    let index = result.destination.droppableId
-    let id = result.draggableId
-    if(index=='osc1'){
-      setData([Number(id),data[1]])
-
-    }
-    else if(index=='osc2'){
-      setData([data[0],Number(id)])
-    }
-  }
-  function reset(){
-    setData([-1,-1])
-    setNumFrames(10)
-    setFrames([])
-
+  function Id2frames(id) {
+    return animations.filter((x) => x.id == id)[0].frames;
   }
 
-  useEffect(()=>{
-    if(data[0]!=-1&&data[1]!=-1){
-      console.log(data)
-      let frames = buildOscillator(data[0],data[1],numFrames)
-      setFrames(frames)
+  function handleOnDragEnd(result) {
+    let index = result.destination.droppableId;
+    console.log(index);
+    let id = result.draggableId;
+    console.log(Id2frames(id));
+    if (index == "osc11") {
+      setFrames1(Id2frames(id));
+      setData([Number(id), data[1]]);
+    } else if (index == "osc22") {
+      setFrames2(Id2frames(id));
+      setData([data[0], Number(id)]);
     }
-  },[numFrames,data])
-
-  function submit(){
-    if(data[0]!=-1&&data[1]!=-1&&numFrames>0){
-      createOscillator(data[0],data[1],numFrames)
-
-
-    }
-
+  }
+  function reset() {
+    setData([-1, -1]);
+    setNumFrames(10);
+    setFrames([]);
   }
 
+  useEffect(() => {
+    if (data[0] != -1 && data[1] != -1) {
+      console.log(data);
+      let frames = buildOscillator(data[1], data[0], numFrames);
+      setFrames(frames);
+    }
+  }, [numFrames, data]);
 
-return (
-        <>
-        <DragDropContext  onDragEnd={handleOnDragEnd}>
+  function submit() {
+    if (data[0] != -1 && data[1] != -1 && numFrames > 0) {
+      createOscillator(data[0], data[1], numFrames);
+    }
+  }
 
-
-        <StyledOscillatorWindow style={createOscillatorOn?{visibility:'visible',  transition: 'width 2s, height 4s'}:{visibility:'hidden'}}
-        
+  return (
+    <>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <StyledOscillatorWindow
+          style={
+            createOscillatorOn
+              ? { visibility: "visible", transition: "width 2s, height 4s" }
+              : { visibility: "hidden" }
+          }
         >
-            <Droppable droppableId="droppable" direction="horizontal">
-    {(provided) => {return (
-              <StyledScroll {...provided.droppableProps} ref={provided.innerRef}>
-                    {animations.map((k,index)=>( 
-                      // <Draggable key={k["id"]+4000} draggableId={k["id"]+333} index={index}>
-                      //   {(provided)=>(
+          <Droppable key={"osc11"} droppableId={"osc11"}>
+            {(provided, snapshot) => (
+              <StyledFrames
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <Screen
+                  ref={rrrr}
+                  onPixelClick={() => {}}
+                  screenSize={30}
+                  pausedFrameIndex={0}
+                  frames={frames1}
+                  delay={null}
+                  id={"2fff"}
+                />
+              </StyledFrames>
+            )}
+          </Droppable>
+          <OscillatorAnimation numFrames={numFrames} />
+          <Droppable key={"osc22"} droppableId={"osc22"}>
+            {(provided, snapshot) => (
+              <StyledFrames
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <Screen
+                  ref={rrrr}
+                  onPixelClick={() => {}}
+                  screenSize={30}
+                  pausedFrameIndex={0}
+                  frames={frames2}
+                  delay={null}
+                  id={"2fffee"}
+                />
+              </StyledFrames>
+            )}
+          </Droppable>
+          <Droppable droppableId="droppable" direction="horizontal">
+            {(provided) => {
+              return (
+                <StyledScroll
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {animations.map((k, index) => (
+                    // <Draggable key={k["id"]+4000} draggableId={k["id"]+333} index={index}>
+                    //   {(provided)=>(
 
-                        <div style={{margin:'3px'}} >
-                      <Draggable key={'motor'+index+103000} draggableId={String(k.id)} index={index+1001}>
-                        {(provided,snapshot)=>(
-                            <div isDragging = {snapshot.isDragging}
+                    <div style={{ margin: "3px" }}>
+                      <Draggable
+                        key={"motor" + index + 103000}
+                        draggableId={String(k.id)}
+                        index={index + 1001}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            isDragging={snapshot.isDragging}
                             {...provided.dragHandleProps}
                             {...provided.draggableProps}
                             ref={provided.innerRef}
-                        >               
-                          <Screen
-                          ref = {rrrr}
-                          onPixelClick = {()=>{}}
-                          screenSize = {60}
-                          pausedFrameIndex = {1}
-                          frames = {k.frames}
-                          delay = {null}
-                          id = {"2"+k.id}
-                          />    
-                          </div> 
-                         )}           
+                          >
+                            <Screen
+                              ref={rrrr}
+                              onPixelClick={() => {}}
+                              screenSize={30}
+                              pausedFrameIndex={1}
+                              frames={k.frames}
+                              delay={null}
+                              id={"2" + k.id}
+                            />
+                          </div>
+                        )}
                       </Draggable>
-                      </div> 
-                      
-                      ))}
-
-
-                
-              </StyledScroll>
-                  )}}
-                  </Droppable>
- 
-        <StyledClose onClick={closeWindow}>X</StyledClose>
-
-       
-        <div style={{display:'flex',position:'absolute',bottom:20,left:20}}>
-        {frames.length>0?<Screen
-          ref = {rr}
-          onPixelClick = {()=>{}}
-          screenSize = {140}
-          pausedFrameIndex = {1}
-          frames = {frames}
-          delay = {30}
-          id = {"ffffff"}
-         />:<>
-           <Droppable key={"osc1"} droppableId={"osc1"}>
-                {(provided, snapshot) => (
-
-          <StyledEmptyScreen style={data[0]==-1?{background:'white'}:{background:'black'}}
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-
-          />
-          )}
+                    </div>
+                  ))}
+                </StyledScroll>
+              );
+            }}
           </Droppable>
-          <Droppable key={"osc2"} droppableId={"osc2"}>
-                {(provided, snapshot) => (
 
-          <StyledEmptyScreen style={data[1]==-1?{background:'white'}:{background:'black'}}
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-          />
-          )}
-          </Droppable>
-          </>}
-         </div>
+          <StyledClose onClick={closeWindow}>X</StyledClose>
 
-         <label>
-         <input style={{width:'30%',position:'absolute',bottom:130,right:20}} type="text"
-                   value={numFrames}
-                   onChange={(e) => {console.log(e.target.value);setNumFrames(e.target.value)}}
-                  />
-                </label>
-         <div style={{position:'absolute',bottom:15, right:10}}>
+          <div
+            style={{
+              display: "flex",
+              position: "absolute",
+              bottom: 10,
+              left: 20,
+            }}
+          >
+            <Screen
+              ref={rr}
+              onPixelClick={() => {}}
+              screenSize={134}
+              pausedFrameIndex={0}
+              frames={frames}
+              delay={50}
+              id={"ffffff"}
+            />
+          </div>
 
-         <StyledBtn onClick={reset}> RESET</StyledBtn>
-         <StyledBtn onClick={submit}>SUBMIT</StyledBtn>
-         </div>
-
-
-
+          <label>
+            <input
+              style={{
+                width: "22%",
+                position: "absolute",
+                bottom: 114,
+                right: 22,
+                backgroundColor: "#86acac",
+              }}
+              type="text"
+              value={numFrames}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setNumFrames(e.target.value);
+              }}
+            />
+          </label>
+          <div style={{ position: "absolute", bottom: 15, right: 10 }}>
+            <StyledBtn onClick={reset}> RESET</StyledBtn>
+            <StyledBtn onClick={submit}>SUBMIT</StyledBtn>
+          </div>
         </StyledOscillatorWindow>
-
-
-        </DragDropContext> 
-       </>
-    );
-  }
+      </DragDropContext>
+    </>
+  );
+}
