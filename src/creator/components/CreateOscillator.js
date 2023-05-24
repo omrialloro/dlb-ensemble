@@ -29,20 +29,6 @@ const StyledScroll = styled.div`
   left: 10px;
 `;
 
-const StyledEmptyScreen = styled.div`
-  height: 100px;
-  width: 50px;
-  border-radius: 1px;
-  border: 1px solid #909090;
-  padding: 2px;
-  grid-column-gap: 0;
-  background: #c1c1c1;
-  display: flex;
-  /* position:absolute;
-bottom:0;
-right:0; */
-`;
-
 const StyledOscillatorWindow = styled.div`
   height: 280px;
   width: 260px;
