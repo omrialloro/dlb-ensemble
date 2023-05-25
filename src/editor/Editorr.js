@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from "react";
 import "./components/App.css";
 // import "./components/base.css";
 import "./components/fonts.css";
@@ -89,10 +95,9 @@ function Editorr() {
     ref2.current.click();
   };
 
-  const extractToGif = useExtractToGif();
-  const handleMakeGif = () => {
-    extractToGif(proccesedFrames, delay);
-  };
+  // const handleMakeGif = () => {
+  //   extractToGif(proccesedFrames, delay);
+  // };
   const handleSaveEditedFrames = () => {
     const prefix = window.prompt("enter animation name");
     let name = prefix + String(Date.now());
@@ -344,6 +349,11 @@ function Editorr() {
     mainScreen: mainScreen,
     DATA: DATA,
   };
+
+  const extractToGif = useExtractToGif(email);
+  const handleMakeGif = useCallback(async () => {
+    await extractToGif(proccesedFrames, delay);
+  }, [extractToGif, proccesedFrames, delay]);
 
   useEffect(() => {
     var tt = sessionStorage.getItem("editData");

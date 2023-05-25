@@ -5,6 +5,7 @@ import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { OscillatorAnimation } from "./OscillatorAnimation";
 import { createDefaultFramesRendered } from "./frameOps/FrameOps";
+import Tunner from "../../sharedLib/components/Tunner";
 
 const StyledFrames = styled.div`
   width: 30px;
@@ -40,7 +41,7 @@ const StyledOscillatorWindow = styled.div`
   /* grid-template-rows: repeat(50, 1fr); */
   grid-column-gap: 0;
   overflow: scroll;
-  background: #a4c1c1;
+  background: #86acac;
   visibility: hidden;
   position: absolute;
 
@@ -63,7 +64,7 @@ const StyledBtn = styled.div`
   height: 33px;
   width: 60px;
   padding: 6px;
-  margin: 10px;
+  margin: 8px;
   position: relative;
   border-radius: 10%;
   border: 3px solid #c99700;
@@ -237,7 +238,7 @@ export default function CreateOscillator(props) {
             />
           </div>
 
-          <label>
+          {/* <label>
             <input
               style={{
                 width: "22%",
@@ -253,10 +254,18 @@ export default function CreateOscillator(props) {
                 setNumFrames(e.target.value);
               }}
             />
-          </label>
+          </label> */}
+
           <div style={{ position: "absolute", bottom: 15, right: 10 }}>
             <StyledBtn onClick={reset}> RESET</StyledBtn>
             <StyledBtn onClick={submit}>SUBMIT</StyledBtn>
+            <Tunner
+              setValue={setNumFrames}
+              minValue={-15}
+              maxValue={70}
+              radius={22}
+              label={"TF"}
+            />
           </div>
         </StyledOscillatorWindow>
       </DragDropContext>

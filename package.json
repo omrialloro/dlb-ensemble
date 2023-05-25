@@ -1,6 +1,6 @@
 {
   "name": "dlb-ensemble",
-  "homepage":"https://dontlookback.run/",
+  "homepage": "https://dontlookback.run/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -14,6 +14,7 @@
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.7.0",
+    "react-circular-slider": "^1.0.12",
     "react-dom": "^18.2.0",
     "react-horizontal-scrolling-menu": "^3.2.3",
     "react-router-dom": "^6.6.1",

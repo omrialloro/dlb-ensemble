@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="tunerCanvas" width="100" height="100"></canvas>
+
+  <script>
+    // Get the canvas element and its context
+    const canvas = document.getElementById('tunerCanvas');
+    const context = canvas.getContext('2d');
+
+    // Variables to track the tuner state
+    let currentValue = 2.5;
+    let isDragging = false;
+    let lastAngle = 0;
+
+    // Function to draw the tuner component
+    function drawTuner(angle) {
+
+      context.fillStyle = 'yellow';
+
+      context.arc(50, 50, 30, 0, Math.PI * 2);
+      context.closePath();
+      context.fill();
+
+      context.fillStyle = 'green';
+      context.strokeStyle = `rgba(220,70,50,${0.9})`;
+      context.lineWidth =5;
+      context.font = "10px Arial";
+      context.fillText(Math.round(angle*10), 47, 53);
+      context.beginPath();
+
+      context.moveTo(50 + Math.cos(angle) * 10, 50 + Math.sin(angle) * 10);
+      context.lineTo(50 + Math.cos(angle) * 30, 50 + Math.sin(angle) * 30);
+      context.fillStyle = 'yellow';
+
+      context.stroke();
+    }
+
+    // Function to handle mouse down event
+    function handleMouseDown(event) {
+      isDragging = true;
+      lastAngle = calculateAngle(event.offsetX, event.offsetY);
+    }
+
+    // Function to handle mouse move event
+    function handleMouseMove(event) {
+      if (isDragging) {
+        const newAngle = calculateAngle(event.offsetX, event.offsetY);
+        const deltaAngle = newAngle - lastAngle;
+
+        // Update the current value based on the delta angle
+        currentValue += deltaAngle;
+        currentValue = Math.max(Math.min(currentValue, Math.PI * 2), 0);
+
+        // Redraw the tuner with the updated angle
+        drawTuner(currentValue);
+
+        // Update the last angle
+        lastAngle = newAngle;
+      }
+    }
+
+    // Function to handle mouse up event
+    function handleMouseUp() {
+      isDragging = false;
+    }
+
+    // Function to calculate the angle based on mouse coordinates
+    function calculateAngle(x, y) {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      return Math.atan2(y - centerY, x - centerX);
+    }
+
+    // Attach event listeners to handle mouse interactions
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseup', handleMouseUp);
+
+    // Call the drawTuner function to initially draw the tuner
+    drawTuner(currentValue);
+    // drawTuner(0.5)
+  </script>
+</body>
+</html>

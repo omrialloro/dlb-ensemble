@@ -20,7 +20,7 @@ export function Play(props) {
   const setIsPlay = props.setIsPlay;
   const isLoop = props.isLoop;
   const setIsLoop = props.setIsLoop;
-  const handleFps = props.handleFps;
+  // const handleFps = props.handleFps;
   const FPS = props.FPS;
   // const frameIndex = props.frameIndex
 
@@ -34,7 +34,7 @@ export function Play(props) {
           </div>
         </StyledButton>
 
-        <Fps onClick={handleFps} currentFps={FPS} />
+        {/* <Fps onClick={handleFps} currentFps={FPS} /> */}
       </div>
     </StyledPlay>
   );

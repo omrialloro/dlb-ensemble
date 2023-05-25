@@ -26,7 +26,7 @@ import {
 } from "./components/AnimationOperators";
 import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { PlayBar } from "./components/PlayBar";
-// import { Fps } from "./components/Fps";
+import { Fps } from "./components/Fps";
 import { SaveAndLoad } from "./components/SaveAndLoad";
 import { AnimationPallet } from "./components/Animations/AnimationPallet";
 import { nestedCopy } from "./components/utils/Utils";
@@ -40,6 +40,7 @@ import AnimationLibrary from "./components/animationLibrary/AnimationLibrary.js"
 import CreateOscillator from "./components/CreateOscillator";
 import { AuthContext } from "../login/authContext";
 import { serverUrl } from "../settings";
+import Tunner from "../sharedLib/components/Tunner";
 
 const dim = [36, 36];
 
@@ -558,13 +559,13 @@ function Creator() {
     setAnimationsIds(animations.map((a) => a.id));
   }, [animations]);
 
-  function handleFps(action) {
-    if (action == "plus" && FPS < 60) {
-      setFPS(FPS + 1);
-    } else if (action == "minus" && FPS > 1) {
-      setFPS(FPS - 1);
-    }
-  }
+  // function handleFps(action) {
+  //   if (action == "plus" && FPS < 60) {
+  //     setFPS(FPS + 1);
+  //   } else if (action == "minus" && FPS > 1) {
+  //     setFPS(FPS - 1);
+  //   }
+  // }
 
   function getAllColors(frames) {
     let colors = [];
@@ -908,6 +909,7 @@ function Creator() {
                       console.log(undoData);
                     }}
                   />
+
                   <div
                     class="grid-on"
                     onClick={() => setIsGrid(!isGrid)}
@@ -919,6 +921,13 @@ function Creator() {
                   >
                     Grid
                   </div>
+                  <Tunner
+                    setValue={setFPS}
+                    minValue={5}
+                    maxValue={60}
+                    radius={30}
+                    label={"FPS"}
+                  />
                 </div>
               </section>
             </main>
