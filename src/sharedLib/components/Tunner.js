@@ -30,7 +30,13 @@ const Tunner = (props) => {
 
       context.fillStyle = "#c99700";
 
-      context.arc(radius, radius, radius, 0, Math.PI * 2);
+      // context.arc(radius, radius, radius, 0, Math.PI * 2);
+      // context.closePath();
+      // context.fill();
+
+      context.fillStyle = "#8f6c01";
+
+      context.arc(radius, radius, radius * 0.8, 0, Math.PI * 2);
       context.closePath();
       context.fill();
 
