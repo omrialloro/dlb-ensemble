@@ -21,7 +21,7 @@ function OscillatorAnimation(props) {
   let counter = 0;
 
   function drawLine(ctx, angle, radius, opacity) {
-    const startX = 25;
+    const startX = 30;
     const startY = 85;
     ctx.strokeStyle = `rgba(220,90,20,${opacity})`;
     ctx.beginPath();
@@ -29,7 +29,7 @@ function OscillatorAnimation(props) {
     let b = radianstocoordinates(angle, radius, startX, startY);
     ctx.moveTo(b.x, b.y);
     ctx.lineTo(a.x, a.y);
-    ctx.fillText(counter, 20, 90);
+    ctx.fillText(counter, 26, 90);
     ctx.stroke();
   }
 

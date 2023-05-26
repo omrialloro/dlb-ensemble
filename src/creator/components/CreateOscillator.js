@@ -8,8 +8,8 @@ import { createDefaultFramesRendered } from "./frameOps/FrameOps";
 import Tunner from "../../sharedLib/components/Tunner";
 
 const StyledFrames = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   top: 70px;
   left: 10px;
   position: relative;
@@ -53,7 +53,7 @@ const StyledClose = styled.div`
   height: 23px;
   width: 23px;
   padding: 5px;
-  margin: 5px;
+  margin: 10px;
   position: absolute;
   border-radius: 50%;
   top: 0;
@@ -146,7 +146,7 @@ export default function CreateOscillator(props) {
                 <Screen
                   ref={rrrr}
                   onPixelClick={() => {}}
-                  screenSize={30}
+                  screenSize={38}
                   pausedFrameIndex={0}
                   frames={frames1}
                   delay={null}
@@ -165,7 +165,7 @@ export default function CreateOscillator(props) {
                 <Screen
                   ref={rrrr}
                   onPixelClick={() => {}}
-                  screenSize={30}
+                  screenSize={38}
                   pausedFrameIndex={0}
                   frames={frames2}
                   delay={null}
