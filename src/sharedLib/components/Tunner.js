@@ -8,7 +8,7 @@ const Tunner = (props) => {
   const label = props.label;
 
   const canvasRef = useRef(null);
-  const [currentValue, setCurrentValue] = useState(0);
+  const [currentValue, setCurrentValue] = useState(Math.PI * 1.5);
   const [isDragging, setIsDragging] = useState(false);
   const [lastAngle, setLastAngle] = useState(0);
 
