@@ -3,29 +3,40 @@ import { colorOscillator } from "./utils/RGB";
 
 const StyledStoreAnimation = styled.div`
   /* background-color: #f22a2a; */
-  background-color: #ff471a;
+  /* background-color: #ff471a; */
 
+  background-color: #c73d1e;
   color: #000;
-
   padding: 10px;
-  margin-top: 24px;
-  margin-bottom: 24px;
+  margin-top: 1px;
+  margin-bottom: 5px;
   border-radius: 5px;
+  width: 120px;
+  font-size: 12px;
+
+  &:hover {
+    background-color: palevioletred;
+  }
   cursor: pointer;
 `;
 
 const StyledAnimationOps = styled.div`
-  height: 55px;
+  height: 35px;
   width: 55px;
-  background-color: #f7b947;
-  border-radius: 100%;
-  border: 1px solid black;
+  /* background-color: #f7b947; */
+  background-color: #c99700;
+  border-radius: 10%;
+  border: px solid black;
   text-align: center;
-  line-height: 55px;
+  line-height: 35px;
   margin: 2px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
+  &:hover {
+    background-color: #f7b947;
+  }
+
   cursor: pointer;
 `;
 
@@ -80,6 +91,14 @@ function StoreAnimation(props) {
     </StyledStoreAnimation>
   );
 }
+function CreateOscillatorBtn(props) {
+  const onClick = props.onClick;
+  return (
+    <StyledStoreAnimation onClick={onClick}>
+      <p>Create oscillator</p>
+    </StyledStoreAnimation>
+  );
+}
 
 function Reset(props) {
   const onClick = props.onClick;
@@ -89,6 +108,7 @@ function Reset(props) {
 
 export {
   StoreAnimation,
+  CreateOscillatorBtn,
   Reset,
   oscillateAnimationsColorMappingCb,
   animationColorMappingCb,

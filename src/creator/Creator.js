@@ -16,9 +16,11 @@ import {
   synthOscillator,
   stateToLAbels,
 } from "./components/frameOps/FrameOps";
+import { rotateFrame, reflectFrame } from "../sharedLib/frameOps/FrameOps";
 import { Errows } from "./components/Errows";
 import {
   StoreAnimation,
+  CreateOscillatorBtn,
   Reset,
   oscillateAnimationsColorMappingCb,
   animationColorMappingCb,
@@ -44,8 +46,11 @@ import Tunner from "../sharedLib/components/Tunner";
 
 const dim = [36, 36];
 
-function Creator() {
+function Creator(props) {
   const [start_time, setStart_time] = useState(0);
+  const browse = props.browse;
+  const save = props.save;
+  const gif = props.gif;
 
   useEffect(() => {
     setStart_time(Date.now());
@@ -581,8 +586,6 @@ function Creator() {
 
     // let oscillatorsIds = oscillators.map(x=>x.id)
     // let intersctedId = intersection(oscillatorsIds, colors)
-    console.log();
-
     // let intersctedList = oscillators.filter(t=>{colors.includes(2000)})
     let intersctedList = oscillators.filter((t) => true);
     console.log(intersctedList);
@@ -661,6 +664,18 @@ function Creator() {
     }
   };
 
+  useEffect(() => {
+    if (save > 0) {
+      handleSaveAnimation();
+    }
+  }, [save]);
+
+  useEffect(() => {
+    if (gif > 0) {
+      handleGifExtraction();
+    }
+  }, [gif]);
+
   function downloadGif(url, filename) {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -708,6 +723,17 @@ function Creator() {
     let frames_ = nestedCopy(frames);
     setFrames(frames_.reverse());
   }
+
+  function rotateFrames() {
+    let frames_ = nestedCopy(frames);
+    setFrames(frames_.map((x) => rotateFrame(x)));
+  }
+
+  function reflectFrames() {
+    let frames_ = nestedCopy(frames);
+    setFrames(frames_.map((x) => reflectFrame(x)));
+  }
+
   const deleteAnimationFromServer = useDeleteAnimationFromServer();
   function onAnimationDelete(id) {
     if (coloringState.color == id) {
@@ -778,6 +804,15 @@ function Creator() {
   const [isGrid, setIsGrid] = useState(false);
 
   const [browserdOn, setBrowserOn] = useState(false);
+
+  useEffect(() => {
+    if (browse == 0) {
+      setBrowserOn(false);
+    } else {
+      setBrowserOn(true);
+    }
+  }, [browse]);
+
   const [createOscillatorOn, setCreateOscillatorOn] = useState(false);
 
   const closeOscillatorWindow = () => {
@@ -807,18 +842,7 @@ function Creator() {
                   />
                 </div>
                 <Shapes pickedShape={coloringState.shape} setShape={setShape} />
-                <StoreAnimation onClick={storeAnimation} />
-                <div
-                  className="browse_btn"
-                  onClick={() => setBrowserOn(!browserdOn)}
-                >
-                  <div>
-                    <p>Browse</p>
-                  </div>
-                  <div>
-                    <img src="arrow_browse.svg" />
-                  </div>
-                </div>
+                {/* <StoreAnimation onClick={storeAnimation} /> */}
                 {/* <SavedAnimationLoader port = {port} username = {userID} addAnimation = {addAnimation}/> */}
                 <AnimationPallet
                   data={renderedAnimations}
@@ -879,39 +903,12 @@ function Creator() {
 
               <section className="action right">
                 <div className="creation_buttons">
-                  <NewFrame
+                  {/* <NewFrame
                     numFrames={frames.length}
                     recordFrame={recordFrame}
-                  />
-                  <div className="creation_btns">
-                    <Reset text={"reset"} onClick={resetAnimation} />
-                    <Reset
-                      text={"undo"}
-                      onClick={() => {
-                        console.log(animations);
-                      }}
-                    />
-                    <Reset text={"clear"} onClick={clearFrame} />
-
-                    <Reset text={"reverse"} onClick={reverseFrames} />
-                    <Reset
-                      text={"os"}
-                      onClick={() => setCreateOscillatorOn(true)}
-                    />
-                    {/* <Reset text={"test"} /> */}
-                  </div>
-                  <Errows pressErrow={pressErrow} />
-                  {/* <Fps onClick={handleFps} currentFps={FPS} /> */}
-                  <SaveAndLoad
-                    handleSaveProject={handleSaveAnimation}
-                    handleGifExtraction={handleGifExtraction}
-                    handleLoadProject={() => {
-                      console.log(undoData);
-                    }}
-                  />
-
+                  /> */}
                   <div
-                    class="grid-on"
+                    className="grid-on"
                     onClick={() => setIsGrid(!isGrid)}
                     style={
                       isGrid
@@ -921,11 +918,51 @@ function Creator() {
                   >
                     Grid
                   </div>
+                  <div className="creation_btns">
+                    <Reset text={"reset"} onClick={resetAnimation} />
+                    <Reset
+                      text={"undo"}
+                      onClick={() => {
+                        console.log(animations);
+                      }}
+                    />
+                    <Reset text={"clear"} onClick={clearFrame} />
+                    <Reset text={"reverse"} onClick={reverseFrames} />
+                    <Reset text={"rotate"} onClick={rotateFrames} />
+                    <Reset text={"reflect"} onClick={reflectFrames} />
+
+                    {/* <Reset text={"test"} /> */}
+                  </div>
+                  <div>
+                    <StoreAnimation onClick={storeAnimation} />
+                    <CreateOscillatorBtn
+                      onClick={() => setCreateOscillatorOn(true)}
+                    />
+                  </div>
+
+                  <Errows pressErrow={pressErrow} />
+                  <NewFrame
+                    numFrames={frames.length}
+                    recordFrame={recordFrame}
+                  />
+
+                  {/* <div
+                    class="grid-on"
+                    onClick={() => setIsGrid(!isGrid)}
+                    style={
+                      isGrid
+                        ? { background: "#F72C2C" }
+                        : { background: "#8c7373" }
+                    }
+                  >
+                    Grid
+                  </div> */}
+                  <div></div>
                   <Tunner
                     setValue={setFPS}
                     minValue={5}
                     maxValue={60}
-                    radius={30}
+                    radius={40}
                     label={"FPS"}
                   />
                 </div>

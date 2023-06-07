@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Screen } from "./Screen";
-import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { OscillatorAnimation } from "./OscillatorAnimation";
 import { createDefaultFramesRendered } from "./frameOps/FrameOps";
@@ -26,6 +25,9 @@ const StyledScroll = styled.div`
   align-items: center;
   display: flex;
   background-color: #86acac;
+  border: 1px solid #c99700;
+  top: 10px;
+
   margin: 4px;
   left: 10px;
 `;

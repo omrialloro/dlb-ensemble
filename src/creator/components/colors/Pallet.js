@@ -1,9 +1,7 @@
-
 import styled from "styled-components";
-import {getSchemes} from './Schemes'
+import { getSchemes } from "./Schemes";
 
-
-const StyledPallet= styled.div`
+const StyledPallet = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -11,13 +9,13 @@ const StyledPallet= styled.div`
   width: 140px;
 `;
 
-const StyledColor= styled.div`
-transform: scale(${(props)=>props.scale});
- transition: 0.3s;
+const StyledColor = styled.div`
+  transform: scale(${(props) => props.scale});
+  transition: 0.3s;
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 2px solid #000;
+  border: 0px solid #000;
   margin: 3px;
   cursor: grabbing;
 `;
@@ -28,15 +26,19 @@ export function Pallet(props) {
   const pickedIndex = props.pickedIndex;
 
   // const pickedIndex = 0
-  const colors_pallet = getSchemes()[scheme]
+  const colors_pallet = getSchemes()[scheme];
 
-
-  return(<StyledPallet>
-    {colors_pallet.map((color,index)=>(<StyledColor  s
-    scale ={pickedIndex==index?1.2:1}
-    key = {"color"+index}
-    onClick={()=>setColor(index)}
-    style={{backgroundColor:color}}/>))
-    }
-  </StyledPallet>)
+  return (
+    <StyledPallet>
+      {colors_pallet.map((color, index) => (
+        <StyledColor
+          s
+          scale={pickedIndex == index ? 1.2 : 1}
+          key={"color" + index}
+          onClick={() => setColor(index)}
+          style={{ backgroundColor: color }}
+        />
+      ))}
+    </StyledPallet>
+  );
 }

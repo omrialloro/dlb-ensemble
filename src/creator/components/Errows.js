@@ -1,20 +1,20 @@
 import styled from "styled-components";
 
-const StyledErrowButtons= styled.div`
-margin: 2px;
-height: 32px;
-border-radius: 4px;
-width: 32px;
-background-color: #aafffb;
-border: 1px solid black;
+const StyledErrowButtons = styled.div`
+  margin: 2px;
+  height: 32px;
+  border-radius: 2px;
+  width: 32px;
+  background-color: #aafffb;
+  border: 1px solid black;
 `;
 
-const StyledErrows= styled.div`
+const StyledErrows = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
+  height: 60px;
   width: 14vh;
   cursor: pointer;
 `;
@@ -41,66 +41,77 @@ const StyledErrows= styled.div`
 //   visibility: visible;
 // }
 
-
 export function Errows(props) {
-  const pressErrow =props.pressErrow
-  document.body.onkeyup = function(e){
-    console.log(e.keyCode)
-    if(e.keyCode == 40){
+  const pressErrow = props.pressErrow;
+  document.body.onkeyup = function (e) {
+    console.log(e.keyCode);
+    if (e.keyCode == 40) {
       e.preventDefault();
-      pressErrow("down")
+      pressErrow("down");
     }
-    if(e.keyCode == 37){
+    if (e.keyCode == 37) {
       e.preventDefault();
-      pressErrow("left")
+      pressErrow("left");
     }
-    if(e.keyCode == 39){
+    if (e.keyCode == 39) {
       e.preventDefault();
-      pressErrow("right")
+      pressErrow("right");
     }
-    if(e.keyCode == 38){
+    if (e.keyCode == 38) {
       e.preventDefault();
-      pressErrow("up")
+      pressErrow("up");
     }
-    if(e.keyCode == 13){
+    if (e.keyCode == 13) {
       e.preventDefault();
-      pressErrow("frame")
+      pressErrow("frame");
     }
-  }
+  };
   return (
-     <StyledErrows>
+    <StyledErrows>
       <div>
-        <StyledErrowButtons onClick={()=>{pressErrow("up")}}>
+        <StyledErrowButtons
+          onClick={() => {
+            pressErrow("up");
+          }}
+        >
           <div className="arrows">
-            <img src="up.svg"/>
-            <span className="tooltiptext">	Shift up (&#8593;)</span>
+            <img src="up.svg" />
+            <span className="tooltiptext"> Shift up (&#8593;)</span>
           </div>
         </StyledErrowButtons>
       </div>
-      <div className="errows_bottom" style = {{display:'flex'}}>
-        <StyledErrowButtons onClick={()=>{pressErrow("left")}}>
-            <div className="arrows">
-              <img src="left.svg"/>
-              <span className="tooltiptext">	Shift left (&#8592;) </span>
-            </div>
-        </StyledErrowButtons>
-        <StyledErrowButtons onClick={()=>{pressErrow("down")}}>
+      <div className="errows_bottom" style={{ display: "flex" }}>
+        <StyledErrowButtons
+          onClick={() => {
+            pressErrow("left");
+          }}
+        >
           <div className="arrows">
-            <img src="down_arrow.svg"/>
-            <span className="tooltiptext"> 	Shift down(&#8595;)</span>
+            <img src="left.svg" />
+            <span className="tooltiptext"> Shift left (&#8592;) </span>
           </div>
         </StyledErrowButtons>
-        <StyledErrowButtons onClick={()=>{pressErrow("right")}}>
+        <StyledErrowButtons
+          onClick={() => {
+            pressErrow("down");
+          }}
+        >
           <div className="arrows">
-              <img src="right.svg"/>
-              <span className="tooltiptext">Shift right (&#8594;)</span>
+            <img src="down_arrow.svg" />
+            <span className="tooltiptext"> Shift down(&#8595;)</span>
+          </div>
+        </StyledErrowButtons>
+        <StyledErrowButtons
+          onClick={() => {
+            pressErrow("right");
+          }}
+        >
+          <div className="arrows">
+            <img src="right.svg" />
+            <span className="tooltiptext">Shift right (&#8594;)</span>
           </div>
         </StyledErrowButtons>
       </div>
-     </StyledErrows>
-  )
+    </StyledErrows>
+  );
 }
-
-
-
-

@@ -2,20 +2,23 @@
 @import url("https://use.typekit.net/kbt0vfu.css");
 
 
-/* body {
+body {
   background: #527a7a;
   font-size: 24px;
   font-family: 'Baloo Bhai 2', sans-serif;
   font-weight: 400;
   height: 100vh;
-} */
+}
 
-body {
+
+
+/* body {
   background: #8c8c8c;
   font-family: courier;
   font-weight: 400;
   height: 100vh;
-}
+  display: 'flex',
+} */
 
 
 
@@ -60,18 +63,21 @@ display: inline;
 
 
 
-/* .header {
-  background-color: #fff;
-  width: 640px;
+ header {
+  background-color: #888;
+  justify-content: space-between;
+
+  /* width: 1540px; */
   height: 24px;
   margin: 0 auto;
   text-align: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  transform: translateX(50%);
-  z-index: 3;
-} */
+  display: flex;
+  /* position: fixed; */
+
+   /* transform: translateX(50%); */
+}
+
+
 
 
 .info_btn h3 {
@@ -150,7 +156,7 @@ strong {
   flex-wrap: wrap;
   align-items: center;
   height: 120px;
-  margin-bottom: 28px;
+  /* margin-bottom: 1px; */
 }
 
 input[type=range] {
@@ -253,11 +259,11 @@ section.action.right {
 
 
 #scheme {
-  font-size: 16px;
+  font-size: 18px;
   font-family: 'Baloo Bhai 2', sans-serif;
   width: 140px;
   height:30px;
-  border: 2px solid #000;
+  border: 1px solid #000;
   background-color: #C4C4C4;
 }
 
@@ -346,7 +352,7 @@ cursor: pointer;
   padding: 4px;
   width: fit-content;
   text-align: center;
-  margin: 4px;
+  margin: 0px;
   font-size: 12px;
   font-weight: 600;
   border-radius: 6px;

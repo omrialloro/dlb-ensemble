@@ -38,9 +38,9 @@ let color_scheme5 = [
   "#FF6962",
   "#6FE0BF",
   "#FF5600",
-  "#C7FD79",
-  "#212E72",
-  "#F7ECCF",
+  "#ffff00",
+  "#ff3399",
+  "#0099cc",
 ];
 
 let schemes = {
