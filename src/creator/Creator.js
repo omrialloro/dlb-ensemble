@@ -909,44 +909,46 @@ function Creator(props) {
                     numFrames={frames.length}
                     recordFrame={recordFrame}
                   /> */}
-                  <div
-                    className="grid-on"
-                    onClick={() => setIsGrid(!isGrid)}
-                    style={
-                      isGrid
-                        ? { background: "#F72C2C" }
-                        : { background: "#8c7373" }
-                    }
-                  >
-                    Grid
-                  </div>
-                  <div className="creation_btns">
-                    <Reset text={"reset"} onClick={resetAnimation} />
-                    <Reset
-                      text={"undo"}
-                      onClick={() => {
-                        console.log(animations);
-                      }}
-                    />
-                    <Reset text={"clear"} onClick={clearFrame} />
-                    <Reset text={"reverse"} onClick={reverseFrames} />
-                    <Reset text={"rotate"} onClick={rotateFrames} />
-                    <Reset text={"reflect"} onClick={reflectFrames} />
-
-                    {/* <Reset text={"test"} /> */}
-                  </div>
                   <div>
-                    <StoreAnimation onClick={storeAnimation} />
-                    <CreateOscillatorBtn
-                      onClick={() => setCreateOscillatorOn(true)}
-                    />
+                    <div
+                      className="grid-on"
+                      onClick={() => setIsGrid(!isGrid)}
+                      style={
+                        isGrid
+                          ? { background: "#F72C2C" }
+                          : { background: "#8c7373" }
+                      }
+                    >
+                      Grid
+                    </div>
+                    <div className="creation_btns">
+                      <Reset text={"reset"} onClick={resetAnimation} />
+                      <Reset
+                        text={"undo"}
+                        onClick={() => {
+                          console.log(animations);
+                        }}
+                      />
+                      <Reset text={"clear"} onClick={clearFrame} />
+                      <Reset text={"reverse"} onClick={reverseFrames} />
+                      <Reset text={"rotate"} onClick={rotateFrames} />
+                      <Reset text={"reflect"} onClick={reflectFrames} />
+
+                      {/* <Reset text={"test"} /> */}
+                    </div>
+                    <div>
+                      <StoreAnimation onClick={storeAnimation} />
+                      <CreateOscillatorBtn
+                        onClick={() => setCreateOscillatorOn(true)}
+                      />
+                    </div>
                   </div>
 
                   <Errows pressErrow={pressErrow} />
-                  <NewFrame
+                  {/* <NewFrame
                     numFrames={frames.length}
                     recordFrame={recordFrame}
-                  />
+                  /> */}
 
                   {/* <div
                     class="grid-on"
@@ -960,13 +962,15 @@ function Creator(props) {
                     Grid
                   </div> */}
                   <div></div>
-                  <Tunner
-                    setValue={setFPS}
-                    minValue={5}
-                    maxValue={60}
-                    radius={40}
-                    label={"FPS"}
-                  />
+                  <div>
+                    <Tunner
+                      setValue={setFPS}
+                      minValue={5}
+                      maxValue={60}
+                      radius={40}
+                      label={"FPS"}
+                    />
+                  </div>
                 </div>
               </section>
             </main>
