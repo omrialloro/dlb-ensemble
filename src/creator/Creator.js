@@ -727,11 +727,13 @@ function Creator(props) {
   function rotateFrames() {
     let frames_ = nestedCopy(frames);
     setFrames(frames_.map((x) => rotateFrame(x)));
+    setFrameState(rotateFrame(frameState));
   }
 
   function reflectFrames() {
     let frames_ = nestedCopy(frames);
     setFrames(frames_.map((x) => reflectFrame(x)));
+    setFrameState(reflectFrame(frameState));
   }
 
   const deleteAnimationFromServer = useDeleteAnimationFromServer();

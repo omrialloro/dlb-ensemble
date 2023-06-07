@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledErrowButtons = styled.div`
   margin: 2px;
   height: 32px;
-  border-radius: 2px;
+  border-radius: 4px;
   width: 32px;
   background-color: #aafffb;
   border: 1px solid black;
@@ -14,7 +14,7 @@ const StyledErrows = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  height: 80px;
   width: 14vh;
   cursor: pointer;
 `;
@@ -46,14 +46,19 @@ export function Errows(props) {
   document.body.onkeyup = function (e) {
     console.log(e.keyCode);
     if (e.keyCode == 40) {
+      console.log("down");
       e.preventDefault();
       pressErrow("down");
     }
     if (e.keyCode == 37) {
+      console.log("left");
+
       e.preventDefault();
       pressErrow("left");
     }
     if (e.keyCode == 39) {
+      console.log("right");
+
       e.preventDefault();
       pressErrow("right");
     }
@@ -64,6 +69,8 @@ export function Errows(props) {
     if (e.keyCode == 13) {
       e.preventDefault();
       pressErrow("frame");
+      console.log("right");
+      console.log("right");
     }
   };
   return (
