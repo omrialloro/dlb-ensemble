@@ -11,8 +11,8 @@ const StyledShapes = styled.div`
 
 const StyledShape = styled.div`
   width: ${(props) => props.size}vh;
-  width: 50px;
-  height: 50px;
+  width: 58px;
+  height: 58px;
   border: 1px solid #000;
   margin: 2px;
   /* margin: 1px; */

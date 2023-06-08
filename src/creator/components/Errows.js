@@ -1,12 +1,19 @@
 import styled from "styled-components";
 
 const StyledErrowButtons = styled.div`
-  margin: 2px;
-  height: 32px;
+  margin: 5px;
+  height: 38px;
   border-radius: 4px;
-  width: 32px;
+  width: 38px;
   background-color: #aafffb;
   border: 1px solid black;
+  background-color: #788a63;
+  background-color: #a2b59d;
+
+  border: 0px solid black;
+  &:hover {
+    background-color: #aafffb;
+  }
 `;
 
 const StyledErrows = styled.div`
@@ -15,7 +22,7 @@ const StyledErrows = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 80px;
-  width: 14vh;
+  width: 13vh;
   cursor: pointer;
 `;
 
@@ -74,51 +81,53 @@ export function Errows(props) {
     }
   };
   return (
-    <StyledErrows>
-      <div>
-        <StyledErrowButtons
-          onClick={() => {
-            pressErrow("up");
-          }}
-        >
-          <div className="arrows">
-            <img src="up.svg" />
-            <span className="tooltiptext"> Shift up (&#8593;)</span>
-          </div>
-        </StyledErrowButtons>
-      </div>
-      <div className="errows_bottom" style={{ display: "flex" }}>
-        <StyledErrowButtons
-          onClick={() => {
-            pressErrow("left");
-          }}
-        >
-          <div className="arrows">
-            <img src="left.svg" />
-            <span className="tooltiptext"> Shift left (&#8592;) </span>
-          </div>
-        </StyledErrowButtons>
-        <StyledErrowButtons
-          onClick={() => {
-            pressErrow("down");
-          }}
-        >
-          <div className="arrows">
-            <img src="down_arrow.svg" />
-            <span className="tooltiptext"> Shift down(&#8595;)</span>
-          </div>
-        </StyledErrowButtons>
-        <StyledErrowButtons
-          onClick={() => {
-            pressErrow("right");
-          }}
-        >
-          <div className="arrows">
-            <img src="right.svg" />
-            <span className="tooltiptext">Shift right (&#8594;)</span>
-          </div>
-        </StyledErrowButtons>
-      </div>
-    </StyledErrows>
+    <div style={{ margin: "15px" }}>
+      <StyledErrows>
+        <div>
+          <StyledErrowButtons
+            onClick={() => {
+              pressErrow("up");
+            }}
+          >
+            <div className="arrows">
+              <img src="up.svg" />
+              <span className="tooltiptext"> Shift up (&#8593;)</span>
+            </div>
+          </StyledErrowButtons>
+        </div>
+        <div className="errows_bottom" style={{ display: "flex" }}>
+          <StyledErrowButtons
+            onClick={() => {
+              pressErrow("left");
+            }}
+          >
+            <div className="arrows">
+              <img src="left.svg" />
+              <span className="tooltiptext"> Shift left (&#8592;) </span>
+            </div>
+          </StyledErrowButtons>
+          <StyledErrowButtons
+            onClick={() => {
+              pressErrow("down");
+            }}
+          >
+            <div className="arrows">
+              <img src="down_arrow.svg" />
+              <span className="tooltiptext"> Shift down(&#8595;)</span>
+            </div>
+          </StyledErrowButtons>
+          <StyledErrowButtons
+            onClick={() => {
+              pressErrow("right");
+            }}
+          >
+            <div className="arrows">
+              <img src="right.svg" />
+              <span className="tooltiptext">Shift right (&#8594;)</span>
+            </div>
+          </StyledErrowButtons>
+        </div>
+      </StyledErrows>
+    </div>
   );
 }

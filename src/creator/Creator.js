@@ -919,7 +919,7 @@ function Creator(props) {
                           : { background: "#8c7373" }
                       }
                     >
-                      Grid
+                      ------ Grid -------
                     </div>
                     <div className="creation_btns">
                       <Reset text={"reset"} onClick={resetAnimation} />
