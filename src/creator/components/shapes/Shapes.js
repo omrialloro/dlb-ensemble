@@ -13,11 +13,13 @@ const StyledShape = styled.div`
   width: ${(props) => props.size}vh;
   width: 60px;
   height: 60px;
-  border: 1px solid #000;
-  margin: 3px;
+  border: 0px solid #000;
+  margin: 5px;
   /* margin: 1px; */
   background-color: ${(props) => props.bc};
   transition: 0.5s;
+  border-radius: 5px;
+
   cursor: grabbing;
 `;
 

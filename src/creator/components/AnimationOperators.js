@@ -141,15 +141,15 @@ function RecoredAnimation(props) {
           x2="100"
           y2="50"
           stroke="#4d2800"
-          stroke-width="12"
+          stroke-width="10"
         />
         <line
           x1="50"
-          y1="15"
+          y1="10"
           x2="50"
           y2="85"
           stroke="#4d2800"
-          stroke-width="12"
+          stroke-width="10"
         />
       </svg>
     </StyledRecoredAnimation>
