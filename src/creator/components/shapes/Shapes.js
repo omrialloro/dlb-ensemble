@@ -11,10 +11,10 @@ const StyledShapes = styled.div`
 
 const StyledShape = styled.div`
   width: ${(props) => props.size}vh;
-  width: 58px;
-  height: 58px;
+  width: 60px;
+  height: 60px;
   border: 1px solid #000;
-  margin: 2px;
+  margin: 3px;
   /* margin: 1px; */
   background-color: ${(props) => props.bc};
   transition: 0.5s;
