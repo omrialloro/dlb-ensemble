@@ -20,6 +20,26 @@ const StyledStoreAnimation = styled.div`
   cursor: pointer;
 `;
 
+const StyledRecoredAnimation = styled.div`
+  /* background-color: #f22a2a; */
+  /* background-color: #ff471a; */
+
+  background-color: #c73d1e;
+  color: #000;
+  padding: 10px;
+  margin-top: 1px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  width: 130px;
+  height: 70px;
+  font-size: 12px;
+
+  &:hover {
+    background-color: palevioletred;
+  }
+  cursor: pointer;
+`;
+
 const StyledAnimationOps = styled.div`
   height: 35px;
   width: 55px;
@@ -105,6 +125,36 @@ function Reset(props) {
   const text = props.text;
   return <StyledAnimationOps onClick={onClick}>{text}</StyledAnimationOps>;
 }
+function RecoredAnimation(props) {
+  const onClick = props.onClick;
+  return (
+    <StyledRecoredAnimation onClick={onClick}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="60"
+        height="60"
+        viewBox="0 5 100 100"
+      >
+        <line
+          x1="0"
+          y1="50"
+          x2="100"
+          y2="50"
+          stroke="#4d2800"
+          stroke-width="12"
+        />
+        <line
+          x1="50"
+          y1="15"
+          x2="50"
+          y2="85"
+          stroke="#4d2800"
+          stroke-width="12"
+        />
+      </svg>
+    </StyledRecoredAnimation>
+  );
+}
 
 export {
   StoreAnimation,
@@ -113,4 +163,5 @@ export {
   oscillateAnimationsColorMappingCb,
   animationColorMappingCb,
   animationStateMappingCb,
+  RecoredAnimation,
 };

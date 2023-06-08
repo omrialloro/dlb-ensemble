@@ -25,6 +25,7 @@ import {
   oscillateAnimationsColorMappingCb,
   animationColorMappingCb,
   animationStateMappingCb,
+  RecoredAnimation,
 } from "./components/AnimationOperators";
 import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { PlayBar } from "./components/PlayBar";
@@ -943,8 +944,20 @@ function Creator(props) {
                       />
                     </div>
                   </div>
+                  <div>
+                    <Tunner
+                      setValue={setFPS}
+                      minValue={5}
+                      maxValue={60}
+                      radius={40}
+                      label={"FPS"}
+                    />
+                  </div>
 
                   <Errows pressErrow={pressErrow} />
+                  <RecoredAnimation onClick={recordFrame} />
+                  <div style={{ fontSize: "18px" }}>{frames.length}</div>
+
                   {/* <NewFrame
                     numFrames={frames.length}
                     recordFrame={recordFrame}
@@ -961,16 +974,7 @@ function Creator(props) {
                   >
                     Grid
                   </div> */}
-                  <div></div>
-                  <div>
-                    <Tunner
-                      setValue={setFPS}
-                      minValue={5}
-                      maxValue={60}
-                      radius={40}
-                      label={"FPS"}
-                    />
-                  </div>
+                  {/* <div></div> */}
                 </div>
               </section>
             </main>
