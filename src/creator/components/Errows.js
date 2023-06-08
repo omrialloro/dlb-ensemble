@@ -23,6 +23,8 @@ const StyledErrows = styled.div`
   align-items: center;
   height: 80px;
   width: 13vh;
+  margin-left: 6px;
+
   cursor: pointer;
 `;
 

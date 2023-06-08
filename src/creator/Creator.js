@@ -531,7 +531,9 @@ function Creator(props) {
     setFrames([...frames, frameState]);
     bodyRef.current.style.backgroundColor = "red";
     setTimeout(function () {
-      bodyRef.current.style.backgroundColor = "#8c8c8c";
+      bodyRef.current.style.backgroundColor = "#527a7a";
+
+      // bodyRef.current.style.backgroundColor = "#8c8c8c";
     }, 50);
     setRenderedFrames([
       ...renderedFrames,

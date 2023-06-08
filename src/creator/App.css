@@ -345,14 +345,15 @@ cursor: pointer;
 
 }
 
-
 .grid-on {
   background-color:#8c7373;
   color:  #1c0f0f;
   padding: 4px;
-  width: 120px;
+  width: 124px;
   text-align: center;
   margin: 0px;
+  margin-left: 3px;
+  margin-bottom: 3px;
   font-size: 12px;
   font-weight: 600;
   border-radius: 6px;
@@ -361,6 +362,11 @@ cursor: pointer;
   cursor: pointer;
   border: 3px solid #1c0f0f;
 }
+
+.grid-on:hover {
+  background-color:#000;
+}
+
 
 
 .creation_buttons {

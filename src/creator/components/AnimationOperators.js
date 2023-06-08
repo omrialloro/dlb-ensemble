@@ -8,11 +8,14 @@ const StyledStoreAnimation = styled.div`
   background-color: #c73d1e;
   color: #000;
   padding: 10px;
-  margin-top: 1px;
+  margin-top: 7px;
+  margin-left: 6px;
+
   margin-bottom: 5px;
   border-radius: 5px;
   width: 120px;
-  font-size: 12px;
+  font-size: 9px;
+  text-transform: uppercase;
 
   &:hover {
     background-color: palevioletred;

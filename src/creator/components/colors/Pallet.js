@@ -32,7 +32,6 @@ export function Pallet(props) {
     <StyledPallet>
       {colors_pallet.map((color, index) => (
         <StyledColor
-          s
           scale={pickedIndex == index ? 1.2 : 1}
           key={"color" + index}
           onClick={() => setColor(index)}
