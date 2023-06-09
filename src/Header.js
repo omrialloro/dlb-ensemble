@@ -1,6 +1,19 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "./login/authContext";
+import styled from "styled-components";
+
+const StyledLi = styled.div`
+  font-size: "20px";
+  color: "blue";
+  padding-left: "20px";
+  padding-right: "20px";
+  font-weight: "bold";
+  &:hover {
+    background-color: #aafffb;
+  }
+`;
+
 export const Header = (props) => {
   const { isAuthenticated, logout } = useContext(AuthContext);
   const { browse, save, gif } = props;
@@ -13,32 +26,135 @@ export const Header = (props) => {
           justifyContent: "space-between",
           alignItems: "center",
           margin: "10 10 10 10px",
+          float: "left",
+          paddingLeft: "30px",
+          marginLeft: "200px",
+          marginRight: "100px",
         }}
       >
         {isAuthenticated ? (
-          <li onClick={() => logout({ returnTo: window.location.origin })}>
-            logout
-          </li>
+          <StyledLi
+            style={{
+              fontSize: "20px",
+              color: "#996600",
+              marginLeft: "0px",
+              paddingLeft: "20px",
+              paddingRight: "20px",
+
+              fontWeight: "bold",
+
+              // backgroundColor: "red",
+            }}
+            onClick={() => logout({ returnTo: window.location.origin })}
+          >
+            LOGOUT
+          </StyledLi>
         ) : (
           <li>
-            <Link to="/login">login</Link>
+            <Link
+              style={{
+                fontSize: "20px",
+                color: "#996600",
+                // marginLeft: "30px",
+                paddingRight: "20px",
+                paddingLeft: "20px",
+
+                backgroundColor: "red",
+                fontWeight: "bold",
+              }}
+              to="/login"
+            >
+              LOGIN
+            </Link>
           </li>
         )}
-        <li>
-          <Link to="/editor">Editor</Link>
-        </li>
-        <li>
-          <Link to="/creator">Creator</Link>
-        </li>
-        <li>
-          <div onClick={browse}>Browse</div>
-        </li>
-        <li>
-          <div onClick={save}>Save</div>
-        </li>
-        <li>
-          <div onClick={gif}>Gif</div>
-        </li>
+        <StyledLi>
+          <Link
+            style={{
+              fontSize: "20px",
+              color: "#996600",
+              paddingRight: "20px",
+              paddingLeft: "20px",
+              // backgroundColor: "red",
+              fontWeight: "bold",
+            }}
+            to="/editor"
+          >
+            EDITOR
+          </Link>
+        </StyledLi>
+        <StyledLi>
+          <Link
+            style={{
+              fontSize: "20px",
+              color: "#996600",
+              // marginLeft: "30px",
+              paddingRight: "20px",
+              paddingLeft: "20px",
+
+              // backgroundColor: "red",
+              fontWeight: "bold",
+            }}
+            to="/creator"
+          >
+            MAKER
+          </Link>
+        </StyledLi>
+      </ul>
+      <ul
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          margin: "10 10 10 10px",
+          float: "left",
+          paddingLeft: "30px",
+          marginLeft: "100px",
+        }}
+      >
+        <StyledLi
+          style={{
+            fontSize: "18px",
+            color: "#992600",
+            // marginLeft: "30px",
+            // backgroundColor: "red",
+            paddingRight: "20px",
+            paddingLeft: "20px",
+
+            fontWeight: "bold",
+          }}
+          onClick={browse}
+        >
+          BROWSE
+        </StyledLi>
+        <StyledLi
+          style={{
+            fontSize: "18px",
+            color: "#992600",
+            // marginLeft: "30px",
+            // backgroundColor: "red",
+            paddingRight: "20px",
+            paddingLeft: "20px",
+
+            fontWeight: "bold",
+          }}
+        >
+          <div onClick={save}>SAVE</div>
+        </StyledLi>
+        <StyledLi
+          style={{
+            fontSize: "18px",
+            color: "#992600",
+            // marginLeft: "30px",
+            // backgroundColor: "red",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+
+            fontWeight: "bold",
+          }}
+        >
+          <div onClick={gif}>GIF</div>
+        </StyledLi>
       </ul>
     </header>
   );

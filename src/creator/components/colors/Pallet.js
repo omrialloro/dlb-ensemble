@@ -7,16 +7,18 @@ const StyledPallet = styled.div`
   justify-content: space-around;
   padding: 5px 0;
   width: 140px;
+  margin-bottom: 8px;
+  margin-top: 8px;
 `;
 
 const StyledColor = styled.div`
   transform: scale(${(props) => props.scale});
   transition: 0.3s;
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 0px solid #000;
-  margin: 3px;
+  margin: 5px;
   cursor: grabbing;
 `;
 
@@ -32,7 +34,7 @@ export function Pallet(props) {
     <StyledPallet>
       {colors_pallet.map((color, index) => (
         <StyledColor
-          scale={pickedIndex == index ? 1.2 : 1}
+          scale={pickedIndex == index ? 1.17 : 1}
           key={"color" + index}
           onClick={() => setColor(index)}
           style={{ backgroundColor: color }}

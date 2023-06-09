@@ -828,13 +828,6 @@ function Creator(props) {
     <div className="App">
       {
         <body ref={bodyRef}>
-          {/* <div className="logo-creater">
-            <h1>
-            <img src="logo_inline.svg"/>
-          </h1>
-      </div>
-           */}
-
           <div className="interface">
             <main>
               <section className="action left">
@@ -847,8 +840,6 @@ function Creator(props) {
                   />
                 </div>
                 <Shapes pickedShape={coloringState.shape} setShape={setShape} />
-                {/* <StoreAnimation onClick={storeAnimation} /> */}
-                {/* <SavedAnimationLoader port = {port} username = {userID} addAnimation = {addAnimation}/> */}
                 <AnimationPallet
                   data={renderedAnimations}
                   onAnimationSelect={(x) => {
@@ -885,13 +876,6 @@ function Creator(props) {
                   onPixelClick={onPixelClick}
                   withGrid={isGrid}
                 />
-
-                {/* <div class="grid-on"
-                  onClick={() => setIsGrid(!isGrid)}
-                  style={isGrid ? { background: '#F72C2C'  } : { background: '#8c7373' }}
-                >
-                  Grid 
-                </div> */}
                 <PlayBar
                   delay={isPlay ? delay : null}
                   pausedFrameIndex={frameIndex}
@@ -922,7 +906,7 @@ function Creator(props) {
                           : { background: "#8c7373" }
                       }
                     >
-                      ------ Grid -------
+                      ------ GRID -------
                     </div>
                     <div className="creation_btns">
                       <Reset text={"reset"} onClick={resetAnimation} />
@@ -932,8 +916,9 @@ function Creator(props) {
                           console.log(animations);
                         }}
                       />
-                      <Reset text={"clear"} onClick={clearFrame} />
                       <Reset text={"reverse"} onClick={reverseFrames} />
+                      <Reset text={"clear"} onClick={clearFrame} />
+
                       <Reset text={"rotate"} onClick={rotateFrames} />
                       <Reset text={"reflect"} onClick={reflectFrames} />
 
@@ -946,12 +931,12 @@ function Creator(props) {
                       />
                     </div>
                   </div>
-                  <div style={{ marginTop: "40px" }}>
+                  <div style={{ marginTop: "30px" }}>
                     <Tunner
                       setValue={setFPS}
                       minValue={5}
                       maxValue={60}
-                      radius={40}
+                      radius={45}
                       label={"FPS"}
                     />
                   </div>
@@ -959,24 +944,6 @@ function Creator(props) {
                   <Errows pressErrow={pressErrow} />
                   <RecoredAnimation onClick={recordFrame} />
                   <div style={{ fontSize: "18px" }}>{frames.length}</div>
-
-                  {/* <NewFrame
-                    numFrames={frames.length}
-                    recordFrame={recordFrame}
-                  /> */}
-
-                  {/* <div
-                    class="grid-on"
-                    onClick={() => setIsGrid(!isGrid)}
-                    style={
-                      isGrid
-                        ? { background: "#F72C2C" }
-                        : { background: "#8c7373" }
-                    }
-                  >
-                    Grid
-                  </div> */}
-                  {/* <div></div> */}
                 </div>
               </section>
             </main>
