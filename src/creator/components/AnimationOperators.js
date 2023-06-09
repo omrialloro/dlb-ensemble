@@ -32,6 +32,8 @@ const StyledRecoredAnimation = styled.div`
   padding: 10px;
   margin-top: 1px;
   margin-bottom: 5px;
+  margin-left: 4px;
+
   border-radius: 5px;
   width: 130px;
   height: 70px;

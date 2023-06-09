@@ -23,7 +23,9 @@ const StyledErrows = styled.div`
   align-items: center;
   height: 80px;
   width: 13vh;
-  margin-left: 6px;
+  margin-left: 8px;
+  margin-top: 12px;
+  margin-bottom: 12px;
 
   cursor: pointer;
 `;

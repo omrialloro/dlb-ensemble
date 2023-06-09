@@ -946,7 +946,7 @@ function Creator(props) {
                       />
                     </div>
                   </div>
-                  <div>
+                  <div style={{ marginTop: "40px" }}>
                     <Tunner
                       setValue={setFPS}
                       minValue={5}
