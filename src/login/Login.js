@@ -5,13 +5,14 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext, useLoginOrRegister } from "./authContext";
 
-function Login({ setToken, isRegister }) {
+function Login({ setToken, isRegister, setSelected }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const { loginOrRegister, error, loading } = useLoginOrRegister();
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
+  setSelected("login");
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -29,14 +30,12 @@ function Login({ setToken, isRegister }) {
 
   const title = isRegister ? "Register new User" : "Login existing user";
 
-
-    
   return (
     <div className="login-wrapper">
       <div className="logo-login">
-    <img src="logo-in-line.svg"/>
+        <img src="logo-in-line.svg" />
       </div>
-    <Form className="form-wrap" onSubmit={handleSubmit}>
+      <Form className="form-wrap" onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email" className="e-mail login-item">
           <Form.Label>E-mail</Form.Label>
           <Form.Control
@@ -46,7 +45,11 @@ function Login({ setToken, isRegister }) {
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
-        <Form.Group size="lg" controlId="password" className="password login-item">
+        <Form.Group
+          size="lg"
+          controlId="password"
+          className="password login-item"
+        >
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
@@ -73,13 +76,18 @@ function Login({ setToken, isRegister }) {
             Don't have a user? <Link to="/register">Register</Link>
           </div>
         )}
-        
-        <Button className="login-btn" block size="lg" type="submit" disabled={!isValidForm}>
+
+        <Button
+          className="login-btn"
+          block
+          size="lg"
+          type="submit"
+          disabled={!isValidForm}
+        >
           {isRegister ? "Register" : "Login"}
         </Button>
       </Form>
 
-     
       {loading && <div>Loading</div>}
     </div>
   );

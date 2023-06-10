@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "./login/authContext";
 import styled from "styled-components";
+import { useState } from "react";
 
 const StyledLi = styled.div`
   font-size: "20px";
@@ -16,7 +17,7 @@ const StyledLi = styled.div`
 
 export const Header = (props) => {
   const { isAuthenticated, logout } = useContext(AuthContext);
-  const { browse, save, gif } = props;
+  const { browse, save, gif, selected } = props;
 
   return (
     <header>
@@ -32,6 +33,60 @@ export const Header = (props) => {
           marginRight: "100px",
         }}
       >
+        <StyledLi>
+          <Link
+            style={
+              selected == "editor"
+                ? {
+                    fontSize: "20px",
+                    color: "#996600",
+                    paddingRight: "20px",
+                    paddingLeft: "20px",
+                    backgroundColor: "red",
+                    fontWeight: "bold",
+                  }
+                : {
+                    fontSize: "20px",
+                    color: "#996600",
+                    paddingRight: "20px",
+                    paddingLeft: "20px",
+                    backgroundColor: null,
+                    fontWeight: "bold",
+                  }
+            }
+            to="/editor"
+          >
+            EDITOR
+          </Link>
+        </StyledLi>
+        <StyledLi>
+          <Link
+            style={
+              selected == "creator"
+                ? {
+                    fontSize: "20px",
+                    color: "#996600",
+                    paddingRight: "20px",
+                    paddingLeft: "20px",
+
+                    backgroundColor: "red",
+                    fontWeight: "bold",
+                  }
+                : {
+                    fontSize: "20px",
+                    color: "#996600",
+                    paddingRight: "20px",
+                    paddingLeft: "20px",
+
+                    backgroundColor: null,
+                    fontWeight: "bold",
+                  }
+            }
+            to="/creator"
+          >
+            MAKER
+          </Link>
+        </StyledLi>
         {isAuthenticated ? (
           <StyledLi
             style={{
@@ -52,54 +107,35 @@ export const Header = (props) => {
         ) : (
           <li>
             <Link
-              style={{
-                fontSize: "20px",
-                color: "#996600",
-                // marginLeft: "30px",
-                paddingRight: "20px",
-                paddingLeft: "20px",
+              style={
+                selected == "login"
+                  ? {
+                      fontSize: "20px",
+                      color: "#996600",
+                      // marginLeft: "30px",
+                      paddingRight: "20px",
+                      paddingLeft: "20px",
 
-                backgroundColor: "red",
-                fontWeight: "bold",
-              }}
+                      backgroundColor: "null",
+                      fontWeight: "bold",
+                    }
+                  : {
+                      fontSize: "20px",
+                      color: "#996600",
+                      // marginLeft: "30px",
+                      paddingRight: "20px",
+                      paddingLeft: "20px",
+
+                      backgroundColor: "red",
+                      fontWeight: "bold",
+                    }
+              }
               to="/login"
             >
               LOGIN
             </Link>
           </li>
         )}
-        <StyledLi>
-          <Link
-            style={{
-              fontSize: "20px",
-              color: "#996600",
-              paddingRight: "20px",
-              paddingLeft: "20px",
-              // backgroundColor: "red",
-              fontWeight: "bold",
-            }}
-            to="/editor"
-          >
-            EDITOR
-          </Link>
-        </StyledLi>
-        <StyledLi>
-          <Link
-            style={{
-              fontSize: "20px",
-              color: "#996600",
-              // marginLeft: "30px",
-              paddingRight: "20px",
-              paddingLeft: "20px",
-
-              // backgroundColor: "red",
-              fontWeight: "bold",
-            }}
-            to="/creator"
-          >
-            MAKER
-          </Link>
-        </StyledLi>
       </ul>
       <ul
         style={{

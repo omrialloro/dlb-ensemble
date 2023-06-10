@@ -52,6 +52,8 @@ function Creator(props) {
   const browse = props.browse;
   const save = props.save;
   const gif = props.gif;
+  const setSelected = props.setSelected;
+  setSelected("creator");
 
   useEffect(() => {
     setStart_time(Date.now());

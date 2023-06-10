@@ -11,6 +11,7 @@ function App() {
   const [save, setSave] = useState(0);
   const [browse, setBrowse] = useState(0);
   const [gif, setGif] = useState(0);
+  const [selected, setSelected] = useState("creator");
 
   const { isAuthenticated } = useContext(AuthContext);
   console.log("isAuthenticated", isAuthenticated);
@@ -31,15 +32,28 @@ function App() {
   };
 
   // const isAuthenticated = true;
+  // let selected = "editor";
+  // let selected = "creator";
 
   if (!isAuthenticated)
     return (
       <BrowserRouter>
-        <Header browse={clickBrowse} save={clickSave} gif={clickGif} />
+        <Header
+          browse={clickBrowse}
+          save={clickSave}
+          gif={clickGif}
+          selected={selected}
+        />
         <Routes>
           <Route path="/*" element={<Navigate to="/login" />} />
-          <Route path="/login" element={<Login isRegister={false} />} />
-          <Route path="/register" element={<Login isRegister={true} />} />
+          <Route
+            path="/login"
+            element={<Login setSelected={setSelected} isRegister={false} />}
+          />
+          <Route
+            path="/register"
+            element={<Login setSelected={setSelected} isRegister={true} />}
+          />
         </Routes>
       </BrowserRouter>
     );
@@ -48,14 +62,29 @@ function App() {
     <>
       <BrowserRouter>
         <div>
-          <Header browse={clickBrowse} save={clickSave} gif={clickGif} />
+          <Header
+            browse={clickBrowse}
+            save={clickSave}
+            gif={clickGif}
+            selected={selected}
+          />
           <Routes>
             <Route path="/*" element={<Navigate to="/creator" />} />
-            <Route path="/editor" element={<Editorr />} />
+            <Route
+              path="/editor"
+              element={<Editorr setSelected={setSelected} />}
+            />
             <Route
               onClick={reset}
               path="/creator"
-              element={<Creator browse={browse} save={save} gif={gif} />}
+              element={
+                <Creator
+                  browse={browse}
+                  save={save}
+                  gif={gif}
+                  setSelected={setSelected}
+                />
+              }
             />
           </Routes>
         </div>

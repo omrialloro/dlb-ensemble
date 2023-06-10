@@ -61,7 +61,9 @@ const StyledSave = styled.div`
   text-align: center;
 `;
 
-function Editorr() {
+function Editorr(props) {
+  const setSelected = props.setSelected;
+  setSelected("editor");
   const {
     auth: {
       payload: {
