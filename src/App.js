@@ -9,9 +9,11 @@ import { Header } from "./Header";
 
 function App() {
   const [save, setSave] = useState(0);
+  const [saveEditor, setSaveEditor] = useState(0);
+
   const [browse, setBrowse] = useState(0);
   const [gif, setGif] = useState(0);
-  const [selected, setSelected] = useState("creator");
+  const [gifEditor, setGifEditor] = useState(0);
 
   const { isAuthenticated } = useContext(AuthContext);
   console.log("isAuthenticated", isAuthenticated);
@@ -20,15 +22,24 @@ function App() {
     setBrowse(0);
     setGif(0);
   };
+  const [selected, setSelected] = useState("creator");
 
   const clickBrowse = () => {
-    setBrowse(browse + 1);
+    if (selected == "creator") {
+      setBrowse(browse + 1);
+    } else if (selected == "editor") {
+      console.log(selected);
+    }
   };
   const clickSave = () => {
     setSave(save + 1);
   };
   const clickGif = () => {
-    setGif(gif + 1);
+    if (selected == "creator") {
+      setGif(gif + 1);
+    } else if (selected == "editor") {
+      setGifEditor(gifEditor + 1);
+    }
   };
 
   // const isAuthenticated = true;
@@ -72,7 +83,13 @@ function App() {
             <Route path="/*" element={<Navigate to="/creator" />} />
             <Route
               path="/editor"
-              element={<Editorr setSelected={setSelected} />}
+              element={
+                <Editorr
+                  setSelected={setSelected}
+                  gif={gifEditor}
+                  browse={browse}
+                />
+              }
             />
             <Route
               onClick={reset}

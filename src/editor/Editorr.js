@@ -63,6 +63,8 @@ const StyledSave = styled.div`
 
 function Editorr(props) {
   const setSelected = props.setSelected;
+  const gif = props.gif;
+
   setSelected("editor");
   const {
     auth: {
@@ -358,6 +360,12 @@ function Editorr(props) {
   }, [extractToGif, proccesedFrames, delay]);
 
   useEffect(() => {
+    if (gif > 0) {
+      handleMakeGif();
+    }
+  }, [gif]);
+
+  useEffect(() => {
     var tt = sessionStorage.getItem("editData");
     let editData_ = JSON.parse(tt);
     console.log(editData_);
@@ -424,10 +432,7 @@ function Editorr(props) {
                             {provided.placeholder}
                           </div>
                           <div className="library">
-                            <div className="browse_audio">
-                              {/* <img src="arrow_browse.svg"></img>
-          <p>expand</p> */}
-                            </div>
+                            <div className="browse_audio"></div>
                             <BrowseAnimations
                               PickAnimation={handlePickAnimation}
                               // username={token.userID}
@@ -477,27 +482,16 @@ function Editorr(props) {
                             // setCurrentTimecodeIndex = {setCurrentTimecodeIndex}
                             passPlayState={setIsPlay}
                             passCurrentOffsetSec={setOffsetSec}
+                            toggleScreen={setFullScreenState}
                           />
                           <div style={{ display: "flex" }}>
-                            <StyledSave onClick={handleSaveEditedFrames}>
+                            {/* <StyledSave onClick={handleSaveEditedFrames}>
                               SAVE
-                            </StyledSave>
-                            <StyledSave onClick={handleMakeGif}>
-                              {" "}
-                              MAKE GIF{" "}
-                            </StyledSave>
-                            <StyledSave
-                              onClick={() => {
-                                setFullScreenState(true);
-                              }}
-                            >
-                              {" "}
-                              FULL SCREEN{" "}
-                            </StyledSave>
-                            <StyledSave onClick={handleUploadMusic}>
+                            </StyledSave> */}
+                            {/* <StyledSave onClick={handleUploadMusic}>
                               {" "}
                               Upload Music
-                            </StyledSave>
+                            </StyledSave> */}
                           </div>
                         </div>
                         <AudioInput

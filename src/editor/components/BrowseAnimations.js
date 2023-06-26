@@ -26,10 +26,10 @@ const XX = styled.img`
   left: 12%;
 `;
 const StyledBox = styled.div`
-  height: 330px;
+  height: 180px;
   width: 330px;
   border-radius: 12px;
-  border: 1px solid #909090;
+  border: 10px solid #c1c1c1;
   padding: 12px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
