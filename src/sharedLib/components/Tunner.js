@@ -98,9 +98,6 @@ const Tunner = (props) => {
 
     const handleMouseMove = (event) => {
       if (isDragging) {
-        console.log(event.offsetX);
-        console.log(event.offsetY);
-
         const newAngle = calculateAngle(event.offsetX, event.offsetY);
         const deltaAngle = newAngle - lastAngle;
 

@@ -1,6 +1,11 @@
 import "./../components/App.css";
 // import "./../components/base.css";
 import "./../components/fonts.css";
+import { useEffect, useState } from "react";
+import ColorThemeBtn from "./../components/ColorThemeBtn";
+
+import { Rotate, Reflect, Reverse } from "../components/OperatorsBtns";
+import { Scheme, getSchemes } from "../../sharedLib/schemes/Schemes";
 
 import {
   changeFrameScheme,
@@ -10,13 +15,15 @@ import {
 
 import styled from "styled-components";
 
-const scheme_array = getSchemesArray();
+const scheme_array = Object.values(getSchemes());
+
+// // const scheme_array = getSchemesArray();
 
 const StyledScheme = styled.div`
   margin: 0 auto;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   box-sizing: border-box;
   border-width: 5px;
   border-style: solid;
@@ -25,7 +32,6 @@ const StyledScheme = styled.div`
 export function Operators(props) {
   const operatorsState = props.operatorsState;
   const updateOperatorsState = props.updateOperatorsState;
-  console.log(operatorsState);
 
   function clickRotate() {
     let operatorsState_ = operatorsState;
@@ -50,7 +56,7 @@ export function Operators(props) {
     if (operatorsState_["scheme"] == -1) {
       return;
     } else {
-      operatorsState_["scheme"] = (operatorsState_["scheme"] + 1) % 4;
+      operatorsState_["scheme"] = (operatorsState_["scheme"] + 1) % 5;
       updateOperatorsState(operatorsState_);
     }
   }
@@ -64,32 +70,24 @@ export function Operators(props) {
 
   return (
     <div className="container_btns">
-      <div className="container_btn invert" onClick={clickReverse}>
-        <div className="btn">
-          <img src="reverse_icon.svg"></img>
-        </div>
-        <p>{"reverse" + operatorsState["reverse"]} </p>
-      </div>
+      <Reflect
+        clickReflect={clickReflect}
+        isOn={operatorsState["reflect"] == 0}
+      />
 
-      <div className="container_btn reflect" onClick={clickReflect}>
-        <div className="btn">
-          <img src="reflect_icon.svg"></img>
-        </div>
-        <p>{"reflect" + operatorsState["reflect"]}</p>
-      </div>
+      <Rotate rotate={clickRotate} index={operatorsState["rotate"]} />
+      <Reverse
+        clickReverse={clickReverse}
+        isOn={operatorsState["reverse"] == 1}
+      />
 
-      <div className="container_btn flip_vert" onClick={clickRotate}>
-        <div className="btn">
-          <img src="switch_icon.svg"></img>
-        </div>
-        <p>{"rotate" + operatorsState["rotate"]}</p>
-      </div>
-
-      <div className="container_btn color_scheme" onClick={clickScheme}>
-        <div className="btn">
-          <StyledScheme scheme={scheme}></StyledScheme>
-        </div>
-        <p>{"scheme" + operatorsState["scheme"]}</p>
+      <div className="container_btn color_scheme">
+        {operatorsState["scheme"] == -1 ? null : (
+          <ColorThemeBtn
+            colors={scheme_array[operatorsState["scheme"]]}
+            clickScheme={clickScheme}
+          />
+        )}
       </div>
     </div>
   );

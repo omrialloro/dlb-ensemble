@@ -186,12 +186,12 @@ export function Preview(props) {
         </div>
 
         <div style={{ display: "flex" }}>
-          <div style={{ margin: "0px 150px 0px 0px" }}>
+          <div style={{ margin: "0px 140px 0px 0px" }}>
             <Tunner
               setValue={setFPS}
               minValue={5}
               maxValue={60}
-              radius={27}
+              radius={25}
               label={"FPS"}
             />
           </div>
@@ -200,7 +200,7 @@ export function Preview(props) {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#c73d1e"
-              stroke="currentColor"
+              stroke="salmon"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"

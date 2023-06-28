@@ -33,7 +33,22 @@ export function FullScreen(props) {
         frames={frames}
         delay={delay}
       />
-      <StyledClose onClick={() => toggleFullScreen(false)} />
+      <div
+        onClick={() => toggleFullScreen(false)}
+        style={{ width: "60px", height: "60px" }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="#c73d1e"
+          stroke="salmon"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 4h16v16H4zM8 8h8v8H8z" />
+        </svg>
+      </div>
     </div>
   );
 }

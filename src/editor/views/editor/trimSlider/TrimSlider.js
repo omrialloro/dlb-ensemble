@@ -31,7 +31,7 @@ export const TrimSlider = (props) => {
         onChangeCommitted={onChangeCommitted}
         sx={{
           width: props.width,
-          height: "8px",
+          height: "10px",
           color: "#fdd8d8",
           WebkitAppearance: "slider-vertical",
           "& .MuiSlider-thumb": {
