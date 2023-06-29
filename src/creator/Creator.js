@@ -2,12 +2,13 @@ import "./App.css";
 import "./base.css";
 
 import { Pallet } from "./components/colors/Pallet";
-import { getSchemes, Scheme } from "./components/colors/Schemes";
+// import { getSchemes, Scheme } from "./components/colors/Schemes";
+import { getSchemes, Scheme } from "../sharedLib/schemes/Schemes";
+
 import { Shapes } from "./components/shapes/Shapes";
 import { coloring_shape } from "./components/shapes/ops";
 import { Screen } from "./components/Screen";
 import { Play } from "./components/Play";
-import { NewFrame } from "./components/NewFrame";
 import {
   createDefaultFrameState,
   renderFrame,

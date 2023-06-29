@@ -186,7 +186,7 @@ export function Preview(props) {
         </div>
 
         <div style={{ display: "flex" }}>
-          <div style={{ margin: "0px 140px 0px 0px" }}>
+          <div style={{ margin: "4px 140px 0px 0px" }}>
             <Tunner
               setValue={setFPS}
               minValue={5}

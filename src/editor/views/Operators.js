@@ -11,18 +11,6 @@ import styled from "styled-components";
 
 const scheme_array = Object.values(getSchemes());
 
-// // const scheme_array = getSchemesArray();
-
-const StyledScheme = styled.div`
-  margin: 0 auto;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  box-sizing: border-box;
-  border-width: 5px;
-  border-style: solid;
-  border-color: ${(props) => props.scheme};
-`;
 export function Operators(props) {
   const operatorsState = props.operatorsState;
   const updateOperatorsState = props.updateOperatorsState;

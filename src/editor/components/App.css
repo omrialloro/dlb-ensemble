@@ -652,11 +652,26 @@ cursor:pointer;
 /* line-height: 32px; */
 }
 
+
 .container_btn {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.hover_text {
+  padding: 1px 1px;
+  color: #fff;
+  font-size: 14px;
+  position: absolute;
+
+  opacity: 0;
+  /* transition: opacity 0.3s ease; */
+}
+
+.btn:hover .hover_text {
+  opacity: 1;
 }
 
 

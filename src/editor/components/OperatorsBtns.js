@@ -60,8 +60,8 @@ function Reflect(props) {
             fill="#606060"
           />
         </svg>
+        {/* <p className="hover_text">Reflection</p> */}
       </div>
-      {/* <p>{"reflect" + operatorsState["reflect"]}</p> */}
     </div>
   );
 }
@@ -93,6 +93,8 @@ function Reverse(props) {
           <polygon points="10,7 16,13 10,19" fill="#000" />
         </svg>
       </div>
+      <p className="hover_text">Reverse</p>
+
       {/* <p>{"scheme" + operatorsState["scheme"]}</p> */}
     </div>
   );
