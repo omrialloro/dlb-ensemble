@@ -7,12 +7,6 @@ import ColorThemeBtn from "./../components/ColorThemeBtn";
 import { Rotate, Reflect, Reverse } from "../components/OperatorsBtns";
 import { Scheme, getSchemes } from "../../sharedLib/schemes/Schemes";
 
-import {
-  changeFrameScheme,
-  getSchemesArray,
-  detectScheme,
-} from "./../components/ColorSchemes";
-
 import styled from "styled-components";
 
 const scheme_array = Object.values(getSchemes());
