@@ -192,7 +192,11 @@ function Creator(props) {
             colorMapping,
             2 * oscillators[i].framesLen
           );
-          renderedOscillators_.push({ frames: synthFrames, id: id });
+          renderedOscillators_.push({
+            frames: synthFrames,
+            id: id,
+            isOscillator: true,
+          });
         }
       }
     }

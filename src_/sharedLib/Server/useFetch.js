@@ -23,7 +23,7 @@ export function useFetch(url, refresh) {
           setError(await res.json());
         } else {
           setData(await res.json());
-        } 
+        }
       } catch (err) {
         setError(err);
       } finally {

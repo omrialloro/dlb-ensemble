@@ -76,7 +76,9 @@ const StyledBtn = styled.div`
 `;
 
 export default function CreateOscillator(props) {
-  const animations = props.animations;
+  const animations_ = props.animations;
+  const animations = animations_.filter((x) => !x.isOscillator);
+
   const createOscillatorOn = props.createOscillatorOn;
   const closeWindow = props.closeWindow;
   const buildOscillator = props.buildOscillator;
@@ -204,7 +206,7 @@ export default function CreateOscillator(props) {
                               ref={rrrr}
                               onPixelClick={() => {}}
                               screenSize={30}
-                              pausedFrameIndex={1}
+                              pausedFrameIndex={0}
                               frames={k.frames}
                               delay={null}
                               id={"2" + k.id}

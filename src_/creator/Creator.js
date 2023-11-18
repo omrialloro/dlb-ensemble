@@ -1,16 +1,29 @@
-import './App.css';
-import './base.css';
+import "./App.css";
+import "./base.css";
 
-import {Pallet} from './components/colors/Pallet'
-import {getSchemes,Scheme} from './components/colors/Schemes'
-import {Shapes} from './components/shapes/Shapes'
-import {coloring_shape} from './components/shapes/ops'
-import {Screen} from './components/Screen'
-import {Play} from './components/Play'
-import {NewFrame} from './components/NewFrame'
-import {createDefaultFrameState, renderFrame,renderAllFrames, ShiftFrame,synthOscillator,stateToLAbels} from './components/frameOps/FrameOps'
-import { Errows } from './components/Errows';
-import { StoreAnimation,Reset,oscillateAnimationsColorMappingCb,animationColorMappingCb,animationStateMappingCb } from './components/AnimationOperators';
+import { Pallet } from "./components/colors/Pallet";
+import { getSchemes, Scheme } from "./components/colors/Schemes";
+import { Shapes } from "./components/shapes/Shapes";
+import { coloring_shape } from "./components/shapes/ops";
+import { Screen } from "./components/Screen";
+import { Play } from "./components/Play";
+import { NewFrame } from "./components/NewFrame";
+import {
+  createDefaultFrameState,
+  renderFrame,
+  renderAllFrames,
+  ShiftFrame,
+  synthOscillator,
+  stateToLAbels,
+} from "./components/frameOps/FrameOps";
+import { Errows } from "./components/Errows";
+import {
+  StoreAnimation,
+  Reset,
+  oscillateAnimationsColorMappingCb,
+  animationColorMappingCb,
+  animationStateMappingCb,
+} from "./components/AnimationOperators";
 import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { PlayBar } from "./components/PlayBar";
 import { Fps } from "./components/Fps";
@@ -285,13 +298,13 @@ function Creator() {
   } = useContext(AuthContext);
 
   async function loadAnimation(animationId) {
-     const res = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
-       method: "GET",
-       headers: {
-         Authorization: `Bearer ${token}`,
-       },
-     });
-     return res.json();
+    const res = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.json();
   }
 
   async function loadStoredAnimations(animationsIds_) {
