@@ -178,7 +178,6 @@ function Editorr(props) {
       items.splice(result.destination.index, 0, reorderedItem);
       setDATA(items);
     }
-    console.log(DATA);
   }
 
   function deletAnimation(id) {
@@ -210,20 +209,32 @@ function Editorr(props) {
     setMainScreen(mainScreen_);
   }
 
-  function createGrayFrames() {
-    let alpha = 1 / num_frames;
-    const GrayFrame = (alpha) =>
-      Array(dim[1])
-        .fill(0)
-        .map(() =>
-          Array(dim[0])
-            .fill(0)
-            .map(() => {
-              return grayRGB(alpha);
-            })
-        );
-    return Array.from(Array(num_frames).keys()).map((t) =>
-      GrayFrame(1 - alpha * t)
+  function MakeGrayFrame(alpha) {
+    return Array(dim[1])
+      .fill(0)
+      .map(() =>
+        Array(dim[0])
+          .fill(0)
+          .map(() => {
+            return grayRGB(alpha);
+          })
+      );
+  }
+
+  function createGrayFrames(num_frames_) {
+    let alpha = 1 / num_frames_;
+    // const GrayFrame = (alpha) =>
+    //   Array(dim[1])
+    //     .fill(0)
+    //     .map(() =>
+    //       Array(dim[0])
+    //         .fill(0)
+    //         .map(() => {
+    //           return grayRGB(alpha);
+    //         })
+    //     );
+    return Array.from(Array(num_frames_).keys()).map((t) =>
+      MakeGrayFrame(1 - alpha * t)
     );
   }
 
@@ -284,8 +295,13 @@ function Editorr(props) {
         prepareFrames(element).slice(range[0], range[1])
       );
     });
-    setProccesedFrames(outFrames);
-    SetTimeCodes(timeCodes_);
+    if (outFrames.length == 0) {
+      setProccesedFrames([MakeGrayFrame(1)]);
+      SetTimeCodes([["0", 0]]);
+    } else {
+      setProccesedFrames(outFrames);
+      SetTimeCodes(timeCodes_);
+    }
   }
 
   function addAnimation(animation, id) {
@@ -346,6 +362,7 @@ function Editorr(props) {
   }, [mainScreen, DATA]);
 
   let frammmes = prepareFrames(mainScreen);
+
   const [proccesedFrames, setProccesedFrames] = useState(
     prepareFrames(mainScreen)
   );

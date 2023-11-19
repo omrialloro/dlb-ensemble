@@ -9,6 +9,8 @@ export function Editor(props) {
   const right = border[1];
   const [isPlay, setIsPlay] = useState(false);
 
+  console.log("frames", frames.length);
+
   return (
     <>
       <Screen

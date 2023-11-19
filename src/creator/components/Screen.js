@@ -69,7 +69,12 @@ export const Screen = forwardRef((props, ref) => {
   }, [frames, labels]);
 
   useEffect(() => {
-    setFrame(frames[pausedFrameIndex], id);
+    setFrame(
+      frames[
+        frames.length > pausedFrameIndex ? pausedFrameIndex : frames.length - 1
+      ],
+      id
+    );
   }, [frames, pausedFrameIndex]);
 
   let currentFrame = pausedFrameIndex;
