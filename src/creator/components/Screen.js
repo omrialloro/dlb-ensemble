@@ -107,6 +107,7 @@ export const Screen = forwardRef((props, ref) => {
         gap: "0.00px",
         marginBottom: "3px",
         marginTop: "3px",
+        // filter: "blur(1px)",
       }}
     >
       {row.map((x) =>

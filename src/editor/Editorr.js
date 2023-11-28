@@ -512,11 +512,11 @@ function Editorr(props) {
                             </StyledSave> */}
                           </div>
                         </div>
-                        <AudioInput
+                        {/* <AudioInput
                           ref={AudioRef}
                           isPlay={isPlay}
                           offsetSec={offsetSec}
-                        />
+                        /> */}
                       </div>
                     </div>
                   </main>

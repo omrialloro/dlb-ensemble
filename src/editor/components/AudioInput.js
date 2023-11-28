@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 
 import SlideBar from "./SlideBar.js";
-import { WaveformTunner } from "./WaveformTunner.js";
+// import { WaveformTunner } from "./WaveformTunner.js";
 
 export default React.forwardRef((props, ref) => {
   let isPlay = props.isPlay;
@@ -92,7 +92,7 @@ export default React.forwardRef((props, ref) => {
       <div style={{ display: "flex" }}>
         {/* <p ref = {offsetRef} style={{fontSize: 22}}> 0.0</p> */}
       </div>
-      <WaveformTunner ref={timeSecRef} lenSec={duration} />
+      {/* <WaveformTunner ref={timeSecRef} lenSec={duration} /> */}
     </div>
   );
 });

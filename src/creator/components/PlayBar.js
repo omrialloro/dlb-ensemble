@@ -1,12 +1,14 @@
-import * as React from 'react';
-import { styled, alpha, Box } from '@mui/system';
-import SliderUnstyled, { sliderUnstyledClasses } from '@mui/base/SliderUnstyled';
-import {useInterval} from './utils/useInterval';
-import { useState} from "react";
+import * as React from "react";
+import { styled, alpha, Box } from "@mui/system";
+import SliderUnstyled, {
+  sliderUnstyledClasses,
+} from "@mui/base/SliderUnstyled";
+import { useInterval } from "./utils/useInterval";
+import { useState } from "react";
 
 const StyledSlider = styled(SliderUnstyled)(
   ({ theme }) => `
-  color: ${theme.palette.mode === 'light' ? '#1976d2' : '#90caf9'};
+  color: ${theme.palette.mode === "light" ? "#1976d2" : "#90caf9"};
   height: 4px;
   width: 100%;
   padding: 13px 0;
@@ -74,76 +76,72 @@ const StyledSlider = styled(SliderUnstyled)(
     :hover,
     &.${sliderUnstyledClasses.focusVisible} {
       box-shadow: 0 0 0 0.25rem ${alpha(
-        theme.palette.mode === 'light' ? '#1976d2' : '#90caf9',
-        0.15,
+        theme.palette.mode === "light" ? "#1976d2" : "#90caf9",
+        0.15
       )};
     }
 
     &.${sliderUnstyledClasses.active} {
       box-shadow: 0 0 0 0.25rem ${alpha(
-        theme.palette.mode === 'light' ? '#1976d2' : '#90caf9',
-        0.3,
+        theme.palette.mode === "light" ? "#1976d2" : "#90caf9",
+        0.3
       )};
     }
   }
-`,
+`
 );
 
 export const PlayBar = (props) => {
-
-  const {pausedFrameIndex,length, delay, updateFrameIndex} = props
-  const onChange = (event, newValue)=>{
-    setVal(newValue)
-  }
-  const onChangeCommitted = (event, newValue)=>{
-    if(pausedFrameIndex==0){
-      updateFrameIndex(1)
+  const { pausedFrameIndex, length, delay, updateFrameIndex } = props;
+  const onChange = (event, newValue) => {
+    setVal(newValue);
+  };
+  const onChangeCommitted = (event, newValue) => {
+    if (pausedFrameIndex == 0) {
+      updateFrameIndex(1);
       // updateFrameIndex(Math.max(newValue,1))
-    }
-    else{
-      updateFrameIndex(Math.max(newValue,1))
+    } else {
+      updateFrameIndex(Math.max(newValue, 1));
       // updateFrameIndex(newValue)
     }
-    
-  }
-  const [val,setVal] = useState(pausedFrameIndex)
+  };
+  const [val, setVal] = useState(pausedFrameIndex);
 
-
-  React.useEffect(()=>{
-    setVal(pausedFrameIndex)
-  },[pausedFrameIndex])
+  React.useEffect(() => {
+    setVal(pausedFrameIndex);
+  }, [pausedFrameIndex]);
 
   useInterval(() => {
-    if (val>=length-1){
-      setVal(0)
-    }
-    else{
-      setVal(val+1)
+    if (val >= length - 1) {
+      setVal(0);
+    } else {
+      setVal(val + 1);
     }
   }, delay);
-  
+
   return (
-    <Box sx={{ width: '100%' }}>
-      <StyledSlider defaultValue={0} value={val} 
-      min={1}
-      max={length}
-      onChange= {onChange}
-      onChangeCommitted= {onChangeCommitted}
-       sx={{
-        width: props.width,
-        height: "8px",
-        color: '#fff',
-        WebkitAppearance: 'slider-vertical',
-        '& .MuiSlider-thumb': {
-          width: "8px",
-          height: '24px',
-          borderRadius: '12px',
-          background: '#ff002c',
-          text:"fff",
-        },
-      }}
+    <Box sx={{ width: "100%" }}>
+      <StyledSlider
+        defaultValue={0}
+        value={val}
+        min={1}
+        max={length}
+        onChange={onChange}
+        onChangeCommitted={onChangeCommitted}
+        sx={{
+          width: props.width,
+          height: "8px",
+          color: "#fff",
+          WebkitAppearance: "slider-vertical",
+          "& .MuiSlider-thumb": {
+            width: "8px",
+            height: "24px",
+            borderRadius: "12px",
+            background: "#ff002c",
+            text: "fff",
+          },
+        }}
       />
     </Box>
   );
-
-}
+};

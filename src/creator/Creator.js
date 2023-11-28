@@ -65,6 +65,7 @@ function Creator(props) {
 
   // const [animationsIds,setAnimationsIds] = useState(JSON.parse(sessionStorage.getItem("animationsIds")))
   const [animationsIds, setAnimationsIds] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
 
   const [oscillators, setOscillators] = useState([]);
   const [renderedOscillators, setRenderedOscillators] = useState([]);
@@ -77,7 +78,6 @@ function Creator(props) {
   const storeAnimation = () => {
     if (frames.length > 0) {
       let id = Date.now();
-      console.log(id);
       let frames__ = renderAllFrames(frames, stateMapping);
       let frames_ = renderAllFrames(frames__, stateMapping);
       let ThumbnailFrame = renderFrame(frames_[0], colorMapping, 0);
@@ -127,11 +127,9 @@ function Creator(props) {
         console.log(animations[i].isDeleted);
       }
     }
-    console.log();
     for (let i = 0; i < renderedOscillators.length; i++) {
       rendered_animations.push(renderedOscillators[i]);
     }
-    console.log(rendered_animations);
     setRenderedAnimations(rendered_animations);
   }
 
@@ -235,11 +233,7 @@ function Creator(props) {
     return color_mapping;
   }
   function renderOscillator(id1, id2, numFrames) {
-    console.log(id1);
-    console.log(id2);
-
     let color_mapping_ = {};
-    console.log(animations);
     let A1 = animations.filter((x) => x.id == id1)[0];
     let A2 = animations.filter((x) => x.id == id2)[0];
     console.log(A1.frames.length);
@@ -310,6 +304,15 @@ function Creator(props) {
   const {
     auth: { token },
   } = useContext(AuthContext);
+
+  const [selectedAnimation, setSelectedAnimation] = useState(null);
+
+  async function selectAnimation(animationId) {
+    const A = await loadAnimation(animationId);
+
+    const AA = renderAllFrames(A["data"], colorMapping);
+    return AA;
+  }
 
   async function loadAnimation(animationId) {
     const res = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
@@ -392,9 +395,7 @@ function Creator(props) {
 
   useEffect(() => {
     async function ffff(animationsIds_) {
-      console.log(animationsIds_);
       const r = await loadStoredAnimations(animationsIds_);
-      console.log(r);
       setIsStoredLoaded(true);
     }
     if (!isStoredLoaded) {
@@ -405,7 +406,6 @@ function Creator(props) {
         animationsIds_str != null
       ) {
         var animationsIds_ = JSON.parse(animationsIds_str);
-        console.log(animationsIds_);
         ffff(animationsIds_);
       } else {
         setIsStoredLoaded(true);
@@ -414,7 +414,6 @@ function Creator(props) {
   }, []);
 
   useEffect(() => {
-    console.log(isStoredLoaded);
     if (isStoredLoaded) {
       sessionStorage.setItem("animationsIds", JSON.stringify(animationsIds));
     }
@@ -439,11 +438,6 @@ function Creator(props) {
   }, [isStoredLoaded, frameIndex]);
 
   useEffect(() => {
-    console.log(undoData);
-  }, [isStoredLoaded, undoData]);
-
-  useEffect(() => {
-    console.log(coloringState);
     setTimeout(() => {
       sessionStorage.setItem("coloringState", JSON.stringify(coloringState));
     }, 100);
@@ -559,7 +553,6 @@ function Creator(props) {
   }, [colors, frames, colorMapping]);
 
   useEffect(() => {
-    console.log("ccc");
     renderAllAnimations();
   }, [animations, renderedOscillators, oscillators, colorMapping]);
 
@@ -598,10 +591,6 @@ function Creator(props) {
     // let intersctedId = intersection(oscillatorsIds, colors)
     // let intersctedList = oscillators.filter(t=>{colors.includes(2000)})
     let intersctedList = oscillators.filter((t) => true);
-    console.log(intersctedList);
-
-    console.log(oscillators);
-    console.log(colors.includes(2000));
 
     let idsArray = [];
     for (let i = 0; i < intersctedList.length; i++) {
@@ -609,7 +598,6 @@ function Creator(props) {
       let id2 = intersctedList[i].animationId2;
       idsArray = [...idsArray, id1, id2];
     }
-    console.log(idsArray);
     return colors;
   }
 
@@ -784,10 +772,8 @@ function Creator(props) {
     let index = items.findIndex((el) => el["id"] == id);
 
     if (index == -1) {
-      console.log("ssdsdd");
       index = items_os.findIndex((el) => el["id"] == id);
       items_os.splice(index, 1);
-      console.log(items_os);
       setOscillators(items_os);
     } else {
       items.splice(index, 1);
@@ -812,6 +798,35 @@ function Creator(props) {
     setStateMapping(stateMapping_);
     setAnimations([...animations, ...addedAnimations]);
     return rejectedIds;
+  }
+
+  function addAnimation(d) {
+    if (animations.filter((x) => x.id == d.id).length > 0) {
+      console.log(animations.filter((x) => x.id == d.id)[0]);
+      updateAnimation(d);
+      return;
+    }
+    let stateMapping_ = stateMapping;
+    let addedAnimations = [];
+    let id = Number(d.id);
+    stateMapping_[id] = animationStateMappingCb(d.data);
+    addedAnimations.push({ id: id, frames: d.data, isDeleted: false });
+    setStateMapping(stateMapping_);
+    setAnimations([...animations, ...addedAnimations]);
+  }
+  function updateAnimation(d) {
+    let stateMapping_ = stateMapping;
+    let id = Number(d.id);
+    stateMapping_[id] = animationStateMappingCb(d.data);
+    let animations_ = animations.map((x) =>
+      x.id == d.id ? { id: id, frames: d.data, isDeleted: false } : x
+    );
+    setAnimations(animations_);
+  }
+
+  function getFramesById(id) {
+    let frames_ = animations.filter((x) => x.id == id)[0].frames;
+    return frames_;
   }
   const [isGrid, setIsGrid] = useState(false);
 
@@ -845,9 +860,25 @@ function Creator(props) {
                     setColor={setColor}
                     pickedIndex={coloringState.color}
                   />
+                  {animations.length > 0 && (
+                    <AnimationPallet
+                      data={renderedAnimations}
+                      onAnimationSelect={(x) => {
+                        setColor(x);
+                      }}
+                      onDoubleClick={(id) => {
+                        setBrowserOn(true);
+                        setSelectedId(id);
+                        console.log(id);
+                      }}
+                      onAnimationDelete={onAnimationDelete}
+                      createOscillator={createOscillator}
+                      pickedIndex={coloringState.color}
+                    />
+                  )}
                 </div>
                 <Shapes pickedShape={coloringState.shape} setShape={setShape} />
-                <AnimationPallet
+                {/* <AnimationPallet
                   data={renderedAnimations}
                   onAnimationSelect={(x) => {
                     setColor(x);
@@ -855,13 +886,17 @@ function Creator(props) {
                   onAnimationDelete={onAnimationDelete}
                   createOscillator={createOscillator}
                   pickedIndex={coloringState.color}
-                />
+                /> */}
               </section>
               <AnimationLibrary
                 username={email}
-                addAnimations={addAnimations}
+                addAnimation={addAnimation}
                 browserdOn={browserdOn}
                 setBrowserOn={setBrowserOn}
+                settedId={selectedId}
+                getFramesById={getFramesById}
+                colorMapping={colorMapping}
+                onAnimationDelete={onAnimationDelete}
               />
               <CreateOscillator
                 createOscillatorOn={createOscillatorOn}

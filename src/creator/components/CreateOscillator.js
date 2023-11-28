@@ -226,9 +226,10 @@ export default function CreateOscillator(props) {
           <div
             style={{
               display: "flex",
-              position: "absolute",
-              bottom: 10,
-              left: 20,
+              position: "relative",
+              pedding: "10px",
+              // bottom: 10,
+              // left: 20,
             }}
           >
             <Screen
