@@ -19,6 +19,9 @@ const StyledBox = styled.div`
 `;
 
 const StyledCircle = styled.div`
+  transform: scale(${(props) => props.scale});
+  transition: 0.3s;
+
   height: 40px;
   width: 40px;
   margin-left: 28px;
@@ -56,7 +59,7 @@ const SmallScreen = forwardRef((props, ref) => {
       <Screen
         ref={ref}
         onPixelClick={onClick}
-        screenSize={isPicked ? 43 : 40}
+        screenSize={isPicked ? 43 : 43}
         pausedFrameIndex={0}
         frames={frames}
         delay={delay}
@@ -95,7 +98,7 @@ export function AnimationPallet(props) {
   return (
     <StyledBox>
       {data.map((e, index) => (
-        <StyledCircle>
+        <StyledCircle scale={e.id == pickedIndex ? 1.17 : 1}>
           <SmallScreen
             isPicked={e.id == pickedIndex}
             onClick={() => {
