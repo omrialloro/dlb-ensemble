@@ -96,23 +96,26 @@ const StyledBtn = styled.div`
 
 const StyledBtn1 = styled.div`
   background-color: #00b8e6;
-  width: 80px;
-  height: 40px;
+  width: 90px;
+  height: 60px;
   margin-left: 10px;
 
   margin-top: 12px;
   padding: 12px;
   margin-bottom: 24px;
+  /* border: 12px solid yellow; */
 `;
 const StyledBtn5 = styled.div`
   background-color: #00b8e6;
-  width: 80px;
-  height: 40px;
+  width: 90px;
+  height: 60px;
   margin-left: 10px;
 
   margin-top: 12px;
   padding: 12px;
   margin-bottom: 24px;
+  /* color: #1c0f0f; */
+  /* border: 11px solid yellow; */
 `;
 const StyledBtn2 = styled.div`
   background-color: #c73d1e;
@@ -125,12 +128,13 @@ const StyledBtn2 = styled.div`
 `;
 const StyledBtn3 = styled.div`
   background-color: red;
-  width: 80px;
-  height: 40px;
+  width: 90px;
+  height: 30px;
   margin-left: 10px;
-  margin-top: 12px;
+  margin-top: 2px;
   padding: 2px;
   margin-bottom: 14px;
+  /* border: 13px solid yellow; */
 `;
 
 export default function AnimationLibrary(props) {
@@ -422,7 +426,9 @@ export default function AnimationLibrary(props) {
     setSettedId(null);
     setSelectedId(id);
     setScreen(id);
+    setOpState({ ...opState, range: [0, frames.length] });
   }
+  useEffect(() => {}, [opState]);
 
   useEffect(() => {
     if (settedId != null) {
@@ -472,7 +478,7 @@ export default function AnimationLibrary(props) {
             // padding: "10px",
           }}
         >
-          <StyledBtn1 onClick={submitSelect}>SUBMIT</StyledBtn1>
+          <StyledBtn1 onClick={submitSelect}>SUBMIT NEW</StyledBtn1>
           <StyledBtn5
             onClick={() => {
               updateSelect();
