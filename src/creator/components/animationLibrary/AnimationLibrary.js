@@ -20,6 +20,8 @@ import { renderAllFrames } from "../frameOps/FrameOps";
 const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/";
 
 const StyledFrames = styled.div`
+  transform: scale(${(props) => props.scale});
+  transition: 0.2s;
   width: 50px;
   height: 50px;
   position: relative;
@@ -573,7 +575,10 @@ export default function AnimationLibrary(props) {
       >
         <div className="order"></div>
         {animations.map((x, index) => (
-          <StyledFrames key={"llll" + x["id"]}>
+          <StyledFrames
+            key={"llll" + x["id"]}
+            scale={selectedId == x["id"] ? 1.2 : 1}
+          >
             <XX
               style={x["isChecked"] ? { height: "90%" } : { height: "70%" }}
               src={x["imgUrl"]}
