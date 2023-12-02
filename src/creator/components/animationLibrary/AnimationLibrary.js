@@ -98,24 +98,30 @@ const StyledBtn = styled.div`
 
 const StyledBtn1 = styled.div`
   background-color: #00b8e6;
-  width: 90px;
-  height: 60px;
+  transition: 0.32s;
+
+  width: 80px;
+  height: 50px;
   margin-left: 10px;
+  border-radius: 6%;
 
   margin-top: 12px;
   padding: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
   /* border: 12px solid yellow; */
 `;
 const StyledBtn5 = styled.div`
-  background-color: #00b8e6;
-  width: 90px;
-  height: 60px;
-  margin-left: 10px;
+  transition: 0.32s;
 
-  margin-top: 12px;
+  background-color: #00b8e6;
+  width: 80px;
+  height: 50px;
+  margin-left: 10px;
+  border-radius: 6%;
+
+  /* margin-top: 12px; */
   padding: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
   /* color: #1c0f0f; */
   /* border: 11px solid yellow; */
 `;
@@ -125,12 +131,12 @@ const StyledBtn2 = styled.div`
   height: 40px;
   margin-left: 10px;
   margin-top: 12px;
-  padding: 2px;
+  padding: 12px;
   margin-bottom: 14px;
 `;
 const StyledBtn3 = styled.div`
   background-color: red;
-  width: 90px;
+  width: 80px;
   height: 30px;
   margin-left: 10px;
   margin-top: 2px;
@@ -141,6 +147,8 @@ const StyledBtn3 = styled.div`
 
 export default function AnimationLibrary(props) {
   const oooo = useRef();
+  const rr = useRef();
+
   const [delay, setDelay] = useState(null);
   const [frames, setFrames] = useState(createDefaultFramesRendered(36, 36));
   const [imgURLs, setImgURLs] = useState([]);
@@ -360,8 +368,18 @@ export default function AnimationLibrary(props) {
 
     // select(id);
   }
+  const rrr = useRef();
 
   async function submitSelect() {
+    rr.current.style.transition = "0.1s";
+    rr.current.style.backgroundColor = "salmon";
+    rr.current.style.scale = 0.9;
+    setTimeout(() => {
+      rr.current.style.transition = "0.3s";
+
+      rr.current.style.backgroundColor = "#00b8e6";
+      rr.current.style.scale = 1;
+    }, 170);
     if (!cashedAnimations.hasOwnProperty(selectedId)) {
       const cashedAnimations_ = cashedAnimations;
       cashedAnimations_[selectedId] = rowFrames;
@@ -384,6 +402,16 @@ export default function AnimationLibrary(props) {
   }
 
   function updateSelect() {
+    rrr.current.style.transition = "0.1s";
+
+    rrr.current.style.backgroundColor = "salmon";
+    rrr.current.style.scale = 0.9;
+    setTimeout(() => {
+      rrr.current.style.transition = "0.3s";
+
+      rrr.current.style.backgroundColor = "#00b8e6";
+      rrr.current.style.scale = 1;
+    }, 170);
     if (settedId == null) {
       return;
     }
@@ -480,8 +508,11 @@ export default function AnimationLibrary(props) {
             // padding: "10px",
           }}
         >
-          <StyledBtn1 onClick={submitSelect}>SUBMIT NEW</StyledBtn1>
+          <StyledBtn1 ref={rr} onClick={submitSelect}>
+            SUBMIT NEW
+          </StyledBtn1>
           <StyledBtn5
+            ref={rrr}
             onClick={() => {
               updateSelect();
             }}
