@@ -125,7 +125,7 @@ export const VerticalSlider = (props) => {
   return (
     <StyledSlider
       orientation="vertical"
-      style={{ height: "150px", width: "4%" }}
+      style={{ top: "-7px", height: "150px", width: "4%" }}
       getAriaLabel={() => "Route Difficulty"}
       value={val}
       // defaultValue={val}
@@ -137,26 +137,26 @@ export const VerticalSlider = (props) => {
       sx={{
         width: "10px",
         height: "4px",
-        background: "#3333ff",
+        background: "#e8d000",
         WebkitAppearance: "slider-vertical",
         "& .MuiSlider-track": {
           width: "4px",
           height: "2px",
-          background: "#3333ff",
+          background: "#e8d000",
         },
 
         "& .MuiSlider-rail": {
           width: "4px",
           height: "100%",
-          background: "#3333ff",
+          background: "#e8d000",
         },
 
         "& .MuiSlider-thumb": {
           width: "8px",
           height: "18px",
           borderRadius: "10%",
-          background: "#e6e600",
-          color: "#e6e600",
+          background: "#e8d000",
+          color: "#e8d000",
         },
 
         // "& .MuiSlider-track": {

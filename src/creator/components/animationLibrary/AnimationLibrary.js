@@ -46,8 +46,12 @@ const StyledBoxx = styled.div`
   border-radius: 12px;
   margin: 12px;
   display: flex;
+  scale: 1.2;
 
-  background: #faf1d7;
+  /* background: #faf1d7; */
+  background: #b5ae9a;
+
+  /* #b5ae9a */
   transform: translatE(3%, 35%);
   position: absolute;
 `;
@@ -58,10 +62,13 @@ const StyledContainer = styled.div`
   border-radius: 12px;
   margin-left: 2px;
   margin-top: 22px;
+  /* margin-top: 22px; */
 
   padding: 2px;
   display: flex;
-  background: #faf1d7;
+  /* background: #faf1d7; */
+  background: #b5ae9a;
+
   transform: translatE(0%, 0%);
   position: absolute;
 `;
@@ -75,11 +82,13 @@ const StyledBox = styled.div`
   grid-template-columns: repeat(120, 1fr);
   grid-template-rows: repeat(10, 1fr);
   grid-column-gap: 0;
-  top: 69%;
+  top: 68%;
 
   /* overflow: scroll; */
   overflow-x: scroll;
-  background: #c1c1c1;
+  /* background: #c1c1c1; */
+  background: #8c8664;
+
   visibility: hidden;
   /* transform: translatE(3%, 35%); */
   transform: translatE(5%, 10%);
@@ -87,7 +96,9 @@ const StyledBox = styled.div`
   position: absolute;
 `;
 const StyledBtn = styled.div`
-  background: #f3f1e0;
+  background: #b5ae9a;
+
+  /* background: #f3f1e0; */
   /* height:53px; */
   width: 10%;
   left: 5px;
@@ -97,7 +108,9 @@ const StyledBtn = styled.div`
 `;
 
 const StyledBtn1 = styled.div`
-  background-color: #00b8e6;
+  background-color: #cfa700;
+  /* background-color: #376f78; */
+
   transition: 0.32s;
 
   width: 80px;
@@ -105,15 +118,17 @@ const StyledBtn1 = styled.div`
   margin-left: 10px;
   border-radius: 6%;
 
-  margin-top: 12px;
+  margin-top: 2px;
   padding: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 5px;
   /* border: 12px solid yellow; */
 `;
 const StyledBtn5 = styled.div`
   transition: 0.32s;
 
-  background-color: #00b8e6;
+  /* background-color: #85b2af; */
+  background-color: #468c85;
+
   width: 80px;
   height: 50px;
   margin-left: 10px;
@@ -121,7 +136,7 @@ const StyledBtn5 = styled.div`
 
   /* margin-top: 12px; */
   padding: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
   /* color: #1c0f0f; */
   /* border: 11px solid yellow; */
 `;
@@ -135,13 +150,15 @@ const StyledBtn2 = styled.div`
   margin-bottom: 14px;
 `;
 const StyledBtn3 = styled.div`
-  background-color: red;
+  background-color: #fa4400;
+  /* background-color: #f26442; */
+
   width: 80px;
-  height: 30px;
+  height: 25px;
   margin-left: 10px;
   margin-top: 2px;
   padding: 2px;
-  margin-bottom: 14px;
+  margin-bottom: 4px;
   /* border: 13px solid yellow; */
 `;
 
@@ -276,31 +293,6 @@ export default function AnimationLibrary(props) {
     setIsCheckedArray(data["ids"].map((id) => false));
   }, [data]);
 
-  function fff(index) {
-    setAnimations(
-      animations.map((x, i) =>
-        i == index
-          ? {
-              id: x["id"],
-              name: x["name"],
-              imgUrl: x["imgUrl"],
-              isChecked: !x["isChecked"],
-            }
-          : x
-      )
-    );
-  }
-
-  function resetChecked() {
-    setAnimations(
-      animations.map((x, i) => ({
-        id: x["id"],
-        name: x["name"],
-        imgUrl: x["imgUrl"],
-        isChecked: false,
-      }))
-    );
-  }
   function consoleIt() {
     console.log("cashedAnimations", cashedAnimations);
     console.log("animationsData", animationsData);
@@ -309,26 +301,22 @@ export default function AnimationLibrary(props) {
     console.log("offset", opState["offset"]);
   }
 
-  function submitDelete() {
-    async function markAsDeleted(list) {
+  function submitDelete(id) {
+    async function markAsDeleted(id) {
       fetch(serverUrl + "/markAsDeleted", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(list),
+        body: JSON.stringify([id]),
       });
     }
-    const checkedAnimationsIds = animations
-      .filter((x) => x["isChecked"])
-      .map((x) => x["id"]);
     if (window.confirm("Are you sure you want to delete?")) {
-      markAsDeleted(checkedAnimationsIds);
-      setBrowserOn(false);
+      markAsDeleted(id);
+      // setBrowserOn(false);
     }
     // setBrowserOn(false);
-    resetChecked();
   }
 
   function setSelected(id) {
@@ -372,12 +360,12 @@ export default function AnimationLibrary(props) {
 
   async function submitSelect() {
     rr.current.style.transition = "0.1s";
-    rr.current.style.backgroundColor = "salmon";
-    rr.current.style.scale = 0.9;
+    rr.current.style.backgroundColor = "#fd8446";
+    rr.current.style.scale = 0.95;
     setTimeout(() => {
       rr.current.style.transition = "0.3s";
 
-      rr.current.style.backgroundColor = "#00b8e6";
+      rr.current.style.backgroundColor = "#cfa700";
       rr.current.style.scale = 1;
     }, 170);
     if (!cashedAnimations.hasOwnProperty(selectedId)) {
@@ -404,12 +392,12 @@ export default function AnimationLibrary(props) {
   function updateSelect() {
     rrr.current.style.transition = "0.1s";
 
-    rrr.current.style.backgroundColor = "salmon";
-    rrr.current.style.scale = 0.9;
+    rrr.current.style.backgroundColor = "#fd8446";
+    rrr.current.style.scale = 0.95;
     setTimeout(() => {
       rrr.current.style.transition = "0.3s";
 
-      rrr.current.style.backgroundColor = "#00b8e6";
+      rrr.current.style.backgroundColor = "#468c85";
       rrr.current.style.scale = 1;
     }, 170);
     if (settedId == null) {
@@ -479,6 +467,8 @@ export default function AnimationLibrary(props) {
   function updateRange(range) {
     setOpState({ ...opState, range: range });
   }
+  const refDelete = useRef();
+  const refRemove = useRef();
 
   return (
     <StyledBoxx
@@ -494,7 +484,6 @@ export default function AnimationLibrary(props) {
       <StyledBtn
         onClick={() => {
           setBrowserOn(false);
-          resetChecked();
         }}
       >
         X
@@ -523,20 +512,54 @@ export default function AnimationLibrary(props) {
           {/* <StyledBtn2 onClick={consoleIt}>SAVE</StyledBtn2> */}
           {/* <StyledBtn3 onClick={submitDelete}>DELETE</StyledBtn3> */}
           <StyledBtn3
-            onClick={(id) => {
+            ref={refRemove}
+            onClick={() => {
+              refRemove.current.style.transition = "0.1s";
+              refRemove.current.style.backgroundColor = "#fd8446";
+              refRemove.current.style.scale = 0.95;
+              setTimeout(() => {
+                refRemove.current.style.transition = "0.3s";
+                refRemove.current.style.backgroundColor = "#fa4400";
+                refRemove.current.style.scale = 1;
+              }, 170);
               onAnimationDelete(settedId);
             }}
+
+            // onClick={() => {
+            //   onAnimationDelete(settedId);
+            // }}
           >
             REMOVE
           </StyledBtn3>
-        </div>
+          <StyledBtn3
+            ref={refDelete}
+            onClick={() => {
+              refDelete.current.style.transition = "0.1s";
+              refDelete.current.style.backgroundColor = "#fd8446";
+              refDelete.current.style.scale = 0.95;
+              setTimeout(() => {
+                refDelete.current.style.transition = "0.3s";
+                refDelete.current.style.backgroundColor = "#fa4400";
+                refDelete.current.style.scale = 1;
+              }, 170);
+              console.log(animationsData);
+              console.log(settedId);
+              console.log(animationsData[settedId]);
+              console.log(animationsData[settedId]["animationId"]);
 
+              // submitDelete(animationsData[settedId]["animationId"]);
+            }}
+          >
+            DELETE
+          </StyledBtn3>
+        </div>
         <VerticalSlider
           min={0}
           max={frames.length}
           value={opState["offset"]}
           onChangeCommitted={onChangeOffset}
         />
+
         <div
           onMouseOver={() => {
             setDelay(40);
@@ -548,7 +571,7 @@ export default function AnimationLibrary(props) {
           <Screen
             ref={oooo}
             onPixelClick={() => {}}
-            screenSize={150}
+            screenSize={160}
             pausedFrameIndex={0}
             frames={editedFrames}
             delay={delay}
@@ -579,13 +602,15 @@ export default function AnimationLibrary(props) {
                 transform: "translatE(-30%, 0%)",
               }}
             >
-              <TrimSlider
-                min={0}
-                max={frames.length}
-                range={opState["range"]}
-                updateRange={updateRange}
-                width={"150px"}
-              />
+              <div style={{ marginBottom: "-16px" }}>
+                <TrimSlider
+                  min={0}
+                  max={frames.length}
+                  range={opState["range"]}
+                  updateRange={updateRange}
+                  width={"150px"}
+                />
+              </div>
             </div>
           </div>
 
