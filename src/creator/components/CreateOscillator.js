@@ -5,45 +5,54 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { OscillatorAnimation } from "./OscillatorAnimation";
 import { createDefaultFramesRendered } from "./frameOps/FrameOps";
 import Tunner from "../../sharedLib/components/Tunner";
+import { positions } from "@mui/system";
 
 const StyledFrames = styled.div`
-  width: 38px;
-  height: 38px;
-  top: 70px;
-  left: 10px;
+  width: 42px;
+  height: 42px;
+  top: 60px;
+  left: 18px;
   position: relative;
   overflow: hidden;
   align-items: center;
-  background-color: black;
+  border-radius: 10%;
+  /* background-color: black; */
 `;
 
 const StyledScroll = styled.div`
-  width: 150px;
+  width: 140px;
   height: 45px;
   position: absolute;
   overflow: scroll;
   align-items: center;
   display: flex;
-  background-color: #86acac;
-  border: 1px solid #c99700;
+  /* background-color: #86acac; */
+  background-color: #8c8664;
+
+  background: #8c8664;
+  /* border: 1px solid #c99700; */
+  border-radius: 5%;
+
   top: 10px;
 
   margin: 4px;
-  left: 10px;
+  left: 20px;
 `;
 
 const StyledOscillatorWindow = styled.div`
-  height: 280px;
-  width: 260px;
+  scale: 1.2;
+  height: 290px;
+  width: 300px;
+  top: 200px;
   border-radius: 12px;
-  border: 3px solid #c99700;
+  border: 2px solid #c99700;
   padding: 12px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   /* grid-template-rows: repeat(50, 1fr); */
   grid-column-gap: 0;
-  overflow: scroll;
-  background: #86acac;
+  /* overflow: scroll; */
+  background: #b5ae9a;
   visibility: hidden;
   position: absolute;
 
@@ -63,16 +72,16 @@ const StyledClose = styled.div`
 `;
 const StyledBtn = styled.div`
   background: #ff6666;
-  height: 33px;
-  width: 60px;
+  height: 28px;
+  width: 80px;
   padding: 6px;
   margin: 8px;
   position: relative;
-  border-radius: 10%;
-  border: 3px solid #c99700;
+  border-radius: 8%;
+  border: 2px solid #c99700;
 
   bottom: 0;
-  left: 0;
+  left: 20px;
 `;
 
 export default function CreateOscillator(props) {
@@ -80,19 +89,35 @@ export default function CreateOscillator(props) {
   const animations = animations_.filter((x) => !x.isOscillator);
 
   const createOscillatorOn = props.createOscillatorOn;
+  // console.log(props.createOscillatorOn);
+  // const [createOscillatorOn, setCreateOscillatorOn] = useState(
+  //   props.createOscillatorOn
+  // );
   const closeWindow = props.closeWindow;
   const buildOscillator = props.buildOscillator;
   const createOscillator = props.createOscillator;
+  const updateOscillator = props.updateOscillator;
+  const oscillatorData = props.data;
 
   const rrrr = useRef();
   const rr = useRef();
 
   const [data, setData] = useState([-1, -1]);
-  const [numFrames, setNumFrames] = useState(10);
+  const [numFrames, setNumFrames] = useState(40);
   const [frames, setFrames] = useState(createDefaultFramesRendered(36, 36));
 
   const [frames1, setFrames1] = useState(createDefaultFramesRendered(36, 36));
   const [frames2, setFrames2] = useState(createDefaultFramesRendered(36, 36));
+
+  useEffect(() => {
+    if (oscillatorData != null) {
+      setNumFrames(oscillatorData.framesLen);
+      // setCreateOscillatorOn(true);
+      setData([oscillatorData.animationId1, oscillatorData.animationId2]);
+      setFrames1(Id2frames(oscillatorData.animationId1));
+      setFrames2(Id2frames(oscillatorData.animationId2));
+    }
+  }, [props.data]);
 
   function Id2frames(id) {
     return animations.filter((x) => x.id == id)[0].frames;
@@ -100,9 +125,7 @@ export default function CreateOscillator(props) {
 
   function handleOnDragEnd(result) {
     let index = result.destination.droppableId;
-    console.log(index);
     let id = result.draggableId;
-    console.log(Id2frames(id));
     if (index == "osc11") {
       setFrames1(Id2frames(id));
       setData([Number(id), data[1]]);
@@ -111,15 +134,14 @@ export default function CreateOscillator(props) {
       setData([data[0], Number(id)]);
     }
   }
-  function reset() {
-    setData([-1, -1]);
-    setNumFrames(10);
-    setFrames([]);
-  }
+  // function reset() {
+  //   setData([-1, -1]);
+  //   setNumFrames(10);
+  //   setFrames(createDefaultFramesRendered(36, 36));
+  // }
 
   useEffect(() => {
     if (data[0] != -1 && data[1] != -1) {
-      console.log(data);
       let frames = buildOscillator(data[1], data[0], numFrames);
       setFrames(frames);
     }
@@ -128,6 +150,17 @@ export default function CreateOscillator(props) {
   function submit() {
     if (data[0] != -1 && data[1] != -1 && numFrames > 0) {
       createOscillator(data[0], data[1], numFrames);
+    }
+  }
+
+  function update() {
+    if (
+      data[0] != -1 &&
+      data[1] != -1 &&
+      numFrames > 0 &&
+      oscillatorData != null
+    ) {
+      updateOscillator(data[0], data[1], numFrames, oscillatorData.id);
     }
   }
 
@@ -147,15 +180,17 @@ export default function CreateOscillator(props) {
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
-                <Screen
-                  ref={rrrr}
-                  onPixelClick={() => {}}
-                  screenSize={38}
-                  pausedFrameIndex={0}
-                  frames={frames1}
-                  delay={null}
-                  id={"2fff"}
-                />
+                <div style={{ top: "-5px", left: "0px", position: "relative" }}>
+                  <Screen
+                    ref={rrrr}
+                    onPixelClick={() => {}}
+                    screenSize={45}
+                    pausedFrameIndex={0}
+                    frames={frames1}
+                    delay={null}
+                    id={"2fff"}
+                  />
+                </div>
               </StyledFrames>
             )}
           </Droppable>
@@ -166,15 +201,17 @@ export default function CreateOscillator(props) {
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
-                <Screen
-                  ref={rrrr}
-                  onPixelClick={() => {}}
-                  screenSize={38}
-                  pausedFrameIndex={0}
-                  frames={frames2}
-                  delay={null}
-                  id={"2fffee"}
-                />
+                <div style={{ top: "-5px", left: "0px", position: "relative" }}>
+                  <Screen
+                    ref={rrrr}
+                    onPixelClick={() => {}}
+                    screenSize={45}
+                    pausedFrameIndex={0}
+                    frames={frames2}
+                    delay={null}
+                    id={"2fffee"}
+                  />
+                </div>
               </StyledFrames>
             )}
           </Droppable>
@@ -228,14 +265,14 @@ export default function CreateOscillator(props) {
               display: "flex",
               position: "relative",
               pedding: "10px",
-              // bottom: 10,
-              // left: 20,
+              bottom: "-110px",
+              left: "-120px",
             }}
           >
             <Screen
               ref={rr}
               onPixelClick={() => {}}
-              screenSize={134}
+              screenSize={144}
               pausedFrameIndex={0}
               frames={frames}
               delay={50}
@@ -243,34 +280,29 @@ export default function CreateOscillator(props) {
             />
           </div>
 
-          {/* <label>
-            <input
-              style={{
-                width: "22%",
-                position: "absolute",
-                bottom: 114,
-                right: 22,
-                backgroundColor: "#86acac",
-              }}
-              type="text"
-              value={numFrames}
-              onChange={(e) => {
-                console.log(e.target.value);
-                setNumFrames(e.target.value);
-              }}
-            />
-          </label> */}
-
-          <div style={{ position: "absolute", bottom: 15, right: 10 }}>
-            <StyledBtn onClick={reset}> RESET</StyledBtn>
+          <div style={{ position: "absolute", bottom: 0, right: 10 }}>
+            {/* <StyledBtn onClick={reset}> RESET</StyledBtn> */}
             <StyledBtn onClick={submit}>SUBMIT</StyledBtn>
-            <Tunner
-              setValue={setNumFrames}
-              minValue={-15}
-              maxValue={70}
-              radius={22}
-              label={"TF"}
-            />
+            <StyledBtn onClick={update}>UPDATE</StyledBtn>
+
+            <div
+              style={{
+                marginLeft: "40px",
+                marginBottom: "20px",
+
+                positions: "relative",
+              }}
+            >
+              <Tunner
+                setValue={setNumFrames}
+                currentValue={22}
+                minValue={-15}
+                maxValue={70}
+                radius={33}
+                label={""}
+                value={numFrames}
+              />
+            </div>
           </div>
         </StyledOscillatorWindow>
       </DragDropContext>

@@ -6,16 +6,32 @@ const Tunner = (props) => {
   const maxValue = props.maxValue;
   const radius = props.radius;
   const label = props.label;
+  const value = props.value;
 
   const canvasRef = useRef(null);
-  const [currentValue, setCurrentValue] = useState(Math.PI * 1.5);
+  // const [currentValue, setCurrentValue] = useState(Math.PI * 1.5);
+  const [currentValue, setCurrentValue] = useState(
+    ValueToAngle(value, minValue, maxValue)
+  );
+
+  useEffect(() => {
+    setCurrentValue(ValueToAngle(value, minValue, maxValue));
+  }, [value]);
+
   const [isDragging, setIsDragging] = useState(false);
   const [lastAngle, setLastAngle] = useState(0);
 
   function AngleToValue(angle, min, max) {
+    // let x = Math.round((angle / (Math.PI * 2)) * (1.6 * max - min) + min - 44);
     let x = Math.round((angle / (Math.PI * 2)) * (1.6 * max - min) + min - 44);
+
     return Math.max(1, Math.min(60, x));
   }
+  function ValueToAngle(value, min, max) {
+    return ((value - min + 44) / (1.6 * max - min)) * Math.PI * 2;
+  }
+
+  console.log(value);
 
   useEffect(() => {
     const canvas = canvasRef.current;

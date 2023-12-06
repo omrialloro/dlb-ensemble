@@ -41,18 +41,19 @@ const XX = styled.img`
 `;
 
 const StyledBoxx = styled.div`
-  height: 330px;
-  width: 330px;
+  height: 315px;
+  width: 340px;
   border-radius: 12px;
   margin: 12px;
   display: flex;
-  scale: 1.2;
+  scale: 1.1;
+  border: 2px solid #c99700;
 
   /* background: #faf1d7; */
   background: #b5ae9a;
 
   /* #b5ae9a */
-  transform: translatE(3%, 35%);
+  transform: translatE(3%, 30%);
   position: absolute;
 `;
 
@@ -73,16 +74,18 @@ const StyledContainer = styled.div`
   position: absolute;
 `;
 const StyledBox = styled.div`
-  height: 80px;
-  width: 300px;
-  border-radius: 12px;
+  height: 60px;
+  width: 320px;
+  border-radius: 9px;
   /* border: 1px solid #909090; */
-  padding: 12px;
+  padding: 6px;
+  margin: 12px;
   display: grid;
   grid-template-columns: repeat(120, 1fr);
   grid-template-rows: repeat(10, 1fr);
   grid-column-gap: 0;
-  top: 68%;
+  top: 69%;
+  right: 4%;
 
   /* overflow: scroll; */
   overflow-x: scroll;
@@ -96,13 +99,18 @@ const StyledBox = styled.div`
   position: absolute;
 `;
 const StyledBtn = styled.div`
-  background: #b5ae9a;
+  /* background: #b5ae9a; */
 
   /* background: #f3f1e0; */
-  /* height:53px; */
-  width: 10%;
+  font-size: 15px;
+  font-weight: 500;
+
+  /* font-weight: bold; */
+
+  height: 53px;
+  width: 10;
   left: 5px;
-  padding: 1px;
+  padding: 4px;
   margin-left: 5px;
   margin-bottom: 1px;
 `;
@@ -111,7 +119,7 @@ const StyledBtn1 = styled.div`
   background-color: #cfa700;
   /* background-color: #376f78; */
 
-  transition: 0.32s;
+  transition: 0.2s;
 
   width: 80px;
   height: 50px;
@@ -124,7 +132,7 @@ const StyledBtn1 = styled.div`
   /* border: 12px solid yellow; */
 `;
 const StyledBtn5 = styled.div`
-  transition: 0.32s;
+  transition: 0.2s;
 
   /* background-color: #85b2af; */
   background-color: #468c85;
@@ -159,6 +167,7 @@ const StyledBtn3 = styled.div`
   margin-top: 2px;
   padding: 2px;
   margin-bottom: 4px;
+  border-radius: 6%;
   /* border: 13px solid yellow; */
 `;
 
@@ -608,7 +617,7 @@ export default function AnimationLibrary(props) {
                   max={frames.length}
                   range={opState["range"]}
                   updateRange={updateRange}
-                  width={"150px"}
+                  width={"158px"}
                 />
               </div>
             </div>

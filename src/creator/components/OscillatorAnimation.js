@@ -52,7 +52,13 @@ function OscillatorAnimation(props) {
     drawLine(ctx, i * alpha * Math.PI, 15, 0.9);
   }, 50);
 
-  return <canvas ref={canvasRef} {...props} />;
+  return (
+    <canvas
+      style={{ position: "relative", left: "12px" }}
+      ref={canvasRef}
+      {...props}
+    />
+  );
 }
 
 export { OscillatorAnimation };

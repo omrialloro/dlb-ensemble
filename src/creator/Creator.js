@@ -45,6 +45,7 @@ import CreateOscillator from "./components/CreateOscillator";
 import { AuthContext } from "../login/authContext";
 import { serverUrl } from "../settings";
 import Tunner from "../sharedLib/components/Tunner";
+import userEvent from "@testing-library/user-event";
 
 const dim = [36, 36];
 
@@ -144,6 +145,30 @@ function Creator(props) {
       },
     ]);
   }
+  function updateOscillator(id1, id2, numFrames, oscillatorId) {
+    if (oscillatorId == null) {
+      return;
+    }
+    let oscillators_ = oscillators;
+    let index = oscillators_.findIndex((x) => x.id == oscillatorId);
+
+    oscillators_.splice(index, 1, {
+      //wierd bahavor need for splice
+      animationId1: Number(id1),
+      animationId2: Number(id2),
+      framesLen: Number(numFrames),
+      id: oscillatorId,
+    });
+
+    // oscillators_[index] = {
+    //   animationId1: Number(id1),
+    //   animationId2: Number(id2),
+    //   framesLen: Number(numFrames),
+    //   id: oscillatorId,
+    // };
+
+    setOscillators([...oscillators_]);
+  }
 
   useEffect(() => {
     setColors(getSchemes()[coloringState.scheme]);
@@ -236,13 +261,6 @@ function Creator(props) {
     let color_mapping_ = {};
     let A1 = animations.filter((x) => x.id == id1)[0];
     let A2 = animations.filter((x) => x.id == id2)[0];
-    console.log(A1.frames.length);
-    console.log(A2.frames.length);
-
-    console.log(numFrames);
-
-    // console.log(animations.id[id1])
-    // console.log(animations.id[id2])
 
     color_mapping_[-1] = oscillateAnimationsColorMappingCb(
       A1,
@@ -250,7 +268,6 @@ function Creator(props) {
       numFrames,
       colors
     );
-    console.log(color_mapping_);
     return synthOscillator(dim[0], dim[1], -1, color_mapping_, 2 * numFrames);
     // return []
   }
@@ -532,7 +549,7 @@ function Creator(props) {
     setFrames([...frames, frameState]);
     bodyRef.current.style.backgroundColor = "red";
     setTimeout(function () {
-      bodyRef.current.style.backgroundColor = "#527a7a";
+      bodyRef.current.style.backgroundColor = "#637572";
 
       // bodyRef.current.style.backgroundColor = "#8c8c8c";
     }, 50);
@@ -567,14 +584,6 @@ function Creator(props) {
     setAnimationsIds(animations.map((a) => a.id));
   }, [animations]);
 
-  // function handleFps(action) {
-  //   if (action == "plus" && FPS < 60) {
-  //     setFPS(FPS + 1);
-  //   } else if (action == "minus" && FPS > 1) {
-  //     setFPS(FPS - 1);
-  //   }
-  // }
-
   function getAllColors(frames) {
     let colors = [];
     frames.forEach((frame) => {
@@ -587,9 +596,6 @@ function Creator(props) {
       });
     });
 
-    // let oscillatorsIds = oscillators.map(x=>x.id)
-    // let intersctedId = intersection(oscillatorsIds, colors)
-    // let intersctedList = oscillators.filter(t=>{colors.includes(2000)})
     let intersctedList = oscillators.filter((t) => true);
 
     let idsArray = [];
@@ -841,10 +847,34 @@ function Creator(props) {
   }, [browse]);
 
   const [createOscillatorOn, setCreateOscillatorOn] = useState(false);
+  useEffect(() => {
+    console.log(createOscillatorOn);
+  }, [createOscillatorOn]);
 
   const closeOscillatorWindow = () => {
     setCreateOscillatorOn(false);
+    setOscillatorData(null);
   };
+  function findOscillator(id) {
+    return oscillators.filter((x) => x.id == id)[0];
+  }
+  const [oscillatorData, setOscillatorData] = useState(null);
+  useEffect(() => {
+    console.log(oscillatorData);
+  }, [oscillatorData]);
+
+  useEffect(() => {
+    console.log("oscillators");
+
+    console.log("oscillators");
+    console.log("oscillators");
+    console.log("oscillators");
+
+    renderAllAnimations();
+    setColoringState(coloringState);
+
+    // setColorMapping(createColorMapping());
+  }, [oscillators]);
 
   return (
     <div className="App">
@@ -867,6 +897,18 @@ function Creator(props) {
                         setColor(x);
                       }}
                       onDoubleClick={(id) => {
+                        const AAA = renderedAnimations.filter(
+                          (x) => x.id == id
+                        )[0];
+                        console.log(renderedAnimations);
+
+                        if (AAA["isOscillator"]) {
+                          setOscillatorData(findOscillator(id));
+                          setCreateOscillatorOn(true);
+
+                          // console.log(findOscillator(id))
+                          return;
+                        }
                         setBrowserOn(true);
                         setSelectedId(id);
                         console.log(id);
@@ -904,6 +946,8 @@ function Creator(props) {
                 closeWindow={closeOscillatorWindow}
                 buildOscillator={renderOscillator}
                 createOscillator={createOscillator}
+                updateOscillator={updateOscillator}
+                data={oscillatorData}
               />
 
               <div style={{ display: "block", margin: "0" }}>
@@ -952,13 +996,13 @@ function Creator(props) {
                     </div>
                     <div className="creation_btns">
                       <Reset text={"reset"} onClick={resetAnimation} />
-                      <Reset
+                      {/* <Reset
                         text={"undo"}
                         onClick={() => {
                           console.log(animations);
                         }}
-                      />
-                      <Reset text={"reverse"} onClick={reverseFrames} />
+                      /> */}
+                      {/* <Reset text={"reverse"} onClick={reverseFrames} /> */}
                       <Reset text={"clear"} onClick={clearFrame} />
 
                       <Reset text={"rotate"} onClick={rotateFrames} />
@@ -969,7 +1013,9 @@ function Creator(props) {
                     <div>
                       <StoreAnimation onClick={storeAnimation} />
                       <CreateOscillatorBtn
-                        onClick={() => setCreateOscillatorOn(true)}
+                        onClick={() => {
+                          setCreateOscillatorOn(true);
+                        }}
                       />
                     </div>
                   </div>
@@ -980,6 +1026,7 @@ function Creator(props) {
                       maxValue={60}
                       radius={45}
                       label={"FPS"}
+                      value={10}
                     />
                   </div>
 
