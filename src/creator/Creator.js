@@ -948,6 +948,7 @@ function Creator(props) {
                 createOscillator={createOscillator}
                 updateOscillator={updateOscillator}
                 data={oscillatorData}
+                deleteOscillator={onAnimationDelete}
               />
 
               <div style={{ display: "block", margin: "0" }}>

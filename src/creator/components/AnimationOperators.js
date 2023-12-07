@@ -7,14 +7,17 @@ const StyledStoreAnimation = styled.div`
 
   background-color: #c73d1e;
   color: #000;
-  padding: 10px;
+  padding: 14px;
   margin-top: 7px;
   margin-left: 6px;
 
   margin-bottom: 5px;
   border-radius: 5px;
   width: 120px;
-  font-size: 9px;
+  height: 50px;
+  font-size: 12px;
+  font-weight: 800;
+
   text-transform: uppercase;
 
   &:hover {
@@ -112,7 +115,7 @@ function StoreAnimation(props) {
   const onClick = props.onClick;
   return (
     <StyledStoreAnimation onClick={onClick}>
-      <p>store animation</p>
+      <p>SET animation</p>
     </StyledStoreAnimation>
   );
 }
@@ -120,7 +123,7 @@ function CreateOscillatorBtn(props) {
   const onClick = props.onClick;
   return (
     <StyledStoreAnimation onClick={onClick}>
-      <p>Create oscillator</p>
+      <p>SET oscillator</p>
     </StyledStoreAnimation>
   );
 }

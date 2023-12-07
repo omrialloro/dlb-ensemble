@@ -83,6 +83,20 @@ const StyledBtn = styled.div`
   bottom: 0;
   left: 10px;
 `;
+const StyledBtnSubmit = styled.div`
+  background: #ff6666;
+  height: 48px;
+  width: 80px;
+  padding: 14px;
+  margin: 8px;
+  position: relative;
+  border-radius: 8%;
+  border: 2px solid #c99700;
+  font-size: 14px;
+
+  bottom: 10px;
+  left: 10px;
+`;
 
 export default function CreateOscillator(props) {
   const animations_ = props.animations;
@@ -98,6 +112,7 @@ export default function CreateOscillator(props) {
   const createOscillator = props.createOscillator;
   const updateOscillator = props.updateOscillator;
   const oscillatorData = props.data;
+  const deleteOscillator = props.deleteOscillator;
 
   const rrrr = useRef();
   const rr = useRef();
@@ -281,9 +296,21 @@ export default function CreateOscillator(props) {
           </div>
 
           <div style={{ position: "absolute", bottom: 0, right: 20 }}>
-            {/* <StyledBtn onClick={reset}> RESET</StyledBtn> */}
-            <StyledBtn onClick={submit}>SUBMIT</StyledBtn>
-            <StyledBtn onClick={update}>UPDATE</StyledBtn>
+            {oscillatorData == null ? (
+              <StyledBtnSubmit onClick={submit}>SUBMIT</StyledBtnSubmit>
+            ) : (
+              <>
+                <StyledBtn onClick={update}>UPDATE</StyledBtn>
+                <StyledBtn
+                  onClick={() => {
+                    oscillatorData != null &&
+                      deleteOscillator(oscillatorData.id);
+                  }}
+                >
+                  REMOVE
+                </StyledBtn>
+              </>
+            )}
 
             <div
               style={{
