@@ -42,11 +42,11 @@ const StyledScroll = styled.div`
 const StyledOscillatorWindow = styled.div`
   scale: 1.2;
   height: 290px;
-  width: 300px;
+  width: 290px;
   top: 200px;
   border-radius: 12px;
   border: 2px solid #c99700;
-  padding: 12px;
+  padding: 10px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   /* grid-template-rows: repeat(50, 1fr); */
@@ -81,7 +81,7 @@ const StyledBtn = styled.div`
   border: 2px solid #c99700;
 
   bottom: 0;
-  left: 20px;
+  left: 10px;
 `;
 
 export default function CreateOscillator(props) {
@@ -280,14 +280,14 @@ export default function CreateOscillator(props) {
             />
           </div>
 
-          <div style={{ position: "absolute", bottom: 0, right: 10 }}>
+          <div style={{ position: "absolute", bottom: 0, right: 20 }}>
             {/* <StyledBtn onClick={reset}> RESET</StyledBtn> */}
             <StyledBtn onClick={submit}>SUBMIT</StyledBtn>
             <StyledBtn onClick={update}>UPDATE</StyledBtn>
 
             <div
               style={{
-                marginLeft: "40px",
+                marginLeft: "10px",
                 marginBottom: "20px",
 
                 positions: "relative",
@@ -295,7 +295,7 @@ export default function CreateOscillator(props) {
             >
               <Tunner
                 setValue={setNumFrames}
-                currentValue={22}
+                currentValue={32}
                 minValue={-15}
                 maxValue={70}
                 radius={33}
