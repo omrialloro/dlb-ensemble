@@ -29,7 +29,7 @@ function OscillatorAnimation(props) {
     let b = radianstocoordinates(angle, radius, startX, startY);
     ctx.moveTo(b.x, b.y);
     ctx.lineTo(a.x, a.y);
-    ctx.fillText(counter, 26, 90);
+    ctx.fillText(counter, 26, 88);
     ctx.stroke();
   }
 
@@ -47,14 +47,14 @@ function OscillatorAnimation(props) {
       counter = 0;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // drawLine(ctx, i * alpha * Math.PI, 0, 0.2);
+    drawLine(ctx, i * alpha * Math.PI, 0, 0.2);
     drawLine(ctx, i * alpha * Math.PI, 10, 0.5);
     drawLine(ctx, i * alpha * Math.PI, 15, 0.9);
   }, 50);
 
   return (
     <canvas
-      style={{ position: "relative", left: "12px" }}
+      style={{ position: "relative", left: "10px", top: "7px" }}
       ref={canvasRef}
       {...props}
     />

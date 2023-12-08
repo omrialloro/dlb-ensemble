@@ -8,10 +8,10 @@ import Tunner from "../../sharedLib/components/Tunner";
 import { positions } from "@mui/system";
 
 const StyledFrames = styled.div`
-  width: 42px;
-  height: 42px;
-  top: 60px;
-  left: 18px;
+  width: 52px;
+  height: 52px;
+  top: 65px;
+  left: 16px;
   position: relative;
   overflow: hidden;
   align-items: center;
@@ -20,8 +20,8 @@ const StyledFrames = styled.div`
 `;
 
 const StyledScroll = styled.div`
-  width: 140px;
-  height: 45px;
+  width: 158px;
+  height: 52px;
   position: absolute;
   overflow: scroll;
   align-items: center;
@@ -40,9 +40,8 @@ const StyledScroll = styled.div`
 `;
 
 const StyledOscillatorWindow = styled.div`
-  scale: 1.2;
-  height: 290px;
-  width: 290px;
+  height: 330px;
+  width: 330px;
   top: 200px;
   border-radius: 12px;
   border: 2px solid #c99700;
@@ -58,6 +57,7 @@ const StyledOscillatorWindow = styled.div`
 
   // border:3px solid salmon;
 `;
+
 const StyledClose = styled.div`
   background: #c99700;
 
@@ -72,21 +72,21 @@ const StyledClose = styled.div`
 `;
 const StyledBtn = styled.div`
   background: #ff6666;
-  height: 28px;
-  width: 80px;
+  height: 31px;
+  width: 85px;
   padding: 6px;
-  margin: 8px;
+  margin: 10px;
   position: relative;
   border-radius: 8%;
   border: 2px solid #c99700;
 
   bottom: 0;
-  left: 10px;
+  left: 4px;
 `;
 const StyledBtnSubmit = styled.div`
   background: #ff6666;
-  height: 48px;
-  width: 80px;
+  height: 52px;
+  width: 85px;
   padding: 14px;
   margin: 8px;
   position: relative;
@@ -94,8 +94,8 @@ const StyledBtnSubmit = styled.div`
   border: 2px solid #c99700;
   font-size: 14px;
 
-  bottom: 10px;
-  left: 10px;
+  bottom: 18px;
+  left: 2px;
 `;
 
 export default function CreateOscillator(props) {
@@ -199,7 +199,7 @@ export default function CreateOscillator(props) {
                   <Screen
                     ref={rrrr}
                     onPixelClick={() => {}}
-                    screenSize={45}
+                    screenSize={55}
                     pausedFrameIndex={0}
                     frames={frames1}
                     delay={null}
@@ -220,7 +220,7 @@ export default function CreateOscillator(props) {
                   <Screen
                     ref={rrrr}
                     onPixelClick={() => {}}
-                    screenSize={45}
+                    screenSize={55}
                     pausedFrameIndex={0}
                     frames={frames2}
                     delay={null}
@@ -257,7 +257,7 @@ export default function CreateOscillator(props) {
                             <Screen
                               ref={rrrr}
                               onPixelClick={() => {}}
-                              screenSize={30}
+                              screenSize={38}
                               pausedFrameIndex={0}
                               frames={k.frames}
                               delay={null}
@@ -280,14 +280,14 @@ export default function CreateOscillator(props) {
               display: "flex",
               position: "relative",
               pedding: "10px",
-              bottom: "-110px",
-              left: "-120px",
+              bottom: "-130px",
+              left: "-140px",
             }}
           >
             <Screen
               ref={rr}
               onPixelClick={() => {}}
-              screenSize={144}
+              screenSize={164}
               pausedFrameIndex={0}
               frames={frames}
               delay={50}
@@ -325,7 +325,7 @@ export default function CreateOscillator(props) {
                 currentValue={32}
                 minValue={-15}
                 maxValue={70}
-                radius={33}
+                radius={38}
                 label={""}
                 value={numFrames}
               />
