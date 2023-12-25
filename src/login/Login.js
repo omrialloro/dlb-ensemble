@@ -32,9 +32,7 @@ function Login({ setToken, isRegister, setSelected }) {
 
   return (
     <div className="login-wrapper">
-      <div className="logo-login">
-        <img src="logo-in-line.svg" />
-      </div>
+      <div className="logo-login"></div>
       <Form className="form-wrap" onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email" className="e-mail login-item">
           <Form.Label>E-mail</Form.Label>

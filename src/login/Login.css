@@ -21,11 +21,14 @@ body {
   flex-direction: column;
   height: 320px;
   justify-content: space-evenly;
-  background-color: #FEE7E7;
-  padding: 48px;
-  border: 2px solid #333333;
+
+  /* background: #8c8664; */
+
+  background-color: #b5ae9a;
+  padding: 28px;
+  border: 0.4px solid #363434;
   overflow-y: hidden;
-  border-radius: 24px;
+  border-radius: 14px;
 }
 
 .form-label {
@@ -35,8 +38,15 @@ color: #333333;
 }
 
 .login-btn {
-  width: 150px !important;
-  background-color: #f7b5b5;
+  width: 80px;
+  height: 30px;
+  margin: 10px auto;
+  text-align: center;
+  border-radius: 10% !important;
+  font-size: large;
+  width: 100px !important;
+  height: 45px !important;
+  background-color: #d98074;
   color: black
 }
 
