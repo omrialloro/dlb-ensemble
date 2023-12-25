@@ -15,7 +15,7 @@ const StyledStoreAnimation = styled.div`
   border-radius: 5px;
   width: 120px;
   height: 55px;
-  font-size: 24px;
+  font-size: 12px;
   font-weight: 800;
 
   text-transform: uppercase;
@@ -115,7 +115,7 @@ function StoreAnimation(props) {
   const onClick = props.onClick;
   return (
     <StyledStoreAnimation onClick={onClick}>
-      <p>🍄🍄🍄</p>
+      <p>+ Animation</p>
     </StyledStoreAnimation>
   );
 }
@@ -123,7 +123,7 @@ function CreateOscillatorBtn(props) {
   const onClick = props.onClick;
   return (
     <StyledStoreAnimation onClick={onClick}>
-      <p>🍰🍰🍰</p>
+      <p>+ Oscillator</p>
     </StyledStoreAnimation>
   );
 }
