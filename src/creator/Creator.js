@@ -875,9 +875,7 @@ function Creator(props) {
       {
         <body ref={bodyRef}>
           <div className="logo-creater">
-            <h1>
-              <img src="logo_block.png" />
-            </h1>
+            <img src="logo_block.png" />
           </div>
           <div className="interface">
             <main>
@@ -1015,7 +1013,7 @@ function Creator(props) {
                       maxValue={60}
                       radius={45}
                       label={"FPS"}
-                      value={10}
+                      value={24}
                     />
                   </div>
 
