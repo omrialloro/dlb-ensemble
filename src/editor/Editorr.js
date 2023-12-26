@@ -405,6 +405,11 @@ function Editorr(props) {
 
   return (
     <SelectedIdProvider>
+      <div className="logo-creater">
+        <h1>
+          <img src="logo_block.png" />
+        </h1>
+      </div>
       <div className="bodyInner">
         {fullScreenState ? (
           <FullScreen

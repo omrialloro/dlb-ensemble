@@ -54,7 +54,12 @@ function App() {
           save={clickSave}
           gif={clickGif}
           selected={selected}
-        />
+        />{" "}
+        <div className="logo-creater">
+          <h1>
+            <img src="logo_block.png" />
+          </h1>
+        </div>
         <Routes>
           <Route path="/*" element={<Navigate to="/login" />} />
           <Route

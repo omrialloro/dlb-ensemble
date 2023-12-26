@@ -874,6 +874,11 @@ function Creator(props) {
     <div className="App">
       {
         <body ref={bodyRef}>
+          <div className="logo-creater">
+            <h1>
+              <img src="logo_block.png" />
+            </h1>
+          </div>
           <div className="interface">
             <main>
               <section className="action left">
