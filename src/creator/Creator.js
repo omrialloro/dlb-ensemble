@@ -864,12 +864,6 @@ function Creator(props) {
   }, [oscillatorData]);
 
   useEffect(() => {
-    console.log("oscillators");
-
-    console.log("oscillators");
-    console.log("oscillators");
-    console.log("oscillators");
-
     renderAllAnimations();
     setColoringState(coloringState);
 
@@ -905,8 +899,6 @@ function Creator(props) {
                         if (AAA["isOscillator"]) {
                           setOscillatorData(findOscillator(id));
                           setCreateOscillatorOn(true);
-
-                          // console.log(findOscillator(id))
                           return;
                         }
                         setBrowserOn(true);
@@ -920,15 +912,6 @@ function Creator(props) {
                   )}
                 </div>
                 <Shapes pickedShape={coloringState.shape} setShape={setShape} />
-                {/* <AnimationPallet
-                  data={renderedAnimations}
-                  onAnimationSelect={(x) => {
-                    setColor(x);
-                  }}
-                  onAnimationDelete={onAnimationDelete}
-                  createOscillator={createOscillator}
-                  pickedIndex={coloringState.color}
-                /> */}
               </section>
               <AnimationLibrary
                 username={email}

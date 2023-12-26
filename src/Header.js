@@ -6,12 +6,11 @@ import { useState } from "react";
 
 const StyledLi = styled.div`
   font-size: "20px";
-  color: "blue";
   padding-left: "20px";
   padding-right: "20px";
   font-weight: "bold";
   &:hover {
-    background-color: #aafffb;
+    background-color: #cc5200;
   }
 `;
 
@@ -38,15 +37,15 @@ export const Header = (props) => {
             style={
               selected == "editor"
                 ? {
-                    fontSize: "20px",
+                    fontSize: "23px",
                     color: "#996600",
                     paddingRight: "20px",
                     paddingLeft: "20px",
-                    backgroundColor: "red",
+                    backgroundColor: "#ff4000",
                     fontWeight: "bold",
                   }
                 : {
-                    fontSize: "20px",
+                    fontSize: "23px",
                     color: "#996600",
                     paddingRight: "20px",
                     paddingLeft: "20px",
@@ -64,16 +63,15 @@ export const Header = (props) => {
             style={
               selected == "creator"
                 ? {
-                    fontSize: "20px",
+                    fontSize: "23px",
                     color: "#996600",
                     paddingRight: "20px",
                     paddingLeft: "20px",
-
-                    backgroundColor: "red",
+                    backgroundColor: "#ff4000",
                     fontWeight: "bold",
                   }
                 : {
-                    fontSize: "20px",
+                    fontSize: "23px",
                     color: "#996600",
                     paddingRight: "20px",
                     paddingLeft: "20px",
@@ -90,7 +88,7 @@ export const Header = (props) => {
         {isAuthenticated ? (
           <StyledLi
             style={{
-              fontSize: "20px",
+              fontSize: "23px",
               color: "#996600",
               marginLeft: "0px",
               paddingLeft: "20px",
@@ -110,23 +108,19 @@ export const Header = (props) => {
               style={
                 selected == "login"
                   ? {
-                      fontSize: "20px",
+                      fontSize: "23px",
                       color: "#996600",
-                      // marginLeft: "30px",
                       paddingRight: "20px",
                       paddingLeft: "20px",
-
                       backgroundColor: "null",
                       fontWeight: "bold",
                     }
                   : {
-                      fontSize: "20px",
+                      fontSize: "23px",
                       color: "#996600",
-                      // marginLeft: "30px",
                       paddingRight: "20px",
                       paddingLeft: "20px",
-
-                      backgroundColor: "red",
+                      backgroundColor: "#ff4000",
                       fontWeight: "bold",
                     }
               }
@@ -150,10 +144,9 @@ export const Header = (props) => {
       >
         <StyledLi
           style={{
-            fontSize: "18px",
+            fontSize: "22px",
             color: "#992600",
-            // marginLeft: "30px",
-            // backgroundColor: "red",
+
             paddingRight: "20px",
             paddingLeft: "20px",
 
@@ -165,10 +158,9 @@ export const Header = (props) => {
         </StyledLi>
         <StyledLi
           style={{
-            fontSize: "18px",
+            fontSize: "22px",
             color: "#992600",
-            // marginLeft: "30px",
-            // backgroundColor: "red",
+
             paddingRight: "20px",
             paddingLeft: "20px",
 
@@ -179,7 +171,7 @@ export const Header = (props) => {
         </StyledLi>
         <StyledLi
           style={{
-            fontSize: "18px",
+            fontSize: "22px",
             color: "#992600",
             // marginLeft: "30px",
             // backgroundColor: "red",

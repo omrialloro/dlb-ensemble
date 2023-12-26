@@ -55,7 +55,7 @@ export function Shapes(props) {
               setShape(i);
               console.log(i);
             }}
-            bc={pickedShape == i ? "#3dff0a" : "#a2b59d"}
+            bc={pickedShape == i ? "#a6edc0" : "#a2b59d"}
             key={"shape" + i}
           >
             <img src={`shape${i + 1}.svg`} />

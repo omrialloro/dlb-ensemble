@@ -12,7 +12,7 @@ const StyledErrowButtons = styled.div`
 
   border: 0px solid black;
   &:hover {
-    background-color: #aafffb;
+    background-color: #a6edc0;
   }
 `;
 
