@@ -52,8 +52,11 @@ const dim = [36, 36];
 function Creator(props) {
   const [start_time, setStart_time] = useState(0);
   const browse = props.browse;
+  const resetBrowse = props.resetBrowse;
   const save = props.save;
   const gif = props.gif;
+  const resetGif = props.resetGif;
+
   const setSelected = props.setSelected;
   setSelected("creator");
 
@@ -677,6 +680,7 @@ function Creator(props) {
   useEffect(() => {
     if (gif > 0) {
       handleGifExtraction();
+      resetGif();
     }
   }, [gif]);
 
@@ -921,6 +925,7 @@ function Creator(props) {
                 addAnimation={addAnimation}
                 browserdOn={browserdOn}
                 setBrowserOn={setBrowserOn}
+                resetBrowse={resetBrowse}
                 settedId={selectedId}
                 getFramesById={getFramesById}
                 colorMapping={colorMapping}

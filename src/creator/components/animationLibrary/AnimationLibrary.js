@@ -206,6 +206,7 @@ export default function AnimationLibrary(props) {
   const {
     setBrowserOn,
     browserdOn,
+    resetBrowse,
     addAnimation,
     colorMapping,
     getFramesById,
@@ -492,6 +493,7 @@ export default function AnimationLibrary(props) {
     >
       <StyledBtn
         onClick={() => {
+          resetBrowse();
           setBrowserOn(false);
         }}
       >

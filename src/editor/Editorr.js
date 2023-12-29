@@ -65,7 +65,7 @@ const StyledSave = styled.div`
 function Editorr(props) {
   const setSelected = props.setSelected;
   const gif = props.gif;
-
+  const resetGif = props.resetGif;
   setSelected("editor");
   const {
     auth: {
@@ -100,9 +100,6 @@ function Editorr(props) {
     ref2.current.click();
   };
 
-  // const handleMakeGif = () => {
-  //   extractToGif(proccesedFrames, delay);
-  // };
   const handleSaveEditedFrames = () => {
     const prefix = window.prompt("enter animation name");
     let name = prefix + String(Date.now());
@@ -380,6 +377,7 @@ function Editorr(props) {
   useEffect(() => {
     if (gif > 0) {
       handleMakeGif();
+      resetGif();
     }
   }, [gif]);
 

@@ -35,17 +35,6 @@ export function Preview(props) {
     updateDelay(delay);
   }, [delay]);
 
-  function FPSMinus() {
-    if (FPS > 1) {
-      setFPS(FPS - 1);
-    }
-  }
-  function FPSPlus() {
-    if (FPS < 60) {
-      setFPS(FPS + 1);
-    }
-  }
-
   useEffect(() => {
     setDelay(Math.round(1000 / FPS));
   }, [FPS]);
@@ -192,6 +181,7 @@ export function Preview(props) {
               minValue={5}
               maxValue={60}
               radius={25}
+              value={FPS}
               label={"FPS"}
             />
           </div>

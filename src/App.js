@@ -18,6 +18,11 @@ function App() {
   const { isAuthenticated } = useContext(AuthContext);
   console.log("isAuthenticated", isAuthenticated);
   const reset = () => {
+    console.log("reset");
+    console.log("reset");
+    console.log("reset");
+    console.log("reset");
+
     setSave(0);
     setBrowse(0);
     setGif(0);
@@ -38,7 +43,9 @@ function App() {
     if (selected == "creator") {
       setGif(gif + 1);
     } else if (selected == "editor") {
-      setGifEditor(gifEditor + 1);
+      setGif(gif + 1);
+
+      // setGifEditor(gifEditor + 1);
     }
   };
 
@@ -91,8 +98,9 @@ function App() {
               element={
                 <Editorr
                   setSelected={setSelected}
-                  gif={gifEditor}
+                  gif={gif}
                   browse={browse}
+                  resetGif={() => setGif(0)}
                 />
               }
             />
@@ -104,6 +112,8 @@ function App() {
                   browse={browse}
                   save={save}
                   gif={gif}
+                  resetGif={() => setGif(0)}
+                  resetBrowse={() => setBrowse(0)}
                   setSelected={setSelected}
                 />
               }
