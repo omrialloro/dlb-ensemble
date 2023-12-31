@@ -311,28 +311,9 @@ function Creator(props) {
   const authContext = useContext(AuthContext);
   const email = undefined;
 
-  async function test_server() {
-    console.log("check");
-
-    // let  a = await fetch(port + `/check`, {method: 'GET',
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
-    // })
-  }
-
   const {
     auth: { token },
   } = useContext(AuthContext);
-
-  const [selectedAnimation, setSelectedAnimation] = useState(null);
-
-  async function selectAnimation(animationId) {
-    const A = await loadAnimation(animationId);
-
-    const AA = renderAllFrames(A["data"], colorMapping);
-    return AA;
-  }
 
   async function loadAnimation(animationId) {
     const res = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
@@ -727,11 +708,6 @@ function Creator(props) {
     await extractToGif(renderedFrames, delay);
   }, [extractToGif, renderedFrames, delay]);
 
-  function reverseFrames() {
-    let frames_ = nestedCopy(frames);
-    setFrames(frames_.reverse());
-  }
-
   function rotateFrames() {
     let frames_ = nestedCopy(frames);
     setFrames(frames_.map((x) => rotateFrame(x)));
@@ -988,15 +964,7 @@ function Creator(props) {
                     </div>
                     <div className="creation_btns">
                       <Reset text={"reset"} onClick={resetAnimation} />
-                      {/* <Reset
-                        text={"undo"}
-                        onClick={() => {
-                          console.log(animations);
-                        }}
-                      /> */}
-                      {/* <Reset text={"reverse"} onClick={reverseFrames} /> */}
                       <Reset text={"clear"} onClick={clearFrame} />
-
                       <Reset text={"rotate"} onClick={rotateFrames} />
                       <Reset text={"reflect"} onClick={reflectFrames} />
 

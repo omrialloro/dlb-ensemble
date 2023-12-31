@@ -9,34 +9,44 @@ import { AuthContext } from "../../login/authContext";
 const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/";
 
 const StyledFrames = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   position: relative;
   overflow: hidden;
   align-items: center;
 `;
 const XX = styled.img`
+  transform: scale(${(props) => props.scale});
+  transition: 0.3s;
+
   display: inline;
-  height: 80%;
+  height: 70%;
   width: auto;
   position: relative;
-  border-radius: 50%;
+  border-radius: 8%;
   align-items: center;
   top: 12%;
   left: 12%;
 `;
 const StyledBox = styled.div`
-  height: 180px;
+  height: 150px;
   width: 330px;
   border-radius: 12px;
-  border: 10px solid #c1c1c1;
+  /* border: 2px solid #c1c1c1; */
+  /* border: 1px solid salmon; */
+
   padding: 12px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(50, 1fr);
+  grid-template-columns: repeat(${(props) => props.size}, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   grid-column-gap: 0;
-  overflow: scroll;
-  background: #c1c1c1;
+  /* overflow: scroll; */
+  overflow-x: scroll;
+  overflow-y: hidden;
+
+  /* background: #c1c1c1; */
+  background: #8c8664;
+
   visibility: hidden;
   // border:3px solid salmon;
 `;
@@ -64,25 +74,13 @@ export default function BrowseAnimations(props) {
     console.log(data);
   }, [data]);
 
-  // const fetchImage = async (filename,username) => {
-  //   const token = await getAccessTokenSilently();
-
-  //     let imageUrl = port + `/thumbnail/${filename}/${username}`;
-  //     const res = await fetch(imageUrl,{
-  //       headers: {
-  //          Authorization: `Bearer ${token}`,
-  //        },
-  //       }
-  //     );
-  //     const imageBlob = await res.blob();
-  //     const imageObjectURL = URL.createObjectURL(imageBlob);
-  //     return imageObjectURL
-  //   };
+  const [chackedId, setChectedId] = useState(-1);
 
   function fff(e) {
-    document.getElementById(e).style.height = "80%";
+    setChectedId(e);
+    // document.getElementById(e).style.height = "80%";
     setTimeout(() => {
-      document.getElementById(e).style.height = "90%";
+      // document.getElementById(e).style.height = "90%";
       PickAnimation(e);
     }, 100);
   }
@@ -96,6 +94,7 @@ export default function BrowseAnimations(props) {
               <p>browse library</p>
           </div> */}
       <StyledBox
+        size={animations.length / 2 + 1}
         style={
           isShow
             ? { visibility: "visible", transition: "width 2s, height 4s" }
@@ -106,7 +105,8 @@ export default function BrowseAnimations(props) {
         {animations.map((x, index) => (
           <StyledFrames>
             <XX
-              style={x["isChecked"] ? { height: "90%" } : { height: "70%" }}
+              scale={x["id"] == chackedId ? 1.25 : 1}
+              // style={x["isChecked"] ? { height: "90%" } : { height: "70%" }}
               src={x["imgUrl"]}
               id={x["id"]}
               onClick={() => {

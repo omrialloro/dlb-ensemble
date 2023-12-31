@@ -220,16 +220,6 @@ function Editorr(props) {
 
   function createGrayFrames(num_frames_) {
     let alpha = 1 / num_frames_;
-    // const GrayFrame = (alpha) =>
-    //   Array(dim[1])
-    //     .fill(0)
-    //     .map(() =>
-    //       Array(dim[0])
-    //         .fill(0)
-    //         .map(() => {
-    //           return grayRGB(alpha);
-    //         })
-    //     );
     return Array.from(Array(num_frames_).keys()).map((t) =>
       MakeGrayFrame(1 - alpha * t)
     );
@@ -466,31 +456,49 @@ function Editorr(props) {
                     </div>
                     <div className="container_right">
                       <div>
-                        <ScrollMenu>
-                          <div className="order">
-                            {DATA.map((k, index) => (
-                              <Draggable
-                                key={k["id"] + 1000}
-                                draggableId={k["id"]}
-                                index={index}
-                              >
-                                {(provided) => (
-                                  <SmallScreen
-                                    provided={provided}
-                                    id={k["id"]}
-                                    frames={prepareFrames(k)}
-                                    selectScreen={selectScreen}
-                                    handleDelete={() => deletAnimation(k["id"])}
-                                    handleDuplicate={() =>
-                                      duplicateAnimation(k["id"])
-                                    }
-                                  />
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        </ScrollMenu>
+                        <div
+                          style={{
+                            // marginRight: "10px",
+                            marginBottom: "5px",
+
+                            padding: "8px",
+                            // width: "480px",
+                            right: "20px",
+
+                            borderRadius: "7px",
+                            background: "#8c8664",
+                            height: "70px",
+                            top: "20px",
+                          }}
+                        >
+                          <ScrollMenu>
+                            <div className="order">
+                              {DATA.map((k, index) => (
+                                <Draggable
+                                  key={k["id"] + 1000}
+                                  draggableId={k["id"]}
+                                  index={index}
+                                >
+                                  {(provided) => (
+                                    <SmallScreen
+                                      provided={provided}
+                                      id={k["id"]}
+                                      frames={prepareFrames(k)}
+                                      selectScreen={selectScreen}
+                                      handleDelete={() =>
+                                        deletAnimation(k["id"])
+                                      }
+                                      handleDuplicate={() =>
+                                        duplicateAnimation(k["id"])
+                                      }
+                                    />
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                            </div>
+                          </ScrollMenu>
+                        </div>
                         <div className="screen">
                           <Preview
                             frames={proccesedFrames}
