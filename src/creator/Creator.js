@@ -16,6 +16,7 @@ import {
   ShiftFrame,
   synthOscillator,
   stateToLAbels,
+  createConstFrameState,
 } from "./components/frameOps/FrameOps";
 import { rotateFrame, reflectFrame } from "../sharedLib/frameOps/FrameOps";
 import { Errows } from "./components/Errows";
@@ -65,7 +66,9 @@ function Creator(props) {
   }, []);
 
   const [frames, setFrames] = useState([]);
-  const [animations, setAnimations] = useState([]);
+  const [animations, setAnimations] = useState(
+    createColorsOneFrameAnimations()
+  );
 
   // const [animationsIds,setAnimationsIds] = useState(JSON.parse(sessionStorage.getItem("animationsIds")))
   const [animationsIds, setAnimationsIds] = useState([]);
@@ -355,6 +358,21 @@ function Creator(props) {
   // console.log(assertStoredDataConsistence())
 
   const [isStoredLoaded, setIsStoredLoaded] = useState(false);
+
+  function createColorsOneFrameAnimations() {
+    let animations_ = [];
+    for (let i = 0; i < 6; i++) {
+      let frames_ = [createConstFrameState(dim[0], dim[1], i)];
+      let A = { id: 10 * (i + 1), frames: frames_, isDeleted: false };
+      animations_.push(A);
+    }
+    return animations_;
+  }
+
+  useEffect(() => {
+    createColorsOneFrameAnimations();
+  }, []);
+  // createColorsOneFrameAnimations();
 
   function resetStorage() {
     sessionStorage.setItem("animationsIds", "");
@@ -867,9 +885,9 @@ function Creator(props) {
                     setColor={setColor}
                     pickedIndex={coloringState.color}
                   />
-                  {animations.length > 0 && (
+                  {animations.length > 6 && ( //very ugly hack
                     <AnimationPallet
-                      data={renderedAnimations}
+                      data={renderedAnimations.filter((x) => x.id > 100)}
                       onAnimationSelect={(x) => {
                         setColor(x);
                       }}

@@ -26,7 +26,8 @@ const StyledCircle = styled.div`
   width: 40px;
   margin-left: 28px;
   border-radius: 100%;
-  background-color: #3333ff;
+  background-color: black;
+
   overflow: clip;
 `;
 

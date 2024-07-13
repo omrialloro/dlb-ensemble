@@ -42,7 +42,7 @@ function stateToLAbels(frame, animations) {
   if (animations.length == 0) {
     return null;
   }
-  let rr = (x) => (x == -1 ? "" : x);
+  let rr = (x) => (x == -1 ? "" : x - 5); //-5 very ufgy hack for color animation for oscilator
 
   let labelMap = (state) => animations.findIndex((e) => e.id == state);
   let labelFrame = copyFrame(frame);
@@ -162,6 +162,7 @@ function ShiftFrame(frame, direction) {
 
 export {
   createDefaultFrameState,
+  createConstFrameState,
   copyFrame,
   renderFrame,
   renderAllFrames,
