@@ -31,8 +31,6 @@ const Tunner = (props) => {
     return ((value - min + 44) / (1.6 * max - min)) * Math.PI * 2;
   }
 
-  console.log(value);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -55,15 +53,15 @@ const Tunner = (props) => {
       context.arc(radius, radius, radius, 0, Math.PI * 2);
       context.closePath();
 
-      context.strokeStyle = `rgba(120,60,0,${0.9})`;
+      context.strokeStyle = `rgba(220,260,250,${0.9})`;
 
-      context.lineWidth = 1;
+      context.lineWidth = 3;
       context.beginPath();
 
       for (let i = 12; i < 27; i++) {
         context.moveTo(
-          radius + Math.cos(0.25 * i) * radius * 0.8,
-          radius + Math.sin(0.25 * i) * radius * 0.8
+          radius + Math.cos(0.25 * i) * radius * 0.85,
+          radius + Math.sin(0.25 * i) * radius * 0.85
         );
         context.lineTo(
           radius + Math.cos(0.25 * i) * radius,
@@ -92,7 +90,7 @@ const Tunner = (props) => {
 
       context.fillStyle = "green";
       context.strokeStyle = `rgba(220,90,20,${0.9})`;
-      context.lineWidth = 5;
+      context.lineWidth = 8;
 
       context.beginPath();
       context.moveTo(

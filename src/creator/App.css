@@ -10,6 +10,10 @@ body {
   font-family: 'Baloo Bhai 2', sans-serif;
   font-weight: 400;
   height: 100vh;
+  width:140vh;
+  margin-left: 20px;
+
+  display: flex;
 }
 
 
@@ -164,7 +168,7 @@ strong {
   justify-content: space-evenly;
   flex-wrap: wrap;
   align-items: center;
-  height: 80px;
+  height: 40px;
   /* margin-bottom: 1px; */
 }
 

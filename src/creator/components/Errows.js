@@ -9,6 +9,9 @@ const StyledErrowButtons = styled.div`
   border: 1px solid black;
   background-color: #788a63;
   background-color: #a2b59d;
+  background-color: #ff4d4d;
+  display: block;
+  /* margin: auto; */
 
   border: 0px solid black;
   &:hover {
@@ -21,11 +24,11 @@ const StyledErrows = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
+  height: 40px;
   width: 13vh;
   margin-left: 8px;
-  margin-top: 12px;
-  margin-bottom: 12px;
+  margin-top: 32px;
+  margin-bottom: 2px;
 
   cursor: pointer;
 `;
@@ -54,8 +57,11 @@ const StyledErrows = styled.div`
 
 export function Errows(props) {
   const pressErrow = props.pressErrow;
+  const pressRotate = props.pressRotate;
+  const pressReflect = props.pressReflect;
+
   document.body.onkeyup = function (e) {
-    console.log(e.keyCode);
+    // console.log(e.keyCode);
     if (e.keyCode == 40) {
       console.log("down");
       e.preventDefault();
@@ -80,21 +86,41 @@ export function Errows(props) {
     if (e.keyCode == 13) {
       e.preventDefault();
       pressErrow("frame");
-      console.log("right");
-      console.log("right");
     }
   };
   return (
     <div style={{ margin: "15px" }}>
       <StyledErrows>
-        <div>
+        <div className="errows_bottom" style={{ display: "flex" }}>
+          <StyledErrowButtons
+            style={{ background: "#a2b59d" }}
+            onClick={() => {
+              pressReflect();
+            }}
+          >
+            <div className="arrows">
+              <img src="reflect-svgrepo-com.svg" />
+              <span className="tooltiptext"> Shift up (&#8593;)</span>
+            </div>
+          </StyledErrowButtons>
           <StyledErrowButtons
             onClick={() => {
               pressErrow("up");
             }}
           >
             <div className="arrows">
-              <img src="up.svg" />
+              <img src="caret-top-svgrepo-com.svg" style={{ scale: "1.5" }} />
+              <span className="tooltiptext"> Shift up (&#8593;)</span>
+            </div>
+          </StyledErrowButtons>
+          <StyledErrowButtons
+            style={{ background: "#a2b59d" }}
+            onClick={() => {
+              pressRotate();
+            }}
+          >
+            <div className="arrows">
+              <img src="arrow-turn-right-down-svgrepo-com.svg" />
               <span className="tooltiptext"> Shift up (&#8593;)</span>
             </div>
           </StyledErrowButtons>
@@ -106,17 +132,21 @@ export function Errows(props) {
             }}
           >
             <div className="arrows">
-              <img src="left.svg" />
+              <img src="caret-left-svgrepo-com.svg" style={{ scale: "1.5" }} />
               <span className="tooltiptext"> Shift left (&#8592;) </span>
             </div>
           </StyledErrowButtons>
           <StyledErrowButtons
             onClick={() => {
               pressErrow("down");
+              // pressRotate();
             }}
           >
             <div className="arrows">
-              <img src="down_arrow.svg" />
+              <img
+                src="caret-bottom-svgrepo-com.svg"
+                style={{ scale: "1.5" }}
+              />
               <span className="tooltiptext"> Shift down(&#8595;)</span>
             </div>
           </StyledErrowButtons>
@@ -126,10 +156,22 @@ export function Errows(props) {
             }}
           >
             <div className="arrows">
-              <img src="right.svg" />
+              <img src="caret-right-svgrepo-com.svg" style={{ scale: "1.5" }} />
               <span className="tooltiptext">Shift right (&#8594;)</span>
             </div>
           </StyledErrowButtons>
+        </div>
+        <div>
+          {/* <StyledErrowButtons
+            onClick={() => {
+              pressErrow("up");
+            }}
+          >
+            <div className="arrows">
+              <img src="up.svg" />
+              <span className="tooltiptext"> Shift up (&#8593;)</span>
+            </div>
+          </StyledErrowButtons> */}
         </div>
       </StyledErrows>
     </div>

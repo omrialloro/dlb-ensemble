@@ -2,7 +2,6 @@ import "./App.css";
 import "./base.css";
 
 import { Pallet } from "./components/colors/Pallet";
-// import { getSchemes, Scheme } from "./components/colors/Schemes";
 import { getSchemes, Scheme } from "../sharedLib/schemes/Schemes";
 
 import { Shapes } from "./components/shapes/Shapes";
@@ -47,11 +46,10 @@ import { AuthContext } from "../login/authContext";
 import { serverUrl } from "../settings";
 import Tunner from "../sharedLib/components/Tunner";
 import userEvent from "@testing-library/user-event";
-import { ClearBtn } from "./components/ClearBtn";
 
 const dim = [36, 36];
 
-function Creator(props) {
+function CreatorTablet(props) {
   const [start_time, setStart_time] = useState(0);
   const browse = props.browse;
   const resetBrowse = props.resetBrowse;
@@ -484,9 +482,6 @@ function Creator(props) {
     undoData_.frameArray = frameArray;
     setUndoData(undoData_);
   }
-  function resetUndo() {
-    setUndoData({ historyLen: 20, frameArray: [] });
-  }
 
   function Undo() {
     let frameArray = undoData.frameArray;
@@ -873,69 +868,8 @@ function Creator(props) {
     <div className="App">
       {
         <body ref={bodyRef}>
-          {/* <div className="logo-creater">
-            <img src="logo_block.png" />
-          </div> */}
           <div className="interface">
             <main>
-              <section className="action left">
-                <div className="colors">
-                  <Scheme onChangeScheme={selectScheme} />
-                  <Pallet
-                    scheme={coloringState.scheme}
-                    setColor={setColor}
-                    pickedIndex={coloringState.color}
-                  />
-                  {animations.length > 6 && ( //very ugly hack
-                    <AnimationPallet
-                      data={renderedAnimations.filter((x) => x.id > 100)}
-                      onAnimationSelect={(x) => {
-                        setColor(x);
-                      }}
-                      onDoubleClick={(id) => {
-                        const AAA = renderedAnimations.filter(
-                          (x) => x.id == id
-                        )[0];
-
-                        if (AAA["isOscillator"]) {
-                          setOscillatorData(findOscillator(id));
-                          setCreateOscillatorOn(true);
-                          return;
-                        }
-                        setBrowserOn(true);
-                        setSelectedId(id);
-                      }}
-                      onAnimationDelete={onAnimationDelete}
-                      createOscillator={createOscillator}
-                      pickedIndex={coloringState.color}
-                    />
-                  )}
-                </div>
-                <Shapes pickedShape={coloringState.shape} setShape={setShape} />
-                <ClearBtn onClick={clearFrame} />
-              </section>
-              <AnimationLibrary
-                username={email}
-                addAnimation={addAnimation}
-                browserdOn={browserdOn}
-                setBrowserOn={setBrowserOn}
-                resetBrowse={resetBrowse}
-                settedId={selectedId}
-                getFramesById={getFramesById}
-                colorMapping={colorMapping}
-                onAnimationDelete={onAnimationDelete}
-              />
-              <CreateOscillator
-                createOscillatorOn={createOscillatorOn}
-                animations={renderedAnimations}
-                closeWindow={closeOscillatorWindow}
-                buildOscillator={renderOscillator}
-                createOscillator={createOscillator}
-                updateOscillator={updateOscillator}
-                data={oscillatorData}
-                deleteOscillator={onAnimationDelete}
-              />
-
               <div style={{ display: "block", margin: "0" }}>
                 <Screen
                   labels={isPlay ? null : stateToLAbels(frameState, animations)}
@@ -961,69 +895,6 @@ function Creator(props) {
                   setIsLoop={setIsLoop}
                 />
               </div>
-
-              <section className="action right">
-                <div className="creation_buttons">
-                  {/* <NewFrame
-                    numFrames={frames.length}
-                    recordFrame={recordFrame}
-                  /> */}
-                  <div>
-                    <div
-                      className="grid-on"
-                      onClick={() => setIsGrid(!isGrid)}
-                      style={
-                        isGrid
-                          ? { background: "#F72C2C" }
-                          : { background: "#8c7373" }
-                      }
-                    >
-                      ------ GRID -------
-                    </div>
-                    <div className="creation_btns">
-                      <Reset text={"UNDO"} onClick={Undo} />
-                      {/* <Reset text={"undo"} onClick={Undo} /> */}
-
-                      <Reset
-                        text={"NEW"}
-                        onClick={() => {
-                          resetAnimation();
-                          clearFrame();
-                          resetUndo();
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <StoreAnimation onClick={storeAnimation} />
-                      <CreateOscillatorBtn
-                        onClick={() => {
-                          setCreateOscillatorOn(true);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div style={{ marginTop: "20px" }}>
-                    <Tunner
-                      setValue={setFPS}
-                      minValue={5}
-                      maxValue={60}
-                      radius={55}
-                      label={"FPS"}
-                      value={24}
-                    />
-                  </div>
-                  <div style={{ paddingTop: "1px" }}>
-                    <Errows
-                      pressErrow={pressErrow}
-                      pressRotate={rotateFrame_}
-                      pressReflect={reflectFrame_}
-                    />
-                  </div>
-                  <RecoredAnimation onClick={recordFrame} />
-
-                  <div style={{ fontSize: "18px" }}>{frames.length}</div>
-                </div>
-              </section>
             </main>
           </div>
         </body>
@@ -1032,4 +903,4 @@ function Creator(props) {
   );
 }
 
-export default Creator;
+export default CreatorTablet;

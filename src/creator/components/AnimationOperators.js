@@ -4,13 +4,13 @@ import { colorOscillator } from "./utils/RGB";
 const StyledStoreAnimation = styled.div`
   /* background-color: #f22a2a; */
   /* background-color: #ff471a; */
+  border: 0.1px solid orange;
 
   background-color: #c73d1e;
   color: #000;
   padding: 14px;
   margin-top: 7px;
   margin-left: 6px;
-
   margin-bottom: 5px;
   border-radius: 5px;
   width: 120px;
@@ -29,11 +29,12 @@ const StyledStoreAnimation = styled.div`
 const StyledRecoredAnimation = styled.div`
   /* background-color: #f22a2a; */
   /* background-color: #ff471a; */
+  border: 0.1px solid orange;
 
   background-color: #c73d1e;
   color: #000;
   padding: 10px;
-  margin-top: 1px;
+  margin-top: 55px;
   margin-bottom: 5px;
   margin-left: 4px;
 
@@ -49,6 +50,8 @@ const StyledRecoredAnimation = styled.div`
 `;
 
 const StyledAnimationOps = styled.div`
+  border: 0.1px solid white;
+
   height: 35px;
   width: 55px;
   /* background-color: #f7b947; */

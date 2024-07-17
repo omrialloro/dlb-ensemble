@@ -41,10 +41,7 @@ function useExtractToGif() {
       body: JSON.stringify(data),
     }).then((res) => res.json());
 
-    console.log(gifId);
-
     let gifUrl = gifPath + gifId + ".gif";
-    console.log(gifUrl);
 
     downloadGif(gifUrl, `${gifId}.gif`);
   };
@@ -70,10 +67,8 @@ function useSaveAnimation() {
   const {
     auth: { token },
   } = useContext(AuthContext);
-  console.log("token", token);
 
   const saveAnimation = async function (data) {
-    console.log(data);
     try {
       setLoading(true);
       fetch(serverUrl + "/saveAnimation", {

@@ -9,7 +9,6 @@ export function useFetch(url, refresh) {
   const {
     auth: { token },
   } = useContext(AuthContext);
-  console.log("refresh", refresh);
   useEffect(() => {
     (async function () {
       try {

@@ -4,8 +4,11 @@ import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom";
 import { Login } from "./login/Login";
 import Editorr from "./editor/Editorr";
 import Creator from "./creator/Creator";
+import CreatorTablet from "./creator/CreatorTablet";
+
 import { AuthContext } from "./login/authContext";
 import { Header } from "./Header";
+import { isTablet } from "./sharedLib/Utils/Utils";
 
 function App() {
   const [save, setSave] = useState(0);
@@ -108,14 +111,25 @@ function App() {
               onClick={reset}
               path="/creator"
               element={
-                <Creator
-                  browse={browse}
-                  save={save}
-                  gif={gif}
-                  resetGif={() => setGif(0)}
-                  resetBrowse={() => setBrowse(0)}
-                  setSelected={setSelected}
-                />
+                isTablet ? (
+                  <Creator
+                    browse={browse}
+                    save={save}
+                    gif={gif}
+                    resetGif={() => setGif(0)}
+                    resetBrowse={() => setBrowse(0)}
+                    setSelected={setSelected}
+                  />
+                ) : (
+                  <CreatorTablet
+                    browse={browse}
+                    save={save}
+                    gif={gif}
+                    resetGif={() => setGif(0)}
+                    resetBrowse={() => setBrowse(0)}
+                    setSelected={setSelected}
+                  />
+                )
               }
             />
           </Routes>

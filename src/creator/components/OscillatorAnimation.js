@@ -7,7 +7,6 @@ function OscillatorAnimation(props) {
   const isPlaying = props.isPlaying;
 
   const alpha = 1 / numFrames;
-  console.log(alpha);
 
   const canvasRef = useRef(null);
 
