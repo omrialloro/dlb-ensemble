@@ -18,6 +18,10 @@ const StyledFClear = styled.div`
 
   transition: 0.5s;
   border-radius: 5px;
+  &:hover {
+    background-color: rgb(180, 190, 210);
+    color: rgb(40, 40, 40);
+  }
 
   cursor: grabbing;
 `;

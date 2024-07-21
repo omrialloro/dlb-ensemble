@@ -4,15 +4,15 @@ import { Fps } from "./Fps";
 const StyledPlay = styled.div`
   display: flex;
   justify-content: space-between;
-  align-content: center;
+  align-content: left;
 `;
 
 const StyledButton = styled.div`
-  height: 32px;
-  width: 32px;
+  height: 62px;
+  width: 62px;
   border-radius: 50%;
-  background-color: #9df49d;
-  border: 1px solid #000;
+  /* background-color: #9df49d;
+  border: 1px solid #000; */
 `;
 
 export function Play(props) {

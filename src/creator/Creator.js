@@ -46,6 +46,8 @@ import CreateOscillator from "./components/CreateOscillator";
 import { AuthContext } from "../login/authContext";
 import { serverUrl } from "../settings";
 import Tunner from "../sharedLib/components/Tunner";
+import Tunner2 from "../sharedLib/components/Tunner2";
+
 import userEvent from "@testing-library/user-event";
 import { ClearBtn } from "./components/ClearBtn";
 
@@ -938,7 +940,14 @@ function Creator(props) {
 
               <div style={{ display: "block", margin: "0" }}>
                 <Screen
-                  labels={isPlay ? null : stateToLAbels(frameState, animations)}
+                  labels={
+                    isPlay
+                      ? null
+                      : stateToLAbels(frameState, [
+                          ...animations,
+                          ...oscillators,
+                        ])
+                  }
                   id={"screen"}
                   ref={screenRef}
                   screenSize={560}
@@ -948,18 +957,20 @@ function Creator(props) {
                   onPixelClick={onPixelClick}
                   withGrid={isGrid}
                 />
-                <PlayBar
-                  delay={isPlay ? delay : null}
-                  pausedFrameIndex={frameIndex}
-                  length={renderedFrames.length}
-                  updateFrameIndex={setFrameIndex}
-                />
-                <Play
-                  isPlay={isPlay}
-                  isLoop={isLoop}
-                  setIsPlay={toggleIsPlay}
-                  setIsLoop={setIsLoop}
-                />
+                <div style={{ display: "flex" }}>
+                  <Play
+                    isPlay={isPlay}
+                    isLoop={isLoop}
+                    setIsPlay={toggleIsPlay}
+                    setIsLoop={setIsLoop}
+                  />
+                  <PlayBar
+                    delay={isPlay ? delay : null}
+                    pausedFrameIndex={frameIndex}
+                    length={renderedFrames.length}
+                    updateFrameIndex={setFrameIndex}
+                  />
+                </div>
               </div>
 
               <section className="action right">
@@ -1003,14 +1014,22 @@ function Creator(props) {
                     </div>
                   </div>
                   <div style={{ marginTop: "20px" }}>
-                    <Tunner
+                    <Tunner2
+                      setValue={setFPS}
+                      // minValue={5}
+                      // maxValue={60}
+                      // radius={55}
+                      // label={"FPS"}
+                      // value={24}
+                    />
+                    {/* <Tunner2
                       setValue={setFPS}
                       minValue={5}
                       maxValue={60}
                       radius={55}
                       label={"FPS"}
                       value={24}
-                    />
+                    /> */}
                   </div>
                   <div style={{ paddingTop: "1px" }}>
                     <Errows

@@ -9,6 +9,7 @@ import { useState } from "react";
 const StyledSlider = styled(SliderUnstyled)(
   ({ theme }) => `
   color: ${theme.palette.mode === "light" ? "#1976d2" : "#90caf9"};
+
   height: 4px;
   width: 100%;
   padding: 13px 0;
@@ -45,10 +46,10 @@ const StyledSlider = styled(SliderUnstyled)(
     display: block;
     position: absolute;
     width: 100%;
-    height: 8px;
+    height: 18px;
     border-radius: unset;
-    background-color: #7c7878;
-    border: 1px solid black;
+    background-color: rgb(50,70,100);
+    // border: 1px solid black;
     opacity: unset;
   }
 
@@ -56,9 +57,9 @@ const StyledSlider = styled(SliderUnstyled)(
   & .${sliderUnstyledClasses.track} {
     display: block;
     position: absolute;
-    height: 8px;
+    height: 18px;
     // border-radius: 2px;
-    background-color: #ff7598;
+    background-color: rgb(20,40,140);
   }
 
   & .${sliderUnstyledClasses.thumb} {
@@ -134,9 +135,9 @@ export const PlayBar = (props) => {
           color: "#fff",
           WebkitAppearance: "slider-vertical",
           "& .MuiSlider-thumb": {
-            width: "8px",
-            height: "24px",
-            borderRadius: "12px",
+            width: "18px",
+            height: "34px",
+            borderRadius: "2px",
             background: "#ff002c",
             text: "fff",
           },

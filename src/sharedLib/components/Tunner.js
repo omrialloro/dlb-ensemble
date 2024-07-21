@@ -53,7 +53,7 @@ const Tunner = (props) => {
       context.arc(radius, radius, radius, 0, Math.PI * 2);
       context.closePath();
 
-      context.strokeStyle = `rgba(220,260,250,${0.9})`;
+      context.strokeStyle = `rgba(00,20,150,${0.9})`;
 
       context.lineWidth = 3;
       context.beginPath();
