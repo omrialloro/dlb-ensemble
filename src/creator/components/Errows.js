@@ -1,21 +1,26 @@
 import styled from "styled-components";
 
 const StyledErrowButtons = styled.div`
-  margin: 5px;
-  height: 38px;
-  border-radius: 4px;
-  width: 38px;
+  margin: 3px;
+  height: 36px;
+  border-radius: 5px;
+  width: 36px;
   background-color: #aafffb;
   border: 1px solid black;
   background-color: #788a63;
-  background-color: #a2b59d;
-  background-color: #ff4d4d;
+  background-color: rgb(230, 110, 29);
+  background-color: ${(props) => props.col};
+
+  /* background-color: #a2b59d; */
+  /* background-color: #ff4d4d; */
   display: block;
   /* margin: auto; */
 
   border: 0px solid black;
   &:hover {
-    background-color: #a6edc0;
+    /* background-color: #a6edc0; */
+    background-color: rgb(250, 130, 90);
+    background-color: ${(props) => props.hover};
   }
 `;
 
@@ -26,8 +31,8 @@ const StyledErrows = styled.div`
   align-items: center;
   height: 40px;
   width: 13vh;
-  margin-left: 8px;
-  margin-top: 32px;
+  margin-left: 5px;
+  margin-top: 12px;
   margin-bottom: 2px;
 
   cursor: pointer;
@@ -59,6 +64,10 @@ export function Errows(props) {
   const pressErrow = props.pressErrow;
   const pressRotate = props.pressRotate;
   const pressReflect = props.pressReflect;
+
+  // let col = "#a2b59d";
+  let col = "rgb(0,160,150)";
+  let hover = "rgb(30,152,170)";
 
   document.body.onkeyup = function (e) {
     // console.log(e.keyCode);
@@ -93,7 +102,8 @@ export function Errows(props) {
       <StyledErrows>
         <div className="errows_bottom" style={{ display: "flex" }}>
           <StyledErrowButtons
-            style={{ background: "#a2b59d" }}
+            col={col}
+            hover={hover}
             onClick={() => {
               pressReflect();
             }}
@@ -114,7 +124,8 @@ export function Errows(props) {
             </div>
           </StyledErrowButtons>
           <StyledErrowButtons
-            style={{ background: "#a2b59d" }}
+            col={col}
+            hover={hover}
             onClick={() => {
               pressRotate();
             }}

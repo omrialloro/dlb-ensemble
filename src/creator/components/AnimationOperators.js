@@ -7,7 +7,7 @@ const StyledStoreAnimation = styled.div`
   border: 0.1px solid orange;
 
   background-color: #c73d1e;
-  color: #000;
+  color: rgb(90, 50, 0);
   padding: 14px;
   margin-top: 7px;
   margin-left: 6px;
@@ -32,15 +32,16 @@ const StyledRecoredAnimation = styled.div`
   border: 0.1px solid orange;
 
   background-color: #c73d1e;
-  color: #000;
+  /* color: #000; */
+
   padding: 10px;
-  margin-top: 55px;
-  margin-bottom: 5px;
+  margin-top: 35px;
+  margin-bottom: 0px;
   margin-left: 4px;
 
   border-radius: 5px;
-  width: 130px;
-  height: 70px;
+  width: 120px;
+  height: 80px;
   font-size: 12px;
 
   &:hover {
@@ -56,6 +57,8 @@ const StyledAnimationOps = styled.div`
   width: 55px;
   /* background-color: #f7b947; */
   background-color: #c99700;
+  color: rgb(90, 80, 0);
+
   border-radius: 10%;
   border: px solid black;
   text-align: center;

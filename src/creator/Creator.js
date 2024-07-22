@@ -1001,6 +1001,10 @@ function Creator(props) {
                           resetAnimation();
                           clearFrame();
                           resetUndo();
+                          console.log(renderedAnimations);
+                          console.log(
+                            renderedAnimations.filter((x) => x.id > 100)
+                          );
                         }}
                       />
                     </div>
@@ -1016,6 +1020,9 @@ function Creator(props) {
                   <div style={{ marginTop: "20px" }}>
                     <Tunner2
                       setValue={setFPS}
+                      radius={12}
+                      Text={"FPS"}
+
                       // minValue={5}
                       // maxValue={60}
                       // radius={55}

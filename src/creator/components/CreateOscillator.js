@@ -5,6 +5,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { OscillatorAnimation } from "./OscillatorAnimation";
 import { createDefaultFramesRendered } from "./frameOps/FrameOps";
 import Tunner from "../../sharedLib/components/Tunner";
+import Tunner2 from "../../sharedLib/components/Tunner2";
+
 import { positions } from "@mui/system";
 
 const StyledFrames = styled.div`
@@ -320,7 +322,7 @@ export default function CreateOscillator(props) {
                 positions: "relative",
               }}
             >
-              <Tunner
+              {/* <Tunner
                 setValue={setNumFrames}
                 currentValue={32}
                 minValue={-15}
@@ -328,7 +330,8 @@ export default function CreateOscillator(props) {
                 radius={38}
                 label={""}
                 value={numFrames}
-              />
+              /> */}
+              <Tunner2 setValue={setNumFrames} radius={8} Text={"FPS"} />
             </div>
           </div>
         </StyledOscillatorWindow>
