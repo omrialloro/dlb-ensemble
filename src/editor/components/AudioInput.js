@@ -75,7 +75,7 @@ export default React.forwardRef((props, ref) => {
         type="file"
         onChange={handleFileChange}
         accept=".wav,.m4a,.mp3,.mp4"
-        hidden={true}
+        hidden={false}
       />
       {!source && <button hidden={true}></button>}
       {source && (
@@ -83,7 +83,7 @@ export default React.forwardRef((props, ref) => {
           className="AudioInput_audio"
           controls
           src={source}
-          hidden="true"
+          hidden="false"
         />
       )}
 

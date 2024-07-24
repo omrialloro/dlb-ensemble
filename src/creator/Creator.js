@@ -1001,10 +1001,6 @@ function Creator(props) {
                           resetAnimation();
                           clearFrame();
                           resetUndo();
-                          console.log(renderedAnimations);
-                          console.log(
-                            renderedAnimations.filter((x) => x.id > 100)
-                          );
                         }}
                       />
                     </div>

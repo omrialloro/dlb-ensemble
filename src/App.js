@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom";
 import { Login } from "./login/Login";
 import Editorr from "./editor/Editorr";
+import Editor2 from "./editor/Editor2";
+
 import Creator from "./creator/Creator";
 import CreatorTablet from "./creator/CreatorTablet";
 
@@ -99,7 +101,7 @@ function App() {
             <Route
               path="/editor"
               element={
-                <Editorr
+                <Editor2
                   setSelected={setSelected}
                   gif={gif}
                   browse={browse}

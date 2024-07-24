@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Screen } from "./../../components/screen/Screen";
 import { useInterval } from "./../../components/useInterval";
-import PlayBar from "./../../views/playbar/PlayBar";
+// import PlayBar from "./../../views/playbar/PlayBar";
+import { PlayBar } from "./../../../creator/components/PlayBar";
+import { Play } from "./../../../creator/components/Play";
+
 import {
   useSelectedId,
   useUpdateSelectedId,
@@ -9,6 +12,7 @@ import {
 import Tunner from "../../../sharedLib/components/Tunner";
 
 import Switch from "@mui/material/Switch";
+import { WaveformTunner } from "../../components/WaveformTunner";
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
@@ -123,25 +127,41 @@ export function Preview(props) {
           id={"FFFF"}
         />
       </div>
-      <PlayBar
+
+      <div style={{ display: "flex" }}>
+        <Play
+          isPlay={isPlay}
+          isLoop={true}
+          setIsPlay={toggleIsPlay}
+          setIsLoop={() => console.log("DDD")}
+        />
+        <PlayBar
+          delay={isPlay ? delay : null}
+          pausedFrameIndex={pausedFrameIndex}
+          length={frames.length}
+          updateFrameIndex={updateFrameIndex}
+        />
+      </div>
+
+      {/* <PlayBar
         updateFrameIndex={updateFrameIndex}
         pausedFrameIndex={pausedFrameIndex}
         length={frames.length}
         delay={isPlay ? delay : null}
         width={480}
-      />
+      /> */}
 
       <div className="container_play">
         <div
           className="vvv"
           style={{ display: "flex", justifyContent: "spaceBetween" }}
         >
-          <div className="btn" style={{ marginTop: "10px" }}>
+          {/* <div className="btn" style={{ marginTop: "10px" }}>
             <img
               src={!isPlay ? `play_icon.svg` : `pause_icon.svg`}
               onClick={toggleIsPlay}
             ></img>
-          </div>
+          </div> */}
 
           <div className="frames_counter">
             {isTime
@@ -149,7 +169,7 @@ export function Preview(props) {
               : (ii / FPS).toFixed(2) + "/" + (frames.length / FPS).toFixed(2)}
           </div>
 
-          <div
+          {/* <div
             className="toggle_frame_time"
             onClick={() => setIsTime(false)}
             style={
@@ -159,9 +179,8 @@ export function Preview(props) {
             }
           >
             F
-          </div>
-
-          <div
+          </div> */}
+          {/* <div
             className="toggle_frame_time"
             onClick={() => setIsTime(true)}
             style={
@@ -171,10 +190,9 @@ export function Preview(props) {
             }
           >
             T
-          </div>
+          </div> */}
         </div>
-
-        <div style={{ display: "flex" }}>
+        {/* <div style={{ display: "flex" }}>
           <div style={{ margin: "4px 140px 0px 0px" }}>
             <Tunner
               setValue={setFPS}
@@ -185,6 +203,7 @@ export function Preview(props) {
               label={"FPS"}
             />
           </div>
+
           <div onClick={toggleScreen} style={{ width: "60px", height: "60px" }}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +217,7 @@ export function Preview(props) {
               <path d="M4 4h16v16H4zM8 8h8v8H8z" />
             </svg>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
