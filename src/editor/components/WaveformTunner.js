@@ -187,9 +187,9 @@ const StyledXel = styled.div`
 `;
 
 const StyledLoadMusic = styled.div`
-  height: 60px;
+  height: 50px;
   width: 480px;
-  padding: 20px;
+  padding: 15px;
   margin: 2px;
   padding-left: 8px;
   margin-top: 40px;

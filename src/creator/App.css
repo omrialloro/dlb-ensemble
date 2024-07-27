@@ -10,7 +10,7 @@ body {
   font-family: 'Baloo Bhai 2', sans-serif;
   font-weight: 400;
   height: 100vh;
-  width:140vh;
+  width:240vh;
   margin-left: 20px;
 
   display: flex;
@@ -147,7 +147,7 @@ strong {
 
 .interface {
   margin-top: 48px;
-  margin-left: 110px;
+  margin-left: 200px;
 }
 
 .timeline {

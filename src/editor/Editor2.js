@@ -455,11 +455,12 @@ function Editorr(props) {
                         <div
                           style={{
                             marginBottom: "5px",
-                            padding: "8px",
+                            padding: "5px",
                             right: "20px",
                             borderRadius: "7px",
                             background: "#8c8664",
-                            height: "70px",
+                            width: "480px",
+                            height: "65px",
                             top: "20px",
                           }}
                         >
