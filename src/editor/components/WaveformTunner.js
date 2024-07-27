@@ -146,7 +146,7 @@ const StyledManu = styled.div`
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   grid-column-gap: 0;
-  overflow: scroll;
+  /* overflow: scroll; */
   margin: 2px;
   padding-left: 8px;
   margin-top: 4px;
@@ -220,20 +220,21 @@ const MusicManu = (props) => {
   function onTrackClick(url) {
     setUrl(url);
   }
-  const A = Array.from(Array(100).keys());
   return (
     <StyledManu>
       <Xelement onClick={() => setManuOn(false)} position={"absolute"} />
-      {Object.keys(music_urls).map((x) => (
-        <StyledManuEl
-          onClick={() => {
-            setManuOn(false);
-            onTrackClick(music_urls[x]);
-          }}
-        >
-          {x}
-        </StyledManuEl>
-      ))}
+      <div style={{ overflow: "scroll" }}>
+        {Object.keys(music_urls).map((x) => (
+          <StyledManuEl
+            onClick={() => {
+              setManuOn(false);
+              onTrackClick(music_urls[x]);
+            }}
+          >
+            {x}
+          </StyledManuEl>
+        ))}
+      </div>
     </StyledManu>
   );
 };
