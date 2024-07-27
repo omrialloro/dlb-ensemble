@@ -388,12 +388,6 @@ function Editorr(props) {
     }
   }, [isPlay]);
 
-  /* <AudioInput
-                          ref={AudioRef}
-                          isPlay={isPlay}
-                          offsetSec={offsetSec}
-                        /> */
-
   return (
     <SelectedIdProvider>
       {/* <div className="logo-creater" style={{ top: "10px", left: "1px " }}>
@@ -516,6 +510,7 @@ function Editorr(props) {
                           ref={AudioRef}
                           lenSec={120}
                           // isPlay={isPlay}
+                          offMusic={() => setWaveOn(false)}
                           playFunc={isPlay}
                           durationSec={9.0}
                         />

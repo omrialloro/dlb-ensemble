@@ -3,8 +3,15 @@ import styled from "styled-components";
 
 const AudioPlayer = forwardRef((props, ref) => {
   const isPlay = props.isPlay;
+  const url = props.url;
 
   const audioRef = useRef(null);
+  const srcRef = useRef(null);
+
+  useEffect(() => {
+    audioRef.current.load();
+  }, [url]);
+
   const { refLen, ref2 } = ref.current;
   useEffect(() => {
     if (isPlay) {
@@ -32,18 +39,8 @@ const AudioPlayer = forwardRef((props, ref) => {
 
   return (
     <div>
-      {/* <button
-        onClick={() => {
-          playAudio();
-        }}
-      >
-        Play Audio
-      </button> */}
       <audio ref={audioRef} style={{ display: "none" }} controls>
-        <source
-          src="https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg"
-          type="audio/mp3"
-        />
+        <source ref={srcRef} src={url} type="audio/mp3" />
       </audio>
     </div>
   );
@@ -62,6 +59,25 @@ function createWaveform(len_sec) {
     </>
   ));
 }
+
+let music_urls = {
+  track1:
+    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/doctor+you+box+v3.mp3",
+  track2:
+    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
+  track3:
+    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/doctor+you+box+v3.mp3",
+  track4:
+    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
+  track5:
+    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/doctor+you+box+v3.mp3",
+  track6:
+    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
+  track7:
+    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/doctor+you+box+v3.mp3",
+  track8:
+    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
+};
 
 const Bar = styled.img`
   display: inline;
@@ -120,6 +136,56 @@ const StyledTimeScreen = styled.div`
   align-items: left;
 `;
 
+const StyledManu = styled.div`
+  height: 260px;
+  width: 380px;
+  position: absolute;
+  top: 200px;
+  border-radius: 5px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-column-gap: 0;
+  overflow: scroll;
+  margin: 2px;
+  padding-left: 8px;
+  margin-top: 4px;
+  background-color: rgb(100, 100, 130);
+  color: rgb(250, 220, 120);
+  /* text-align: center; */
+`;
+const StyledManuEl = styled.div`
+  height: 60px;
+  width: 360px;
+  padding: 1px;
+  margin: 2px;
+  margin-top: 4px;
+  font-weight: bold;
+  font-size: 18px;
+  color: rgb(0, 0, 0);
+  background-color: rgb(0, 100, 130);
+
+  /* text-align: center; */
+`;
+
+const StyledXel = styled.div`
+  height: 20px;
+  width: 20px;
+  padding-bottom: 4px;
+  margin: 1px;
+  color: rgb(0, 0, 0);
+  border-radius: 50px;
+  background-color: rgb(200, 100, 130);
+  position: ${(props) => props.position};
+
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+
+  top: 0;
+  right: 0;
+`;
+
 const StyledLoadMusic = styled.div`
   height: 60px;
   width: 480px;
@@ -130,10 +196,47 @@ const StyledLoadMusic = styled.div`
   border-radius: 5px;
   font-weight: bold;
   font-size: 18px;
+
   background-color: rgb(100, 100, 130);
   color: rgb(250, 220, 120);
   text-align: center;
 `;
+
+const Xelement = (props) => {
+  const onClick = props.onClick;
+  const position = props.position;
+
+  return (
+    <StyledXel position={position} onClick={onClick}>
+      x
+    </StyledXel>
+  );
+};
+
+const MusicManu = (props) => {
+  const setUrl = props.setUrl;
+  const setManuOn = props.setManuOn;
+
+  function onTrackClick(url) {
+    setUrl(url);
+  }
+  const A = Array.from(Array(100).keys());
+  return (
+    <StyledManu>
+      <Xelement onClick={() => setManuOn(false)} position={"absolute"} />
+      {Object.keys(music_urls).map((x) => (
+        <StyledManuEl
+          onClick={() => {
+            setManuOn(false);
+            onTrackClick(music_urls[x]);
+          }}
+        >
+          {x}
+        </StyledManuEl>
+      ))}
+    </StyledManu>
+  );
+};
 
 const createScrollStopListener = (element, callback, timeout) => {
   let removed = false;
@@ -182,6 +285,9 @@ export const LoadMusicBts = (props) => {
 };
 
 export const WaveformTunner = forwardRef((props, ref) => {
+  const [manuOn, setManuOn] = useState(true);
+  const offMusic = props.offMusic;
+
   const lenSec = props.lenSec;
   const duration = props.duration;
   const isPlay = props.isPlay;
@@ -202,16 +308,30 @@ export const WaveformTunner = forwardRef((props, ref) => {
   });
 
   const aaa = useRef({ refLen, ref2 });
+  const [url, setUrl] = useState(
+    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg"
+  );
 
-  let url =
-    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg";
-
-  const A = Array.from(Array(100).keys());
   return (
     <div style={{ marginTop: "40px", display: "flex" }}>
-      <AudioPlayer ref={aaa} isPlay={isPlay} />
+      {manuOn ? (
+        <MusicManu setUrl={setUrl} setManuOn={setManuOn}></MusicManu>
+      ) : (
+        <></>
+      )}
+
+      <AudioPlayer ref={aaa} isPlay={isPlay} url={url} />
       <StyledTimeScreen ref={rrr}>0.0</StyledTimeScreen>
-      <StyledBox ref={containerRef}>{createWaveform(lenSec)}</StyledBox>
+
+      <StyledBox
+        ref={containerRef}
+        onDoubleClick={() => {
+          setManuOn(true);
+        }}
+      >
+        {createWaveform(lenSec)}
+      </StyledBox>
+      <Xelement position={"relative"} onClick={offMusic} />
     </div>
   );
 });
