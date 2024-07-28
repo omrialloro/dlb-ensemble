@@ -62,11 +62,11 @@ function App() {
           gif={clickGif}
           selected={selected}
         />{" "}
-        <div className="logo-creater">
+        {/* <div className="logo-creater">
           <h1>
             <img src="logo_block.png" />
           </h1>
-        </div>
+        </div> */}
         <Routes>
           <Route path="/*" element={<Navigate to="/login" />} />
           <Route
@@ -84,7 +84,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <div>
+        <div style={{ display: "flex" }}>
           <Header
             browse={clickBrowse}
             save={clickSave}

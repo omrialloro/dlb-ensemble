@@ -261,6 +261,20 @@ function Editor2(props) {
       range: mainScreen["range"],
       operators: { rotate: 0, reflect: 0, reverse: 0, scheme: -1 },
     },
+    {
+      id: "4",
+      dim: mainScreen["dim"],
+      filename: mainScreen["filename"],
+      range: mainScreen["range"],
+      operators: { rotate: 0, reflect: 0, reverse: 0, scheme: -1 },
+    },
+    {
+      id: "22",
+      dim: mainScreen["dim"],
+      filename: mainScreen["filename"],
+      range: mainScreen["range"],
+      operators: { rotate: 0, reflect: 0, reverse: 0, scheme: -1 },
+    },
   ]);
 
   const [timeCodes, SetTimeCodes] = useState([0]);
