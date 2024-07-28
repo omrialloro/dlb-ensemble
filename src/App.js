@@ -114,7 +114,7 @@ function App() {
                   <Creator
                     ref={creatorRef}
                     browse={browse}
-                    save={save}
+                    // save={save}
                     gif={gif}
                     resetGif={() => setGif(0)}
                     resetBrowse={() => setBrowse(0)}

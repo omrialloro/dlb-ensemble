@@ -28,7 +28,7 @@ export const Header = (props) => {
           margin: "10 10 10 10px",
           float: "left",
           paddingLeft: "30px",
-          marginLeft: "200px",
+          marginLeft: "10px",
           marginRight: "100px",
         }}
       >

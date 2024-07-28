@@ -65,7 +65,7 @@ const Creator = forwardRef((props, ref) => {
   const [start_time, setStart_time] = useState(0);
   const browse = props.browse;
   const resetBrowse = props.resetBrowse;
-  const save = props.save;
+  // const save = props.save;
   const gif = props.gif;
   const resetGif = props.resetGif;
 
