@@ -29,7 +29,14 @@ import {
   animationStateMappingCb,
   RecoredAnimation,
 } from "./components/AnimationOperators";
-import { useEffect, useRef, useState, useCallback, useContext } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useContext,
+  forwardRef,
+} from "react";
 import { PlayBar } from "./components/PlayBar";
 import { Fps } from "./components/Fps";
 import { SaveAndLoad } from "./components/SaveAndLoad";
@@ -53,7 +60,8 @@ import { ClearBtn } from "./components/ClearBtn";
 
 const dim = [36, 36];
 
-function Creator(props) {
+const Creator = forwardRef((props, ref) => {
+  // function Creator(props) {
   const [start_time, setStart_time] = useState(0);
   const browse = props.browse;
   const resetBrowse = props.resetBrowse;
@@ -685,11 +693,13 @@ function Creator(props) {
     }
   };
 
-  useEffect(() => {
-    if (save > 0) {
-      handleSaveAnimation();
-    }
-  }, [save]);
+  ref.current = handleSaveAnimation;
+
+  // useEffect(() => {
+  //   if (save > 0) {
+  //     handleSaveAnimation();
+  //   }
+  // }, [save]);
 
   useEffect(() => {
     if (gif > 0) {
@@ -1052,6 +1062,6 @@ function Creator(props) {
       }
     </div>
   );
-}
+});
 
 export default Creator;

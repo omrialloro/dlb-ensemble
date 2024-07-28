@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom";
 import { Login } from "./login/Login";
 // import Editorr from "./editor/Editorr";
@@ -13,6 +13,7 @@ import { Header } from "./Header";
 import { isTablet } from "./sharedLib/Utils/Utils";
 
 function App() {
+  const creatorRef = useRef();
   const [save, setSave] = useState(0);
   const [saveEditor, setSaveEditor] = useState(0);
 
@@ -37,7 +38,8 @@ function App() {
     }
   };
   const clickSave = () => {
-    setSave(save + 1);
+    creatorRef.current();
+    // setSave(save + 1);
   };
   const clickGif = () => {
     if (selected == "creator") {
@@ -110,6 +112,7 @@ function App() {
               element={
                 isTablet ? (
                   <Creator
+                    ref={creatorRef}
                     browse={browse}
                     save={save}
                     gif={gif}
