@@ -54,7 +54,7 @@ const StyledSmall = styled.div`
   z-index: 3;
 `;
 
-function Editorr(props) {
+function Editor2(props) {
   const setSelected = props.setSelected;
   const gif = props.gif;
   const resetGif = props.resetGif;
@@ -148,6 +148,7 @@ function Editorr(props) {
   }
 
   function handleOnDragEnd(result) {
+    console.log(result);
     // if (!result.destination) return;
     const items = Array.from(DATA);
     const id = "x" + Date.now().toString();
@@ -158,6 +159,7 @@ function Editorr(props) {
       info["dim"] = mainScreen["dim"];
       info["range"] = mainScreen["range"];
       info["operators"] = nestedCopy(mainScreen["operators"]);
+      console.log(DATA);
 
       if (result.destination.index >= -1) {
         items.splice(result.destination.index + 1, 0, info);
@@ -414,7 +416,7 @@ function Editorr(props) {
                               {[...Array(49).keys()].map((k, index) => (
                                 <Draggable
                                   key={"monitor" + k + 100000}
-                                  draggableId={"f" + k}
+                                  draggableId={"fff" + k}
                                   index={-index - 1}
                                 >
                                   {(provided, snapshot) => (
@@ -534,4 +536,4 @@ function Editorr(props) {
   );
 }
 
-export default Editorr;
+export default Editor2;

@@ -32,12 +32,12 @@ export const TrimSlider = (props) => {
         sx={{
           width: props.width,
           height: "10px",
-          color: "#fdd8d8",
+          borderRadius: "0%",
           WebkitAppearance: "slider-vertical",
           "& .MuiSlider-thumb": {
-            width: "24px",
+            width: "18px",
             height: "24px",
-            borderRadius: "50%",
+            borderRadius: "8%",
             background: "#F72C2C",
           },
         }}

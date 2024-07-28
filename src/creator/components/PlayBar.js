@@ -136,7 +136,8 @@ export const PlayBar = (props) => {
           WebkitAppearance: "slider-vertical",
           "& .MuiSlider-thumb": {
             width: "18px",
-            height: "34px",
+            marginTop: "-4px",
+            height: "24px",
             borderRadius: "2px",
             background: "#ff002c",
             text: "fff",

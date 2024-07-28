@@ -2,7 +2,7 @@ import "./App.css";
 import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom";
 import { Login } from "./login/Login";
-import Editorr from "./editor/Editorr";
+// import Editorr from "./editor/Editorr";
 import Editor2 from "./editor/Editor2";
 
 import Creator from "./creator/Creator";
@@ -23,11 +23,6 @@ function App() {
   const { isAuthenticated } = useContext(AuthContext);
   console.log("isAuthenticated", isAuthenticated);
   const reset = () => {
-    console.log("reset");
-    console.log("reset");
-    console.log("reset");
-    console.log("reset");
-
     setSave(0);
     setBrowse(0);
     setGif(0);
