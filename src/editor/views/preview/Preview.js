@@ -163,11 +163,11 @@ export function Preview(props) {
             ></img>
           </div> */}
 
-          {/* <div className="frames_counter">
+          <div className="frames_counter">
             {isTime
               ? ii + "/" + frames.length
               : (ii / FPS).toFixed(2) + "/" + (frames.length / FPS).toFixed(2)}
-          </div> */}
+          </div>
 
           {/* <div
             className="toggle_frame_time"
