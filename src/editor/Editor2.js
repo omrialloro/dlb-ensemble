@@ -14,7 +14,6 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import { nestedCopy } from "./components/Utils";
 import { grayRGB } from "./components/RGB";
-import AudioInput from "./components/AudioInput";
 import BrowseAnimations from "./components/BrowseAnimations";
 import { Preview } from "./views/preview/Preview";
 import { FullScreen } from "./views/fullScreen/FullScreen.js";
@@ -30,7 +29,8 @@ import { useSaveAnimation, useExtractToGif } from "../sharedLib/Server/api";
 import { AuthContext } from "../login/authContext";
 import { serverUrl } from "../settings";
 import { WaveformTunner, LoadMusicBts } from "./components/WaveformTunner.js";
-import { Rotate, Reflect } from "./components/OperatorsBtns";
+import { TimeDisplay } from "./components/TimeDisplay.js";
+// import { Rotate, Reflect } from "./components/OperatorsBtns";
 
 let schemes_array = Object.values(getSchemes());
 
@@ -445,12 +445,14 @@ function Editor2(props) {
                               ))}
                               {provided.placeholder}
                             </StyledBox>
+
                             <Editor
                               frames={frammmes}
                               border={mainScreen["range"]}
                               delay={delay}
                               updateRange={updateRange}
                             ></Editor>
+
                             {provided.placeholder}
                           </div>
                           <div className="library">
@@ -460,6 +462,7 @@ function Editor2(props) {
                             />
                           </div>
                         </div>
+
                         <Operators
                           operatorsState={mainScreen["operators"]}
                           updateOperatorsState={updateOperatorsState}
@@ -508,6 +511,7 @@ function Editor2(props) {
                             </div>
                           </ScrollMenu>
                         </div>
+
                         <div className="screen">
                           <Preview
                             frames={proccesedFrames}

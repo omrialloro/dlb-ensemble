@@ -7,8 +7,8 @@ import { Screen } from "../Screen";
 import { createDefaultFramesRendered } from "../frameOps/FrameOps";
 import { Operators } from "../../../editor/views/Operators";
 import { TrimSlider } from "../../../editor/views/editor/trimSlider/TrimSlider";
-import { PlayBar } from "../PlayBar";
-import { VerticalSlider } from "../colors/VerticalSlider";
+import { VerticalSlider } from "../../../sharedLib/components/VerticalSlider";
+
 import {
   reflectFrame,
   rotateFrame,

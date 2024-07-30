@@ -639,6 +639,7 @@ main {
 
 .container_btns {
   width: 56px;
+  height: 500px;
   display: flex;
   margin-top:10px ;
   flex-direction: column;

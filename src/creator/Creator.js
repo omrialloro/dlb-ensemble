@@ -556,8 +556,8 @@ const Creator = forwardRef((props, ref) => {
 
   function onPixelClick(pixel) {
     let xxx = coloring_shape(pixel, frameState, coloringState);
-    recordUndo(xxx);
     setFrameState(xxx);
+    recordUndo(xxx);
   }
   function toggleIsPlay(x) {
     if (isPlay) {
@@ -985,10 +985,6 @@ const Creator = forwardRef((props, ref) => {
 
               <section className="action right">
                 <div className="creation_buttons">
-                  {/* <NewFrame
-                    numFrames={frames.length}
-                    recordFrame={recordFrame}
-                  /> */}
                   <div>
                     <div
                       className="grid-on"
@@ -1003,8 +999,6 @@ const Creator = forwardRef((props, ref) => {
                     </div>
                     <div className="creation_btns">
                       <Reset text={"UNDO"} onClick={Undo} />
-                      {/* <Reset text={"undo"} onClick={Undo} /> */}
-
                       <Reset
                         text={"NEW"}
                         onClick={() => {
@@ -1024,25 +1018,7 @@ const Creator = forwardRef((props, ref) => {
                     </div>
                   </div>
                   <div style={{ marginTop: "20px" }}>
-                    <Tunner2
-                      setValue={setFPS}
-                      radius={12}
-                      Text={"FPS"}
-
-                      // minValue={5}
-                      // maxValue={60}
-                      // radius={55}
-                      // label={"FPS"}
-                      // value={24}
-                    />
-                    {/* <Tunner2
-                      setValue={setFPS}
-                      minValue={5}
-                      maxValue={60}
-                      radius={55}
-                      label={"FPS"}
-                      value={24}
-                    /> */}
+                    <Tunner2 setValue={setFPS} radius={12} Text={"FPS"} />
                   </div>
                   <div style={{ paddingTop: "1px" }}>
                     <Errows

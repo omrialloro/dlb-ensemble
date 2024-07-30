@@ -14,6 +14,37 @@ import { isTablet } from "./sharedLib/Utils/Utils";
 
 function App() {
   const creatorRef = useRef();
+  // function disableScrolling() {
+  //   document.body.style.overflow = "hidden";
+  //   document.body.addEventListener("touchmove", preventDefault, {
+  //     passive: false,
+  //   });
+  // }
+  // function preventDefault(e) {
+  //   e.preventDefault();
+  // }
+
+  // disableScrolling();
+  function preventDefault(e) {
+    e.preventDefault();
+  }
+
+  function disableBodyScrolling() {
+    document.body.addEventListener("touchmove", preventDefault, {
+      passive: false,
+    });
+  }
+
+  // function enableBodyScrolling() {
+  //   document.body.removeEventListener("touchmove", preventDefault, {
+  //     passive: false,
+  //   });
+  // }
+
+  // Call disableBodyScrolling() to disable scrolling on the body
+  // Call enableBodyScrolling() to enable scrolling on the body
+  disableBodyScrolling();
+
   const [save, setSave] = useState(0);
   const [saveEditor, setSaveEditor] = useState(0);
 

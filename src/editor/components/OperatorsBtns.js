@@ -4,11 +4,6 @@ function Rotate(props) {
   const rotate = props.rotate;
   const index = props.index;
 
-  // const [index, setIndex] = useState(0);
-  // function rotate() {
-  //   setIndex((index + 1) % 4);
-  // }
-
   return (
     <div className="container_btn reflect" onClick={rotate}>
       <div className="btn" style={{ transform: `rotate(${90 * index}deg) ` }}>
