@@ -3,6 +3,7 @@ import { styled, alpha, Box } from "@mui/system";
 import SliderUnstyled, {
   sliderUnstyledClasses,
 } from "@mui/base/SliderUnstyled";
+import { useRef } from "react";
 
 const StyledSlider = styled(SliderUnstyled)(
   ({ theme }) => `
@@ -46,7 +47,6 @@ const StyledSlider = styled(SliderUnstyled)(
     height: 8px;
     border-radius: unset;
     background-color: #7c7878;
-    border: 1px solid black;
     opacity: unset;
   }
 
@@ -64,7 +64,7 @@ const StyledSlider = styled(SliderUnstyled)(
     position: absolute;
     width: 24px;
     height: 14px;
-    margin-left: -6px;
+    margin-left: -10px;
     margin-top: 0px;
     box-sizing: border-box;
     border-radius: 50%;
@@ -140,5 +140,67 @@ export const VerticalSlider = (props) => {
         },
       }}
     />
+  );
+};
+
+export const VerticalSlider2 = (props) => {
+  const { min, max, value } = props;
+  const [val, setVal] = useState(value);
+  useEffect(() => {
+    setVal(props.value);
+  }, [props]);
+  function onChangeCommitted(event, newValue) {
+    props.onChangeCommitted(event, newValue);
+  }
+
+  const onChange = (event, newValue) => {
+    // console.log(rrrr.current);
+    document.querySelector(".bbb").innerHTML = newValue;
+
+    setVal(newValue);
+  };
+  return (
+    <div>
+      <StyledSlider
+        orientation="vertical"
+        style={{ top: "px", height: "150px", width: "14%" }}
+        getAriaLabel={() => "Route Difficulty"}
+        value={val}
+        min={min}
+        max={max}
+        onChange={onChange}
+        onChangeCommitted={onChangeCommitted}
+        sx={{
+          width: "5px",
+          height: "14px",
+          WebkitAppearance: "slider-vertical",
+          "& .MuiSlider-track": {
+            width: "4px",
+            height: "12px",
+            background: "#e65c00",
+          },
+
+          "& .MuiSlider-rail": {
+            width: "7px",
+            height: "100%",
+            background: "#e65c00",
+          },
+
+          "& .MuiSlider-thumb": {
+            width: "25px",
+            height: "10px",
+
+            borderRadius: "10%",
+            background: "salmon",
+            color: "#e8d000",
+          },
+        }}
+      />
+
+      <div
+        className="bbb"
+        style={{ height: "50px", width: "50px", backgroundColor: "brown" }}
+      ></div>
+    </div>
   );
 };

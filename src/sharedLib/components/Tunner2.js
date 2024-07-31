@@ -16,8 +16,9 @@ const Tunner2 = (props) => {
       progressColorTo="rgb(120,50,0)"
       progressSize={7}
       trackColor="brown"
-      valueFontSize="2rem"
-      labelFontSize="1rem"
+      valueFontSize={radius / 7 + "rem"}
+      labelFontSize={radius / 10 + "rem"}
+      // labelFontSize="1rem"
       labelBottom={true}
       trackSize={15}
       width={10 * radius}

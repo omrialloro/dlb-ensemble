@@ -479,9 +479,29 @@ export default function AnimationLibrary(props) {
   }
   const refDelete = useRef();
   const refRemove = useRef();
+  const rrrr = useRef();
+
+  useEffect(() => {
+    if (browserdOn) {
+      console.log("FDFFFD");
+      function enableScrolling() {
+        document.body.style.overflow = "";
+        document.body.removeEventListener("touchmove", preventDefault, {
+          passive: false,
+        });
+        console.log(document.body.style.overflow);
+      }
+
+      function preventDefault(e) {
+        e.preventDefault();
+      }
+      enableScrolling();
+    }
+  }, [browserdOn]);
 
   return (
     <StyledBoxx
+      ref={rrrr}
       style={
         browserdOn
           ? {

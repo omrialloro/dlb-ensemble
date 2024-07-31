@@ -4,13 +4,12 @@ import { useInterval } from "./../../components/useInterval";
 // import PlayBar from "./../../views/playbar/PlayBar";
 import { PlayBar } from "./../../../creator/components/PlayBar";
 import { Play } from "./../../../creator/components/Play";
-// import { TimeDisplay } from "./../../components/TimeDisplay.js";
 
 import {
   useSelectedId,
   useUpdateSelectedId,
 } from "./../../contexts/SelectedIdContext";
-import Tunner from "../../../sharedLib/components/Tunner";
+import Tunner2 from "../../../sharedLib/components/Tunner2";
 
 import Switch from "@mui/material/Switch";
 import { WaveformTunner } from "../../components/WaveformTunner";
@@ -115,6 +114,7 @@ export function Preview(props) {
   useEffect(() => {
     passPlayState(isPlay);
   }, [isPlay]);
+  const fpsRef = useRef();
 
   return (
     <>
@@ -128,6 +128,7 @@ export function Preview(props) {
           id={"FFFF"}
         />
       </div>
+      <div>{fpsRef.current}</div>
 
       <div style={{ display: "flex" }}>
         <Play
@@ -144,30 +145,41 @@ export function Preview(props) {
         />
       </div>
 
-      {/* <PlayBar
-        updateFrameIndex={updateFrameIndex}
-        pausedFrameIndex={pausedFrameIndex}
-        length={frames.length}
-        delay={isPlay ? delay : null}
-        width={480}
-      /> */}
-
-      <div className="container_play">
+      <div
+        className="container_play"
+        style={{ marginLeft: "-100px", marginTop: "-200px" }}
+      >
         <div
           className="vvv"
           style={{ display: "flex", justifyContent: "spaceBetween" }}
         >
-          {/* <div className="btn" style={{ marginTop: "10px" }}>
+          {/* <div classNam
+          e="btn" style={{ marginTop: "10px" }}>
             <img
               src={!isPlay ? `play_icon.svg` : `pause_icon.svg`}
               onClick={toggleIsPlay}
             ></img>
           </div> */}
 
-          <div className="frames_counter">
-            {isTime
-              ? ii + "/" + frames.length
-              : (ii / FPS).toFixed(2) + "/" + (frames.length / FPS).toFixed(2)}
+          <div>
+            <div style={{ marginLeft: "22px", marginTop: "170px" }}>
+              <Tunner2
+                setValue={setFPS}
+                minValue={5}
+                maxValue={60}
+                radius={7}
+                value={FPS}
+                label={"FPS"}
+              />
+            </div>
+
+            <div className="frames_counter">
+              {isTime
+                ? ii + "/" + frames.length
+                : (ii / FPS).toFixed(2) +
+                  "/" +
+                  (frames.length / FPS).toFixed(2)}
+            </div>
           </div>
 
           {/* <div
