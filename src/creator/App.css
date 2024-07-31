@@ -12,6 +12,8 @@ body {
   height: 100vh;
   width:240vh;
   margin-left: 20px;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 
   display: flex;
 }
