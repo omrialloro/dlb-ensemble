@@ -5,8 +5,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./login/authContext";
 
-import initReactFastclick from "react-fastclick";
-initReactFastclick();
 // Apply FastClick to the body element
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
