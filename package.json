@@ -18,6 +18,7 @@
     "react-bootstrap": "^2.7.0",
     "react-circular-slider": "^1.0.12",
     "react-dom": "^18.2.0",
+    "react-fastclick": "^3.0.2",
     "react-horizontal-scrolling-menu": "^3.2.3",
     "react-router-dom": "^6.6.1",
     "react-scripts": "5.0.1",
