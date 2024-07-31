@@ -52,7 +52,6 @@ import AnimationLibrary from "./components/animationLibrary/AnimationLibrary.js"
 import CreateOscillator from "./components/CreateOscillator";
 import { AuthContext } from "../login/authContext";
 import { serverUrl } from "../settings";
-import Tunner from "../sharedLib/components/Tunner";
 import Tunner2 from "../sharedLib/components/Tunner2";
 
 import userEvent from "@testing-library/user-event";
@@ -61,16 +60,6 @@ import { ClearBtn } from "./components/ClearBtn";
 const dim = [36, 36];
 
 const Creator = forwardRef((props, ref) => {
-  function disableScrolling() {
-    document.body.style.overflow = "hidden";
-    document.body.addEventListener("touchmove", preventDefault, {
-      passive: false,
-    });
-  }
-  function preventDefault(e) {
-    e.preventDefault();
-  }
-  // disableScrolling
   const [start_time, setStart_time] = useState(0);
   const browse = props.browse;
   const resetBrowse = props.resetBrowse;
@@ -1007,8 +996,8 @@ const Creator = forwardRef((props, ref) => {
                       ------ GRID -------
                     </div>
                     <div className="creation_btns">
-                      {/* <Reset text={"UNDO"} onClick={Undo} /> */}
-                      <Reset text={"UNDO"} onClick={disableScrolling} />
+                      <Reset text={"UNDO"} onClick={Undo} />
+                      {/* <Reset text={"UNDO"} onClick={disableScrolling} /> */}
 
                       <Reset
                         text={"NEW"}
