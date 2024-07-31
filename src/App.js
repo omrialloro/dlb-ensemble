@@ -14,17 +14,17 @@ import { isTablet } from "./sharedLib/Utils/Utils";
 
 function App() {
   const creatorRef = useRef();
-  function disableScrolling() {
-    document.body.style.overflow = "hidden";
-    document.body.addEventListener("touchmove", preventDefault, {
-      passive: false,
-    });
-  }
-  function preventDefault(e) {
-    e.preventDefault();
-  }
+  // function disableScrolling() {
+  //   document.body.style.overflow = "hidden";
+  //   document.body.addEventListener("touchmove", preventDefault, {
+  //     passive: false,
+  //   });
+  // }
+  // function preventDefault(e) {
+  //   e.preventDefault();
+  // }
 
-  disableScrolling();
+  // disableScrolling();
   const [save, setSave] = useState(0);
   const [saveEditor, setSaveEditor] = useState(0);
 
