@@ -11,8 +11,6 @@ import CreatorTablet from "./creator/CreatorTablet";
 import { AuthContext } from "./login/authContext";
 import { Header } from "./Header";
 import { isTablet } from "./sharedLib/Utils/Utils";
-// import initReactFastclick from "react-fastclick";
-// initReactFastclick();
 
 function App() {
   const creatorRef = useRef();
