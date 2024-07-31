@@ -5,6 +5,19 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./login/authContext";
 
+import FastClick from "fastclick";
+
+// Apply FastClick to the body element
+if ("addEventListener" in document) {
+  document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+      FastClick.attach(document.body);
+    },
+    false
+  );
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthProvider>
