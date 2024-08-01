@@ -318,7 +318,10 @@ const Creator = forwardRef((props, ref) => {
     renderFrame(frameState, colorMapping, Math.max(0, frameIndex))
   );
   const [renderedFrames, setRenderedFrames] = useState([currentFrame]);
-  const [undoData, setUndoData] = useState({ historyLen: 20, frameArray: [] });
+  const [undoData, setUndoData] = useState({
+    historyLen: 20,
+    frameArray: [frameState],
+  });
   const authContext = useContext(AuthContext);
   const email = undefined;
 
@@ -498,9 +501,12 @@ const Creator = forwardRef((props, ref) => {
 
   function Undo() {
     let frameArray = undoData.frameArray;
+    console.log(frameArray);
 
-    if (frameArray.length > 0) {
-      let frame_state = frameArray[frameArray.length - 1];
+    if (frameArray.length > 1) {
+      console.log("FFF");
+      let frame_state = frameArray[frameArray.length - 2];
+      console.log(frame_state);
       frameArray = frameArray.slice(0, frameArray.length - 1);
       let undoData_ = undoData;
       undoData_.frameArray = frameArray;
