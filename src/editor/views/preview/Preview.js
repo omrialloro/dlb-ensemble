@@ -13,6 +13,7 @@ import Tunner2 from "../../../sharedLib/components/Tunner2";
 
 import Switch from "@mui/material/Switch";
 import { WaveformTunner } from "../../components/WaveformTunner";
+import { display } from "@mui/system";
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
@@ -33,7 +34,7 @@ export function Preview(props) {
   const [FPS, setFPS] = useState(Math.round(44));
   const [delay, setDelay] = useState(Math.round(1000 / FPS));
   const [isPlay, setIsPlay] = useState(false);
-  const [isTime, setIsTime] = useState(true);
+  const [isTime, setIsTime] = useState(false);
 
   useEffect(() => {
     updateDelay(delay);
@@ -85,7 +86,7 @@ export function Preview(props) {
           ii + "/" + frames.length;
       } else {
         document.querySelector(".frames_counter").innerHTML =
-          (ii / FPS).toFixed(2) + "/" + (frames.length / FPS).toFixed(2);
+          (ii / FPS).toFixed(1) + "/" + (frames.length / FPS).toFixed(1);
       }
       ii >= frames.length - 1 ? (ii = 0) : (ii += 1);
       if (ii >= frames.length - 1) {
@@ -153,16 +154,14 @@ export function Preview(props) {
           className="vvv"
           style={{ display: "flex", justifyContent: "spaceBetween" }}
         >
-          {/* <div classNam
-          e="btn" style={{ marginTop: "10px" }}>
-            <img
-              src={!isPlay ? `play_icon.svg` : `pause_icon.svg`}
-              onClick={toggleIsPlay}
-            ></img>
-          </div> */}
-
           <div>
-            <div style={{ marginLeft: "22px", marginTop: "170px" }}>
+            <div
+              style={{
+                marginLeft: "2px",
+                marginTop: "170px",
+                display: "flex",
+              }}
+            >
               <Tunner2
                 setValue={setFPS}
                 minValue={5}
@@ -171,14 +170,13 @@ export function Preview(props) {
                 value={FPS}
                 label={"FPS"}
               />
-            </div>
-
-            <div className="frames_counter">
-              {isTime
-                ? ii + "/" + frames.length
-                : (ii / FPS).toFixed(2) +
-                  "/" +
-                  (frames.length / FPS).toFixed(2)}
+              <div className="frames_counter">
+                {isTime
+                  ? ii + "/" + frames.length
+                  : (ii / FPS).toFixed(2) +
+                    "/" +
+                    (frames.length / FPS).toFixed(2)}
+              </div>
             </div>
           </div>
 
