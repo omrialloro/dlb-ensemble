@@ -501,12 +501,9 @@ const Creator = forwardRef((props, ref) => {
 
   function Undo() {
     let frameArray = undoData.frameArray;
-    console.log(frameArray);
 
     if (frameArray.length > 1) {
-      console.log("FFF");
       let frame_state = frameArray[frameArray.length - 2];
-      console.log(frame_state);
       frameArray = frameArray.slice(0, frameArray.length - 1);
       let undoData_ = undoData;
       undoData_.frameArray = frameArray;
@@ -542,8 +539,6 @@ const Creator = forwardRef((props, ref) => {
     }
   }
   function rotateFrame_() {
-    console.log("cc");
-
     let s = rotateFrame(frameState);
     recordUndo(s);
     setFrameState(s);
@@ -573,7 +568,6 @@ const Creator = forwardRef((props, ref) => {
     if (isPlay) {
       setFrameIndex(Math.max(1, screenRef.current));
     }
-    console.log("FF");
     if (renderedFrames.length > 1 && !isPlay) {
       setIsPlay(true);
     } else if (isPlay) {
@@ -913,7 +907,7 @@ const Creator = forwardRef((props, ref) => {
                     setColor={setColor}
                     pickedIndex={coloringState.color}
                   />
-                  {animations.length > 6 && ( //very ugly hack
+                  {(animations.length > 6 || oscillators.length > 0) && ( //very ugly hack
                     <AnimationPallet
                       data={renderedAnimations.filter((x) => x.id > 100)}
                       onAnimationSelect={(x) => {

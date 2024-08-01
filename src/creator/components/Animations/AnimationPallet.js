@@ -83,6 +83,8 @@ export function AnimationPallet(props) {
   const onDoubleClick = props.onDoubleClick;
   const [countClicks, setCountClicks] = useState(0);
 
+  console.log(data);
+
   function handleDoubleClick(id) {
     setCountClicks(countClicks + 1);
     if (countClicks >= 1) {
