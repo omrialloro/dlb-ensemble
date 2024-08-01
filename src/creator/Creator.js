@@ -563,11 +563,22 @@ const Creator = forwardRef((props, ref) => {
     setFrameState(xxx);
     recordUndo(xxx);
   }
-  function toggleIsPlay(x) {
+  // function toggleIsPlay(x) {
+  //   if (isPlay) {
+  //     setFrameIndex(Math.max(1, screenRef.current));
+  //   }
+  //   setIsPlay(x);
+  // }
+  function toggleIsPlay() {
     if (isPlay) {
       setFrameIndex(Math.max(1, screenRef.current));
     }
-    setIsPlay(x);
+    console.log("FF");
+    if (renderedFrames.length > 1 && !isPlay) {
+      setIsPlay(true);
+    } else if (isPlay) {
+      setIsPlay(false);
+    }
   }
 
   const bodyRef = useRef();
@@ -1008,6 +1019,9 @@ const Creator = forwardRef((props, ref) => {
                       <Reset
                         text={"NEW"}
                         onClick={() => {
+                          if (isPlay) {
+                            setIsPlay(false);
+                          }
                           resetAnimation();
                           clearFrame();
                           resetUndo();

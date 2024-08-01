@@ -27,7 +27,8 @@ export function Play(props) {
   return (
     <StyledPlay>
       <div className="player_functions">
-        <StyledButton onClick={() => setIsPlay(!isPlay)}>
+        {/* <StyledButton onClick={() => setIsPlay(!isPlay)}> */}
+        <StyledButton onClick={setIsPlay}>
           <div className="play-btn">
             <img src={isPlay ? "pause_icon.svg" : "play.svg"} />
             <span className="tooltiptext"> play / stop (&blank;) </span>
