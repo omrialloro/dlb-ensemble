@@ -593,9 +593,19 @@ const Creator = forwardRef((props, ref) => {
     ]);
   }
 
+  const lastTouchTimeRef = useRef(0);
+
   const handleTouchStart = (event) => {
     if (event.touches.length === 2) {
-      recordFrame();
+      const now = Date.now();
+      const timeDiff = now - lastTouchTimeRef.current;
+
+      if (timeDiff < 300) {
+        // Adjust this threshold as needed
+        recordFrame();
+      }
+
+      lastTouchTimeRef.current = now;
     }
   };
 
