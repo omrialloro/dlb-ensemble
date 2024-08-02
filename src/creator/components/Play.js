@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Fps } from "./Fps";
 
 const StyledPlay = styled.div`
   display: flex;
@@ -11,18 +10,11 @@ const StyledButton = styled.div`
   height: 62px;
   width: 62px;
   border-radius: 50%;
-  /* background-color: #9df49d;
-  border: 1px solid #000; */
 `;
 
 export function Play(props) {
   const isPlay = props.isPlay;
   const setIsPlay = props.setIsPlay;
-  const isLoop = props.isLoop;
-  const setIsLoop = props.setIsLoop;
-  // const handleFps = props.handleFps;
-  const FPS = props.FPS;
-  // const frameIndex = props.frameIndex
 
   return (
     <StyledPlay>

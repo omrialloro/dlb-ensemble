@@ -85,12 +85,6 @@ function Editor2(props) {
 
   const AudioRef = React.useRef({ ref1, ref2, ref3 });
 
-  // const handleUploadMusic = () => {
-  //   const { ref1, ref2, ref3 } = AudioRef.current;
-  //   console.log("FFF");
-  //   ref2.current.click();
-  // };
-
   const handleSaveEditedFrames = () => {
     const prefix = window.prompt("enter animation name");
     let name = prefix + String(Date.now());

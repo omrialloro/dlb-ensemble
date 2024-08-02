@@ -21,6 +21,7 @@ body {
   flex-direction: column;
   height: 320px;
   justify-content: space-evenly;
+  margin-left: 200px;
 
   /* background: #8c8664; */
 

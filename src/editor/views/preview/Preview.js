@@ -132,12 +132,12 @@ export function Preview(props) {
       <div>{fpsRef.current}</div>
 
       <div style={{ display: "flex" }}>
-        <Play
-          isPlay={isPlay}
-          isLoop={true}
-          setIsPlay={toggleIsPlay}
-          setIsLoop={() => console.log("DDD")}
-        />
+        <Play isPlay={isPlay} isLoop={true} setIsPlay={toggleIsPlay} />
+        <div className="frames_counter">
+          {isTime
+            ? ii + "/" + frames.length
+            : (ii / FPS).toFixed(1) + "/" + (frames.length / FPS).toFixed(1)}
+        </div>
         <PlayBar
           delay={isPlay ? delay : null}
           pausedFrameIndex={pausedFrameIndex}
@@ -157,8 +157,8 @@ export function Preview(props) {
           <div>
             <div
               style={{
-                marginLeft: "2px",
-                marginTop: "170px",
+                marginLeft: "30px",
+                marginTop: "180px",
                 display: "flex",
               }}
             >
@@ -166,17 +166,17 @@ export function Preview(props) {
                 setValue={setFPS}
                 minValue={5}
                 maxValue={60}
-                radius={7}
+                radius={6}
                 value={FPS}
                 label={"FPS"}
               />
-              <div className="frames_counter">
+              {/* <div className="frames_counter">
                 {isTime
                   ? ii + "/" + frames.length
                   : (ii / FPS).toFixed(2) +
                     "/" +
                     (frames.length / FPS).toFixed(2)}
-              </div>
+              </div> */}
             </div>
           </div>
 

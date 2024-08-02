@@ -152,6 +152,7 @@ const StyledManu = styled.div`
   margin-top: 4px;
   background-color: rgb(100, 100, 130);
   color: rgb(250, 220, 120);
+
   /* text-align: center; */
 `;
 const StyledManuEl = styled.div`
@@ -200,6 +201,7 @@ const StyledLoadMusic = styled.div`
   background-color: rgb(100, 100, 130);
   color: rgb(250, 220, 120);
   text-align: center;
+  animation-fill-mode: backwards;
 `;
 
 const Xelement = (props) => {

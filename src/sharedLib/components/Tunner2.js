@@ -8,19 +8,19 @@ const Tunner2 = (props) => {
   return (
     <CircularSlider
       label="FPS"
-      labelColor="rgb(50,50,20)"
+      labelColor="rgb(20,10,20)"
       max={60}
       // knobColor="rgb(220,90,20)"
-      knobColor="rgb(60,30,30)"
+      knobColor="rgb(20,30,20)"
       progressColorFrom="rgb(120,50,0)"
       progressColorTo="rgb(120,50,0)"
-      progressSize={7}
+      progressSize={6}
       trackColor="brown"
       valueFontSize={radius / 7 + "rem"}
       labelFontSize={radius / 10 + "rem"}
       // labelFontSize="1rem"
       labelBottom={true}
-      trackSize={15}
+      trackSize={12}
       width={10 * radius}
       dataIndex={20}
       onChange={setValue}
