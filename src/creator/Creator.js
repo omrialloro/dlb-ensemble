@@ -593,6 +593,12 @@ const Creator = forwardRef((props, ref) => {
     ]);
   }
 
+  const handleTouchStart = (event) => {
+    if (event.touches.length === 2) {
+      recordFrame();
+    }
+  };
+
   useEffect(() => {
     if (frames.length > 0) {
       try {
@@ -891,7 +897,7 @@ const Creator = forwardRef((props, ref) => {
   }, [oscillators]);
 
   return (
-    <div className="App">
+    <div className="App" onTouchStart={handleTouchStart}>
       {
         <body ref={bodyRef}>
           {/* <div className="logo-creater">
