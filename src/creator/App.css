@@ -241,8 +241,8 @@ main {
     border-radius: 5px;
 
     background-color:rgb(50,110,110);
-    background-color:rgb(50,110,110);
-    background: radial-gradient(circle, rgba(90,120,100,1) 0%, rgba(50,140,120,1) 100%);
+    background-color:rgb(250,110,110);
+    /* background: radial-gradient(circle, rgba(90,120,100,1) 0%, rgba(50,140,120,1) 100%); */
 
 
     
