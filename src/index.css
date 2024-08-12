@@ -15,3 +15,8 @@ code {
 html {
   touch-action: manipulation;
 }
+
+@font-face {
+  font-family: 'digital';
+  src: url('../public/digital-7 (mono).ttf');
+}

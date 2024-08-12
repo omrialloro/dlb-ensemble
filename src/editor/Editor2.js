@@ -17,6 +17,8 @@ import { grayRGB } from "./components/RGB";
 import BrowseAnimations from "./components/BrowseAnimations";
 import { Preview } from "./views/preview/Preview";
 import { FullScreen } from "./views/fullScreen/FullScreen.js";
+import { FancyScreen } from "../sharedLib/Screen/Display";
+// import { FancyScreen } from "../sharedLib/Screen/Tst";
 
 import { Editor } from "./views/editor/Editor";
 import { SmallScreen } from "./views/smallScreen/SmallScreen";
@@ -404,10 +406,18 @@ function Editor2(props) {
       </div> */}
       <div className="bodyInner">
         {fullScreenState ? (
-          <FullScreen
+          // <FullScreen
+          //   frames={proccesedFrames}
+          //   delay={isPlay ? delay : null}
+          //   toggleFullScreen={setFullScreenState}
+          // />
+          <FancyScreen
+            size={[36, 36]}
             frames={proccesedFrames}
             delay={isPlay ? delay : null}
-            toggleFullScreen={setFullScreenState}
+            exitScreen={() => {
+              setFullScreenState(false);
+            }}
           />
         ) : (
           <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -505,7 +515,10 @@ function Editor2(props) {
                           </ScrollMenu>
                         </div>
 
-                        <div className="screen">
+                        <div
+                          className="screen"
+                          onClick={() => setFullScreenState(true)}
+                        >
                           <Preview
                             frames={proccesedFrames}
                             delay={delay}
