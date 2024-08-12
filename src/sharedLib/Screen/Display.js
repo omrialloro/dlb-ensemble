@@ -10,15 +10,17 @@ const StyledBox = styled.div`
 `;
 
 const StyledFilters = styled.div`
-  height: 140px;
+  height: 30px;
   width: 290px;
   background-color: rgb(20, 100, 100);
 `;
 const StyledBackToEditor = styled.div`
-  height: 40px;
-  width: 290px;
-  font-size: 32px;
+  height: 460px;
+  width: 170px;
+  font-size: 42px;
   font-weight: 800;
+  text-align: center;
+  padding-top: 100px;
   padding-left: 10px;
 
   background-color: rgb(20, 100, 100);
@@ -166,8 +168,8 @@ const FancyScreen = (props) => {
   const canvasRef = useRef(null);
   const canvasPixelRef = useRef(null);
 
-  const width = 700;
-  const height = 520;
+  const width = 500;
+  const height = 420;
 
   const widthPxl = 140;
   const heightPxl = 140;
@@ -192,10 +194,10 @@ const FancyScreen = (props) => {
 
   function drawPixel(point, color, ctx) {
     ctx.fillStyle = color;
-    if (Math.random() < noiseLevel3) {
-      let rr = 150 + 100 * Math.random();
-      ctx.fillStyle = `rgba(${rr},${rr},${rr},${0.3})`;
-    }
+    // if (Math.random() < noiseLevel3) {
+    //   let rr = 100 + 150 * Math.random();
+    //   ctx.fillStyle = `rgba(${rr},${rr},${rr},${0.5})`;
+    // }
 
     ctx.beginPath();
 
@@ -220,7 +222,7 @@ const FancyScreen = (props) => {
     const ctxPxl = canvasPixel.getContext("2d");
     ctxPxl.fillStyle = "black";
     ctxPxl.fillRect(0, 0, widthPxl, heightPxl);
-    ctxPxl.fillStyle = `rgba(255,255,255,${op})`;
+    ctxPxl.fillStyle = `rgba(235,235,205,${op})`;
 
     ctxPxl.beginPath();
 
@@ -305,9 +307,8 @@ const FancyScreen = (props) => {
   //   setN1(1);
   // }
 
-  function resetPixelTune() {}
   function getAlpha(level) {
-    return level * 50 * (1 - Math.random());
+    return level * 150 * (0.8 - Math.random());
   }
 
   function getBeta(level) {
@@ -355,7 +356,6 @@ const FancyScreen = (props) => {
           timeRef.current.style.color = `black`;
         }
       }
-      console.log(timeRef.current.style.color);
 
       if (frame_index > AA.length - 1) {
         index = 0;
@@ -367,17 +367,34 @@ const FancyScreen = (props) => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       let A = AA[frame_index];
-      const alpha = getAlpha(noiseLevel1);
+      // const alpha = getAlpha(noiseLevel1);
       const beta = getBeta(noiseLevel2);
+      let ooo = 15 + 5 * Math.random();
 
       for (let i = 0; i < size[0]; i++) {
+        let alpha = 0;
+        if (i == index % size[0] || i + 16 == index % size[0]) {
+          console.log(noiseLevel1);
+          alpha = getAlpha(noiseLevel1);
+          console.log(alpha);
+        }
+
         for (let j = 0; j < size[1]; j++) {
           const x = i * pixelSizeX;
           const y = j * pixelSizeY;
           let color = A[i][j];
 
+          let pixel_noise = 0;
+          if (Math.random() < noiseLevel3) {
+            pixel_noise = 250 * (0.7 - Math.random());
+          }
+          let aaa = size[0] / 2 - i;
+          let bbb = size[1] / 2 - j;
+          let ccc = (aaa ** 4 + bbb ** 4) / ooo ** 2.5;
+          // ccc = 0;
+
           const color_nn = noise2(color, beta);
-          const color_n = noise1(color_nn, alpha);
+          const color_n = noise1(color_nn, alpha + pixel_noise - ccc);
 
           color = `rgba(${color_n.r},${color_n.g},${color_n.b},${op})`;
 
@@ -467,8 +484,7 @@ const FancyScreen = (props) => {
               color3={`rgb(10, 50, 10)`}
               defaultVal={1}
               onChange={(value) => {
-                // setN1(value);
-                setNoiseLevel1(value / 100);
+                setNoiseLevel1((value - 1) / 100);
               }}
             />
             <Tunner
@@ -491,7 +507,7 @@ const FancyScreen = (props) => {
               maxVal={100}
               defaultVal={1}
               onChange={(value) => {
-                setNoiseLevel3((value - 1) / 50000);
+                setNoiseLevel3((value - 1) / 100000);
               }}
             />
             {/* <StyledResetNoise onClick={resetNoiseTune}>
@@ -533,9 +549,6 @@ const FancyScreen = (props) => {
             />
             <StyledTimer ref={timeRef}>fdfdf</StyledTimer>
           </StyledBox>
-          <StyledBackToEditor onClick={exitScreen}>
-            BACK TO EDITOR
-          </StyledBackToEditor>
         </div>
         <canvas
           // onClick={exitScreen}
@@ -543,6 +556,9 @@ const FancyScreen = (props) => {
           width={width}
           height={height}
         ></canvas>
+        <StyledBackToEditor onClick={exitScreen}>
+          BACK TO EDITOR
+        </StyledBackToEditor>
       </div>
     </div>
   );
