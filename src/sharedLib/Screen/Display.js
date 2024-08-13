@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import CircularSlider from "@fseehawer/react-circular-slider";
+import DimensionsForm from "./DimensionsForm";
 import { Slider } from "./../components/Slider";
+import { minHeight } from "@mui/system";
 const StyledBox = styled.div`
   display: flex;
   height: 80px;
@@ -9,13 +11,50 @@ const StyledBox = styled.div`
   background-color: rgb(80, 80, 80);
 `;
 
-const StyledFilters = styled.div`
+const StyledSizeController = styled.div`
+  display: flex;
   height: 30px;
   width: 290px;
+  background-color: rgb(20, 100, 120);
+`;
+
+const StyledFilters = styled.div`
+  height: 60px;
+  width: 290px;
+  /* margin: 20px; */
   background-color: rgb(20, 100, 100);
+  display: flex;
+`;
+
+const StyledFiltersBtn = styled.div`
+  height: 40px;
+  width: 60px;
+  margin: 10px;
+  padding-top: 14px;
+  padding-left: 4px;
+  text-align: center;
+
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: black;
+  background: ${(props) =>
+    props.val
+      ? `radial-gradient(
+    circle,
+    rgba(43, 94, 151, 1) 0%,
+    rgba(22, 70, 77, 1) 100%
+  )`
+      : `linear-gradient(
+    135deg,
+    rgba(22, 70, 77, 1),
+    rgba(43, 94, 151, 1)
+  )`};
 `;
 const StyledBackToEditor = styled.div`
-  height: 460px;
+  height: ${(props) => props.height}px;
+
+  /* height: 475px; */
   width: 170px;
   font-size: 42px;
   font-weight: 800;
@@ -25,14 +64,6 @@ const StyledBackToEditor = styled.div`
 
   background-color: rgb(20, 100, 100);
 `;
-
-// const StyledResetNoise = styled.div`
-//   margin-top: 10px;
-//   height: 50px;
-//   width: 80px;
-//   background-color: rgb(200, 100, 20);
-//   color: rgb(230, 210, 200);
-// `;
 
 const StyledTimer = styled.div`
   height: 60px;
@@ -65,16 +96,25 @@ const StyledPixelDesignTunners = styled.div`
 `;
 
 const StyledNoiseConsole = styled.div`
-  height: 90px;
+  height: 80px;
   width: 290px;
   background-color: rgb(20, 110, 110);
   display: flex;
 `;
 
 const StyleTimeControl = styled.div`
-  height: 115px;
+  /* height: ${(props) => props.height}px; */
+  height: 120px;
   padding: 5px;
 
+  padding-top: 5px;
+  width: 290px;
+  background-color: rgb(40, 100, 110);
+  display: flex;
+`;
+
+const StyledSpace = styled.div`
+  height: ${(props) => props.height}px;
   padding-top: 5px;
   width: 290px;
   background-color: rgb(40, 100, 110);
@@ -127,7 +167,7 @@ const Tunner = (props) => {
   const color3 = props.color3;
 
   return (
-    <div style={{ margin: "10px" }}>
+    <div style={{ margin: "10px", marginTop: "15px" }}>
       <CircularSlider
         label={label}
         labelColor="rgb(20,10,20)"
@@ -167,15 +207,42 @@ const FancyScreen = (props) => {
   const exitScreen = props.exitScreen;
   const canvasRef = useRef(null);
   const canvasPixelRef = useRef(null);
+  const [dims, setDims] = useState({ width: 300, height: 420 });
+  const Boundaries = {
+    mimWidth: 100,
+    maxWidth: 800,
+    minHeight: 500,
+    maxHeight: 650,
+  };
 
-  const width = 500;
+  function setDim_(d) {
+    let w = d.width;
+    let h = d.height;
+    if (w > Boundaries.maxWidth) {
+      w = Boundaries.maxWidth;
+    } else if (w < Boundaries.mimWidth) {
+      w = Boundaries.mimWidth;
+    }
+    if (h > Boundaries.maxHeight) {
+      h = Boundaries.maxHeight;
+    } else if (h < Boundaries.minHeight) {
+      h = Boundaries.minHeight;
+    }
+    setDims({ width: w, height: h });
+  }
+
+  useEffect(() => {
+    console.log(dims);
+  }, [dims]);
+
+  const width = 300;
   const height = 420;
 
   const widthPxl = 140;
   const heightPxl = 140;
 
-  const pixelSizeX = width / size[0];
-  const pixelSizeY = height / size[1];
+  const pixelSizeX = dims.width / size[0];
+  const pixelSizeY = dims.height / size[1];
 
   const AA = framesRGB;
 
@@ -186,11 +253,6 @@ const FancyScreen = (props) => {
   const [step, setStep] = useState(60 / fps);
 
   const duration = (AA.length * step) / 60;
-
-  useEffect(() => {
-    console.log(step);
-    // setStep(60 / FPS);
-  }, []);
 
   function drawPixel(point, color, ctx) {
     ctx.fillStyle = color;
@@ -216,6 +278,8 @@ const FancyScreen = (props) => {
   const [ph, setPh] = useState(1);
   const [br, setBr] = useState(1);
   const [op, setOp] = useState(1);
+
+  const [filter, setFilter] = useState(0);
 
   useEffect(() => {
     const canvasPixel = canvasPixelRef.current;
@@ -374,9 +438,7 @@ const FancyScreen = (props) => {
       for (let i = 0; i < size[0]; i++) {
         let alpha = 0;
         if (i == index % size[0] || i + 16 == index % size[0]) {
-          console.log(noiseLevel1);
           alpha = getAlpha(noiseLevel1);
-          console.log(alpha);
         }
 
         for (let j = 0; j < size[1]; j++) {
@@ -388,10 +450,17 @@ const FancyScreen = (props) => {
           if (Math.random() < noiseLevel3) {
             pixel_noise = 250 * (0.7 - Math.random());
           }
-          let aaa = size[0] / 2 - i;
-          let bbb = size[1] / 2 - j;
-          let ccc = (aaa ** 4 + bbb ** 4) / ooo ** 2.5;
-          // ccc = 0;
+
+          let ccc = 0;
+          if (filter == 1) {
+            let aaa = size[0] / 2 - i;
+            let bbb = size[1] / 2 - j;
+            ccc = (aaa ** 4 + bbb ** 4) / ooo ** 2.5;
+          } else if (filter == 2) {
+            let aaa = size[0] / 2 - i;
+            let bbb = size[1] / 2 - j;
+            ccc = (aaa ** 3 + bbb ** 3) / ooo ** 1.5;
+          }
 
           const color_nn = noise2(color, beta);
           const color_n = noise1(color_nn, alpha + pixel_noise - ccc);
@@ -412,12 +481,26 @@ const FancyScreen = (props) => {
       cancelAnimationFrame(animationId.current);
     }
     return () => cancelAnimationFrame(animationId.current);
-  }, [step, play, pw, ph, br, op, noiseLevel1, noiseLevel2, noiseLevel3]);
+  }, [
+    step,
+    play,
+    pw,
+    ph,
+    br,
+    op,
+    noiseLevel1,
+    noiseLevel2,
+    noiseLevel3,
+    filter,
+    dims,
+  ]);
 
   return (
     <div>
       <div style={{ display: "flex" }}>
         <div>
+          <DimensionsForm dimensions={dims} setDimensions={setDim_} />
+
           <StyledPixelDesignTunners height={140} width={290}>
             <StyledPixelDesign height={heightPxl} width={widthPxl}>
               <canvas
@@ -476,6 +559,20 @@ const FancyScreen = (props) => {
             </div>
           </StyledPixelDesignTunners>
           <StyledNoiseConsole>
+            <p
+              style={{
+                marginTop: "25px",
+                marginRight: "13px",
+                marginLeft: "7px",
+
+                fontSize: "18px",
+                fontWeight: "415",
+
+                textTransform: "uppercase",
+              }}
+            >
+              Noise
+            </p>
             <Tunner
               label={"noise"}
               maxVal={100}
@@ -516,8 +613,42 @@ const FancyScreen = (props) => {
             </StyledResetNoise> */}
           </StyledNoiseConsole>
 
-          <StyledFilters></StyledFilters>
-          <StyleTimeControl>
+          <StyledFilters>
+            <p style={{ marginTop: "20px", fontSize: "15px" }}>FILTERS</p>
+            <StyledFiltersBtn
+              style={{ background: "rgba(30, 80, 100, 1)" }}
+              onClick={() => {
+                setFilter(0);
+              }}
+            >
+              Natural
+            </StyledFiltersBtn>
+
+            <StyledFiltersBtn
+              val={true}
+              onClick={() => {
+                setFilter(1);
+              }}
+            >
+              radial
+            </StyledFiltersBtn>
+            <StyledFiltersBtn
+              val={false}
+              onClick={() => {
+                setFilter(2);
+              }}
+            >
+              semi-radial
+            </StyledFiltersBtn>
+
+            {/* <StyledFiltersBtn val={false} /> */}
+          </StyledFilters>
+          <StyledSpace
+            height={Math.max(dims.height - Boundaries.minHeight, 0)}
+          />
+          <StyleTimeControl
+          // height={120 + Math.max(dims.height - Boundaries.minHeight, 0)}
+          >
             <CircularSlider
               label={"SPEED"}
               labelColor="rgb(20,10,20)"
@@ -553,10 +684,13 @@ const FancyScreen = (props) => {
         <canvas
           // onClick={exitScreen}
           ref={canvasRef}
-          width={width}
-          height={height}
+          width={dims.width}
+          height={dims.height}
         ></canvas>
-        <StyledBackToEditor onClick={exitScreen}>
+        <StyledBackToEditor
+          onClick={exitScreen}
+          height={Math.max(dims.height, minHeight)}
+        >
           BACK TO EDITOR
         </StyledBackToEditor>
       </div>
