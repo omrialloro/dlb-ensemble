@@ -207,7 +207,7 @@ const FancyScreen = (props) => {
   const exitScreen = props.exitScreen;
   const canvasRef = useRef(null);
   const canvasPixelRef = useRef(null);
-  const [dims, setDims] = useState({ width: 300, height: 420 });
+  const [dims, setDims] = useState({ width: 500, height: 500 });
   const Boundaries = {
     mimWidth: 100,
     maxWidth: 800,
@@ -516,7 +516,7 @@ const FancyScreen = (props) => {
                 color2={`rgb(110, 50, 10)`}
                 color1={`rgb(10, 120, 70)`}
                 color3={`rgb(30, 80, 110)`}
-                defaultVal={180}
+                defaultVal={160}
                 onChange={(value) => {
                   setPw(value / 160);
                 }}
@@ -527,7 +527,7 @@ const FancyScreen = (props) => {
                 color2={`rgb(110, 50, 10)`}
                 color1={`rgb(10, 120, 70)`}
                 color3={`rgb(30, 80, 110)`}
-                defaultVal={180}
+                defaultVal={160}
                 onChange={(value) => {
                   setPh(value / 160);
                 }}
@@ -540,7 +540,7 @@ const FancyScreen = (props) => {
                 color1={`rgb(10, 120, 70)`}
                 color3={`rgb(30, 80, 110)`}
                 maxVal={100}
-                defaultVal={20}
+                defaultVal={0}
                 onChange={(value) => {
                   setBr(value);
                 }}
@@ -551,7 +551,7 @@ const FancyScreen = (props) => {
                 color1={`rgb(10, 120, 70)`}
                 color3={`rgb(30, 80, 110)`}
                 maxVal={100}
-                defaultVal={50}
+                defaultVal={100}
                 onChange={(value) => {
                   setOp(value / 100);
                 }}
