@@ -72,7 +72,7 @@ function Editor2(props) {
   } = useContext(AuthContext);
 
   const { saveAnimation } = useSaveAnimation();
-  const [fullScreenState, setFullScreenState] = useState(true);
+  const [fullScreenState, setFullScreenState] = useState(false);
 
   let num_frames = 50;
   let dim = [36, 36];
