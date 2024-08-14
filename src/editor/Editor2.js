@@ -18,7 +18,6 @@ import BrowseAnimations from "./components/BrowseAnimations";
 import { Preview } from "./views/preview/Preview";
 import { FullScreen } from "./views/fullScreen/FullScreen.js";
 import { FancyScreen } from "../sharedLib/Screen/Display";
-// import { FancyScreen } from "../sharedLib/Screen/Tst";
 
 import { Editor } from "./views/editor/Editor";
 import { SmallScreen } from "./views/smallScreen/SmallScreen";
@@ -73,7 +72,7 @@ function Editor2(props) {
   } = useContext(AuthContext);
 
   const { saveAnimation } = useSaveAnimation();
-  const [fullScreenState, setFullScreenState] = useState(false);
+  const [fullScreenState, setFullScreenState] = useState(true);
 
   let num_frames = 50;
   let dim = [36, 36];
@@ -515,10 +514,7 @@ function Editor2(props) {
                           </ScrollMenu>
                         </div>
 
-                        <div
-                          className="screen"
-                          onClick={() => setFullScreenState(true)}
-                        >
+                        <div className="screen">
                           <Preview
                             frames={proccesedFrames}
                             delay={delay}

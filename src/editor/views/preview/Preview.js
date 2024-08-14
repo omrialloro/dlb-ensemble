@@ -119,7 +119,7 @@ export function Preview(props) {
 
   return (
     <>
-      <div className="screen">
+      <div className="screen" onClick={() => toggleScreen(true)}>
         <Screen
           ref={frameIndexRef}
           screenSize={480}
