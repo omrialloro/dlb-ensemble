@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useEffect } from "react";
 
 const DimensionsForm = (props) => {
@@ -6,6 +6,8 @@ const DimensionsForm = (props) => {
 
   const setDims = props.setDimensions;
   const dims = props.dimensions;
+
+  const submitRef = useRef(null);
 
   const [dimensions, setDimensions] = useState(dims);
 
@@ -25,6 +27,14 @@ const DimensionsForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    submitRef.current.style.transition = "0.3s";
+    submitRef.current.style.backgroundColor = "#468c85";
+    submitRef.current.style.scale = 0.9;
+    setTimeout(() => {
+      submitRef.current.style.transition = "0.3s";
+      submitRef.current.style.backgroundColor = "rgb(20,50,90)";
+      submitRef.current.style.scale = 1;
+    }, 170);
 
     setDims({ width: dimensions.width, height: dimensions.height });
   };
@@ -64,6 +74,7 @@ const DimensionsForm = (props) => {
             />
           </div>
           <button
+            ref={submitRef}
             style={{
               marginTop: "3px",
 

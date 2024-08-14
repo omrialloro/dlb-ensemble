@@ -26,31 +26,49 @@ const StyledFilters = styled.div`
   display: flex;
 `;
 
-const StyledFiltersBtn = styled.div`
-  height: 40px;
-  width: 60px;
-  margin: 10px;
-  padding-top: 14px;
-  padding-left: 4px;
-  text-align: center;
+function FiltersBtn(props) {
+  const StyledFiltersBtn = styled.div`
+    height: 40px;
+    width: 60px;
+    margin: 10px;
+    padding-top: 14px;
+    padding-left: 4px;
+    text-align: center;
 
-  font-size: 10px;
-  font-weight: 500;
-  text-transform: uppercase;
-  color: black;
-  background: ${(props) =>
-    props.val
-      ? `radial-gradient(
-    circle,
-    rgba(43, 94, 151, 1) 0%,
-    rgba(22, 70, 77, 1) 100%
-  )`
-      : `linear-gradient(
-    135deg,
-    rgba(22, 70, 77, 1),
-    rgba(43, 94, 151, 1)
-  )`};
-`;
+    font-size: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    border-radius: 5px;
+    color: black;
+    background: ${(props) => props.background};
+  `;
+  const background = props.background;
+  const title = props.title;
+  const onClick = props.onClick;
+  const ref = useRef(null);
+
+  return (
+    <div ref={ref}>
+      <StyledFiltersBtn
+        background={background}
+        onClick={() => {
+          ref.current.style.transition = "0.1s";
+          // ref.current.style.backgroundColor = "#468c85";
+          ref.current.style.scale = 0.9;
+          setTimeout(() => {
+            ref.current.style.transition = "0.1s";
+            // ref.current.style.backgroundColor = "rgb(20,50,90)";
+            ref.current.style.scale = 1;
+          }, 170);
+          onClick();
+        }}
+      >
+        {title}
+      </StyledFiltersBtn>
+    </div>
+  );
+}
+
 const StyledBackToEditor = styled.div`
   height: ${(props) => props.height}px;
 
@@ -93,6 +111,7 @@ const StyledPixelDesignTunners = styled.div`
   width: ${(props) => props.width}px;
   background-color: rgb(20, 120, 120);
   display: flex;
+  position: relative;
 `;
 
 const StyledNoiseConsole = styled.div`
@@ -100,6 +119,7 @@ const StyledNoiseConsole = styled.div`
   width: 290px;
   background-color: rgb(20, 110, 110);
   display: flex;
+  position: relative;
 `;
 
 const StyleTimeControl = styled.div`
@@ -120,6 +140,49 @@ const StyledSpace = styled.div`
   background-color: rgb(40, 100, 110);
   display: flex;
 `;
+
+const DefaultBtn = (props) => {
+  const onClick = props.onClick;
+  const ref = useRef(null);
+
+  return (
+    <div
+      ref={ref}
+      onClick={() => {
+        onClick();
+        ref.current.style.transition = "0.3s";
+        ref.current.style.backgroundColor = "#468c85";
+        ref.current.style.scale = 0.9;
+
+        setTimeout(() => {
+          ref.current.style.transition = "0.3s";
+          ref.current.style.backgroundColor = "rgb(20,50,90)";
+          ref.current.style.scale = 1;
+        }, 170);
+      }}
+      style={{
+        position: "absolute",
+        right: 0,
+        bottom: 0,
+        height: "15px",
+        width: "50px",
+        padding: "2px",
+        paddingLeft: "4px",
+        border: `0.01px solid rgb(150,150,150)`,
+
+        color: "rgb(200,190,180)",
+        fontSize: "9px",
+        fontWeight: "512",
+
+        textTransform: "uppercase",
+
+        backgroundColor: "rgb(20,50,90)",
+      }}
+    >
+      default
+    </div>
+  );
+};
 
 function hexToRgb(hex) {
   // Remove # if present
@@ -165,9 +228,9 @@ const Tunner = (props) => {
   const color1 = props.color1;
   const color2 = props.color2;
   const color3 = props.color3;
-
+  console.log(defaultVal);
   return (
-    <div style={{ margin: "10px", marginTop: "15px" }}>
+    <div style={{ margin: "8px", marginTop: "12px" }}>
       <CircularSlider
         label={label}
         labelColor="rgb(20,10,20)"
@@ -185,7 +248,6 @@ const Tunner = (props) => {
         dataIndex={defaultVal}
         onChange={onChange}
         knobSize={20}
-        key={defaultVal}
       />
     </div>
   );
@@ -235,8 +297,8 @@ const FancyScreen = (props) => {
     console.log(dims);
   }, [dims]);
 
-  const width = 300;
-  const height = 420;
+  // const width = 300;
+  // const height = 420;
 
   const widthPxl = 140;
   const heightPxl = 140;
@@ -246,11 +308,20 @@ const FancyScreen = (props) => {
 
   const AA = framesRGB;
 
-  const [FPS, setFPS] = useState(30);
+  const [FPS, setFPS] = useState(50);
 
-  const fps = 30;
+  const [defaultW, setDefaultW] = useState(160);
+  const [defaultH, setDefaultH] = useState(160);
+  const [defaultC, setDefaultC] = useState(0);
+  const [defaultO, setDefaultO] = useState(100);
 
-  const [step, setStep] = useState(60 / fps);
+  const [noiseVal1, setNoiseVal1] = useState(0);
+  const [noiseVal2, setNoiseVal2] = useState(0);
+  const [noiseVal3, setNoiseVal3] = useState(0);
+
+  // const fps = 30;
+
+  const [step, setStep] = useState(60 / FPS);
 
   const duration = (AA.length * step) / 60;
 
@@ -394,6 +465,24 @@ const FancyScreen = (props) => {
     return { r, g, b };
   }
 
+  function defaultPixelController() {
+    setDefaultW(160);
+    setDefaultH(160);
+    setDefaultC(0);
+    setDefaultO(100);
+  }
+
+  function defaultNoiseController() {
+    setNoiseVal1(0);
+    setNoiseVal2(0);
+    setNoiseVal3(0);
+  }
+
+  useEffect(() => {
+    defaultPixelController();
+    defaultNoiseController();
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
 
@@ -501,7 +590,7 @@ const FancyScreen = (props) => {
         <div>
           <DimensionsForm dimensions={dims} setDimensions={setDim_} />
 
-          <StyledPixelDesignTunners height={140} width={290}>
+          <StyledPixelDesignTunners height={145} width={290}>
             <StyledPixelDesign height={heightPxl} width={widthPxl}>
               <canvas
                 ref={canvasPixelRef}
@@ -516,9 +605,11 @@ const FancyScreen = (props) => {
                 color2={`rgb(110, 50, 10)`}
                 color1={`rgb(10, 120, 70)`}
                 color3={`rgb(30, 80, 110)`}
-                defaultVal={160}
+                defaultVal={defaultW}
                 onChange={(value) => {
                   setPw(value / 160);
+                  console.log(value);
+                  setDefaultW(value);
                 }}
               />
               <Tunner
@@ -527,9 +618,10 @@ const FancyScreen = (props) => {
                 color2={`rgb(110, 50, 10)`}
                 color1={`rgb(10, 120, 70)`}
                 color3={`rgb(30, 80, 110)`}
-                defaultVal={160}
+                defaultVal={defaultH}
                 onChange={(value) => {
                   setPh(value / 160);
+                  setDefaultH(value);
                 }}
               />
             </div>
@@ -540,9 +632,10 @@ const FancyScreen = (props) => {
                 color1={`rgb(10, 120, 70)`}
                 color3={`rgb(30, 80, 110)`}
                 maxVal={100}
-                defaultVal={0}
+                defaultVal={defaultC}
                 onChange={(value) => {
                   setBr(value);
+                  setDefaultC(value);
                 }}
               />
               <Tunner
@@ -551,11 +644,13 @@ const FancyScreen = (props) => {
                 color1={`rgb(10, 120, 70)`}
                 color3={`rgb(30, 80, 110)`}
                 maxVal={100}
-                defaultVal={100}
+                defaultVal={defaultO}
                 onChange={(value) => {
                   setOp(value / 100);
+                  setDefaultO(value);
                 }}
               />
+              <DefaultBtn onClick={defaultPixelController} />
             </div>
           </StyledPixelDesignTunners>
           <StyledNoiseConsole>
@@ -579,9 +674,10 @@ const FancyScreen = (props) => {
               color2={`rgb(140, 50, 10)`}
               color1={`rgb(140, 100, 10)`}
               color3={`rgb(10, 50, 10)`}
-              defaultVal={1}
+              defaultVal={noiseVal1}
               onChange={(value) => {
-                setNoiseLevel1((value - 1) / 100);
+                setNoiseLevel1(value / 100);
+                setNoiseVal1(value);
               }}
             />
             <Tunner
@@ -590,10 +686,11 @@ const FancyScreen = (props) => {
               color1={`rgb(140, 100, 10)`}
               color3={`rgb(10, 50, 10)`}
               maxVal={100}
-              defaultVal={1}
+              defaultVal={noiseVal2}
               onChange={(value) => {
                 // setN1(value);
                 setNoiseLevel2(value / 100);
+                setNoiseVal2(value);
               }}
             />
             <Tunner
@@ -602,46 +699,56 @@ const FancyScreen = (props) => {
               color1={`rgb(140, 100, 10)`}
               color3={`rgb(10, 50, 10)`}
               maxVal={100}
-              defaultVal={1}
+              defaultVal={noiseVal3}
               onChange={(value) => {
-                setNoiseLevel3((value - 1) / 100000);
+                setNoiseLevel3(value / 100000);
+                setNoiseVal3(value);
               }}
             />
-            {/* <StyledResetNoise onClick={resetNoiseTune}>
-              {" "}
-              Default
-            </StyledResetNoise> */}
+            <DefaultBtn onClick={defaultNoiseController} />
           </StyledNoiseConsole>
 
           <StyledFilters>
             <p style={{ marginTop: "20px", fontSize: "15px" }}>FILTERS</p>
-            <StyledFiltersBtn
+
+            <FiltersBtn
+              background={"rgba(30, 80, 100, 1)"}
+              title={"natural"}
+              onClick={() => setFilter(0)}
+            />
+
+            {/* <StyledFiltersBtn
               style={{ background: "rgba(30, 80, 100, 1)" }}
               onClick={() => {
                 setFilter(0);
+                setDefaultW(160);
+                setDefaultH(160);
+                setDefaultC(0);
+                setDefaultO(100);
               }}
             >
               Natural
-            </StyledFiltersBtn>
+            </StyledFiltersBtn> */}
 
-            <StyledFiltersBtn
-              val={true}
-              onClick={() => {
-                setFilter(1);
-              }}
-            >
-              radial
-            </StyledFiltersBtn>
-            <StyledFiltersBtn
-              val={false}
-              onClick={() => {
-                setFilter(2);
-              }}
-            >
-              semi-radial
-            </StyledFiltersBtn>
+            <FiltersBtn
+              background={`radial-gradient(
+                circle,
+                rgba(43, 94, 151, 1) 0%,
+                rgba(22, 70, 77, 1) 100%
+                )`}
+              title={"radial"}
+              onClick={() => setFilter(1)}
+            />
 
-            {/* <StyledFiltersBtn val={false} /> */}
+            <FiltersBtn
+              background={`linear-gradient(
+                    135deg,
+                    rgba(22, 70, 77, 1),
+                    rgba(43, 94, 151, 1)
+                    )`}
+              title={"semi-radial"}
+              onClick={() => setFilter(2)}
+            />
           </StyledFilters>
           <StyledSpace
             height={Math.max(dims.height - Boundaries.minHeight, 0)}
@@ -663,10 +770,11 @@ const FancyScreen = (props) => {
               labelBottom={true}
               trackSize={20}
               width={100}
-              dataIndex={30}
+              dataIndex={FPS}
               onChange={(value) => {
                 if (value > 0) {
                   setStep(60 / value);
+                  setFPS(value);
                 }
               }}
               knobSize={20}
