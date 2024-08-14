@@ -25,6 +25,29 @@ const StyledFilters = styled.div`
   background-color: rgb(20, 100, 100);
   display: flex;
 `;
+const StyledGif = styled.div`
+  margin-left: 15px;
+  margin-top: 10px;
+
+  height: 90px;
+  width: 150px;
+  color: rgb(170, 180, 170);
+  padding: 30px;
+  font-size: 27px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 5px;
+  filter: blur(0.2px);
+  /* margin: 20px; */
+  /* background-color: rgb(170, 70, 10); */
+  background: radial-gradient(
+    circle,
+    rgba(130, 100, 20, 0.8) 0%,
+    rgba(170, 70, 20, 0.9) 100%
+  );
+  /* display: flex; */
+`;
 
 function FiltersBtn(props) {
   const StyledFiltersBtn = styled.div`
@@ -779,6 +802,7 @@ const FancyScreen = (props) => {
               }}
               knobSize={20}
             />
+            <StyledGif>Gif</StyledGif>
           </StyleTimeControl>
 
           <StyledBox onClick={togglePlay}>
