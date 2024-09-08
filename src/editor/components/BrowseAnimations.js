@@ -61,7 +61,14 @@ export default function BrowseAnimations(props) {
   useEffect(() => {
     if (data !== null) {
       let animations_ = [];
-      for (let i = 0; i < data["names"].length; i++) {
+      let l = data["names"].length;
+      if (l % 2 !== 0) {
+        //the ugliest hack ever!!!!***
+        //neet to check why working only for even number of animation!!!**
+        l++;
+      }
+
+      for (let i = 0; i < l; i++) {
         let id = data["ids"][i];
         animations_.push({
           id: id,

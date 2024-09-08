@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { getSchemes } from "./Schemes";
+// import { getSchemes } from "./Schemes";
+import { getSchemes } from "../../../sharedLib/schemes/Schemes";
 
 const StyledPallet = styled.div`
   display: flex;

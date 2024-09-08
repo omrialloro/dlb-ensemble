@@ -43,12 +43,32 @@ let color_scheme5 = [
   "#0099cc",
 ];
 
+let color_scheme6 = [
+  "#f34000",
+  "#0e7643",
+  "#f3d9b1",
+  "#7ab7b3",
+  "#093b60",
+  "#ada02f",
+];
+
+let color_scheme7 = [
+  "#ecce5d",
+  "#f4682f",
+  "#657895",
+  "#332a26",
+  "#e8dbd3",
+  "#977156",
+];
+
 let schemes = {
   omri: color_scheme1,
   caribean: color_scheme2,
   bauhouse: color_scheme3,
   fururistic: color_scheme4,
   hypnotic: color_scheme5,
+  booboo: color_scheme6,
+  looloo: color_scheme7,
 };
 
 function getSchemes() {

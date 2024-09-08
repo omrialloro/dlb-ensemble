@@ -38,7 +38,8 @@ export function Operators(props) {
     if (operatorsState_["scheme"] == -1) {
       return;
     } else {
-      operatorsState_["scheme"] = (operatorsState_["scheme"] + 1) % 5;
+      operatorsState_["scheme"] =
+        (operatorsState_["scheme"] + 1) % scheme_array.length;
       updateOperatorsState(operatorsState_);
     }
   }
