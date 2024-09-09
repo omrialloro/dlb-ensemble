@@ -84,6 +84,17 @@ function Editor2(props) {
   const ref2 = useRef();
   const ref3 = useRef();
 
+  const [pixelConfig, setPixelConfig] = useState({
+    pw: 1,
+    ph: 1,
+    br: 0,
+    op: 1,
+  });
+
+  useEffect(() => {
+    console.log(pixelConfig);
+  }, [pixelConfig]);
+
   const AudioRef = React.useRef({ ref1, ref2, ref3 });
 
   const handleSaveEditedFrames = () => {
@@ -412,6 +423,8 @@ function Editor2(props) {
           // />
           <FancyScreen
             size={[36, 36]}
+            pixelConfig={pixelConfig}
+            setPixelConfig={setPixelConfig}
             frames={proccesedFrames}
             delay={isPlay ? delay : null}
             exitScreen={() => {

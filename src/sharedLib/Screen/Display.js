@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import CircularSlider from "@fseehawer/react-circular-slider";
 import DimensionsForm from "./DimensionsForm";
-import { Slider } from "./../components/Slider";
+// import { Slider } from "./../components/Slider";
 import { minHeight } from "@mui/system";
 const StyledBox = styled.div`
   display: flex;
@@ -251,7 +251,6 @@ const Tunner = (props) => {
   const color1 = props.color1;
   const color2 = props.color2;
   const color3 = props.color3;
-  console.log(defaultVal);
   return (
     <div style={{ margin: "8px", marginTop: "12px" }}>
       <CircularSlider
@@ -278,6 +277,8 @@ const Tunner = (props) => {
 
 const FancyScreen = (props) => {
   let animationId = useRef(null);
+  const pixelConfig = props.pixelConfig;
+  const setPixelConfig = props.setPixelConfig;
 
   const timeRef = useRef(null);
 
@@ -315,10 +316,6 @@ const FancyScreen = (props) => {
     }
     setDims({ width: w, height: h });
   }
-
-  useEffect(() => {
-    console.log(dims);
-  }, [dims]);
 
   // const width = 300;
   // const height = 420;
@@ -362,7 +359,7 @@ const FancyScreen = (props) => {
       point[1] + (pixelSizeY * (1 - pw)) / 2,
       pixelSizeX * pw,
       pixelSizeY * ph,
-      [br / 10, br / 10, br / 10, br / 10]
+      [br * 10, br * 7, br * 10, br * 10]
     );
 
     ctx.fill();
@@ -389,7 +386,7 @@ const FancyScreen = (props) => {
       (heightPxl * (1 - ph)) / 2,
       widthPxl * pw,
       widthPxl * ph,
-      [br / 1, br / 1, br / 1, br / 1]
+      [br * 100, br * 100, br * 100, br * 100]
     );
     ctxPxl.fill();
 
@@ -400,7 +397,7 @@ const FancyScreen = (props) => {
       heightPxl + (heightPxl * (1 - ph)) / 2,
       widthPxl * pw,
       heightPxl * ph,
-      [br / 1, br / 1, br / 1, br / 1]
+      [br * 100, br * 100, br * 100, br * 100]
     );
     ctxPxl.fill();
 
@@ -410,7 +407,7 @@ const FancyScreen = (props) => {
       (heightPxl * (1 - ph)) / 2 - heightPxl,
       widthPxl * pw,
       heightPxl * ph,
-      [br / 1, br / 1, br / 1, br / 1]
+      [br * 100, br * 100, br * 100, br * 100]
     );
     ctxPxl.fill();
 
@@ -420,7 +417,7 @@ const FancyScreen = (props) => {
       heightPxl + (heightPxl * (1 - ph)) / 2,
       widthPxl * pw,
       heightPxl * ph,
-      [br / 1, br / 1, br / 1, br / 1]
+      [br * 100, br * 100, br * 100, br * 100]
     );
     ctxPxl.fill();
     ctxPxl.beginPath();
@@ -429,7 +426,7 @@ const FancyScreen = (props) => {
       (heightPxl * (1 - ph)) / 2 - heightPxl,
       widthPxl * pw,
       heightPxl * ph,
-      [br / 1, br / 1, br / 1, br / 1]
+      [br * 100, br * 100, br * 100, br * 100]
     );
     ctxPxl.fill();
 
@@ -439,7 +436,7 @@ const FancyScreen = (props) => {
       (heightPxl * (1 - ph)) / 2,
       widthPxl * pw,
       heightPxl * ph,
-      [br / 1, br / 1, br / 1, br / 1]
+      [br * 100, br * 100, br * 100, br * 100]
     );
     ctxPxl.fill();
 
@@ -449,9 +446,11 @@ const FancyScreen = (props) => {
       (heightPxl * (1 - ph)) / 2,
       widthPxl * pw,
       heightPxl * ph,
-      [br / 1, br / 1, br / 1, br / 1]
+      [br * 100, br * 100, br * 100, br * 100]
     );
     ctxPxl.fill();
+
+    setPixelConfig({ pw: pw, ph: ph, br: br, op: op });
   }, [pw, ph, br, op]);
 
   const [noiseLevel1, setNoiseLevel1] = useState(1);
@@ -489,10 +488,10 @@ const FancyScreen = (props) => {
   }
 
   function defaultPixelController() {
-    setDefaultW(160);
-    setDefaultH(160);
-    setDefaultC(0);
-    setDefaultO(100);
+    setDefaultW(pixelConfig.pw * 160);
+    setDefaultH(pixelConfig.ph * 160);
+    setDefaultC(pixelConfig.br * 100);
+    setDefaultO(pixelConfig.op * 100);
   }
 
   function defaultNoiseController() {
@@ -582,12 +581,10 @@ const FancyScreen = (props) => {
           drawPixel([x, y], color, ctx);
         }
       }
-      // console.log(index);
       animationId.current = requestAnimationFrame(animate);
     };
 
     if (play) {
-      console.log(play);
       animate();
     } else {
       cancelAnimationFrame(animationId.current);
@@ -631,7 +628,7 @@ const FancyScreen = (props) => {
                 defaultVal={defaultW}
                 onChange={(value) => {
                   setPw(value / 160);
-                  console.log(value);
+                  setPixelConfig({ ...pixelConfig, pw: value / 160 });
                   setDefaultW(value);
                 }}
               />
@@ -644,6 +641,7 @@ const FancyScreen = (props) => {
                 defaultVal={defaultH}
                 onChange={(value) => {
                   setPh(value / 160);
+                  setPixelConfig({ ...pixelConfig, ph: value / 160 });
                   setDefaultH(value);
                 }}
               />
@@ -657,7 +655,8 @@ const FancyScreen = (props) => {
                 maxVal={100}
                 defaultVal={defaultC}
                 onChange={(value) => {
-                  setBr(value);
+                  setBr(value / 100);
+                  setPixelConfig({ ...pixelConfig, br: value / 100 });
                   setDefaultC(value);
                 }}
               />
@@ -670,6 +669,7 @@ const FancyScreen = (props) => {
                 defaultVal={defaultO}
                 onChange={(value) => {
                   setOp(value / 100);
+                  setPixelConfig({ ...pixelConfig, op: value / 100 });
                   setDefaultO(value);
                 }}
               />
