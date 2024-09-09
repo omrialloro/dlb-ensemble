@@ -26,10 +26,12 @@ function useExtractToGif() {
   const {
     auth: { token },
   } = useContext(AuthContext);
-  return async function (frames, delay, pixelConfig) {
+  return async function (frames, delay, width, height, pixelConfig) {
     let data = {
       frames,
       delay,
+      width,
+      height,
       pixelConfig,
     };
 
