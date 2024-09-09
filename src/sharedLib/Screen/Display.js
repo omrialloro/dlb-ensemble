@@ -279,6 +279,7 @@ const FancyScreen = (props) => {
   let animationId = useRef(null);
   const pixelConfig = props.pixelConfig;
   const setPixelConfig = props.setPixelConfig;
+  const setScreenRatio = props.setScreenRatio;
 
   const timeRef = useRef(null);
 
@@ -315,6 +316,7 @@ const FancyScreen = (props) => {
       h = Boundaries.minHeight;
     }
     setDims({ width: w, height: h });
+    setScreenRatio(w / h);
   }
 
   // const width = 300;

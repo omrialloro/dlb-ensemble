@@ -91,6 +91,15 @@ function Editor2(props) {
     op: 1,
   });
 
+  const [screenRatio, setScreenRatio] = useState(1);
+
+  function getWidthHeight(resolution) {
+    const width = Math.round(resolution / Math.sqrt(screenRatio));
+    const height = Math.round(resolution * Math.sqrt(screenRatio));
+
+    return [width, height];
+  }
+
   useEffect(() => {
     console.log(pixelConfig);
   }, [pixelConfig]);
@@ -110,7 +119,6 @@ function Editor2(props) {
       isDeleted: false,
       formatType: "edited",
     };
-
     saveAnimation(data);
   };
 
@@ -375,7 +383,9 @@ function Editor2(props) {
 
   const extractToGif = useExtractToGif(email);
   const handleMakeGif = useCallback(async () => {
-    await extractToGif(proccesedFrames, delay, 360, 200, pixelConfig);
+    let res = getWidthHeight(400);
+    console.log(res);
+    await extractToGif(proccesedFrames, delay, res[0], res[1], pixelConfig);
   }, [extractToGif, proccesedFrames, delay, pixelConfig]);
 
   useEffect(() => {
@@ -423,6 +433,7 @@ function Editor2(props) {
           // />
           <FancyScreen
             size={[36, 36]}
+            setScreenRatio={setScreenRatio}
             pixelConfig={pixelConfig}
             setPixelConfig={setPixelConfig}
             frames={proccesedFrames}
