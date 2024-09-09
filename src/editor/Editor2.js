@@ -375,7 +375,7 @@ function Editor2(props) {
 
   const extractToGif = useExtractToGif(email);
   const handleMakeGif = useCallback(async () => {
-    await extractToGif(proccesedFrames, delay, pixelConfig);
+    await extractToGif(proccesedFrames, delay, 360, 200, pixelConfig);
   }, [extractToGif, proccesedFrames, delay, pixelConfig]);
 
   useEffect(() => {
