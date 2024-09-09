@@ -94,8 +94,8 @@ function Editor2(props) {
   const [screenRatio, setScreenRatio] = useState(1);
 
   function getWidthHeight(resolution) {
-    const width = Math.round(resolution / Math.sqrt(screenRatio));
-    const height = Math.round(resolution * Math.sqrt(screenRatio));
+    const width = Math.round(resolution * Math.sqrt(screenRatio));
+    const height = Math.round(resolution / Math.sqrt(screenRatio));
 
     return [width, height];
   }
