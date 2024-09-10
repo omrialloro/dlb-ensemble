@@ -24,7 +24,10 @@ import { SmallScreen } from "./views/smallScreen/SmallScreen";
 import { SelectedIdProvider } from "./contexts/SelectedIdContext";
 import { reflectFrame, rotateFrame } from "./components/frameTransformations";
 import { Operators } from "./views/Operators";
-import { renderAllFramesToScheme } from "../sharedLib/frameOps/FrameOps";
+import {
+  renderAllFramesToScheme,
+  addNoise,
+} from "../sharedLib/frameOps/FrameOps";
 import { getSchemes } from "../sharedLib/schemes/Schemes";
 import { useSaveAnimation, useExtractToGif } from "../sharedLib/Server/api";
 import { AuthContext } from "../login/authContext";
@@ -92,6 +95,15 @@ function Editor2(props) {
   });
 
   const [screenRatio, setScreenRatio] = useState(1);
+
+  const [noiseConfig, setNoiseConfig] = useState({
+    noise1: 0,
+    noise2: 0,
+    noise3: 0,
+  });
+  useEffect(() => {
+    console.log(noiseConfig);
+  }, [noiseConfig]);
 
   function getWidthHeight(resolution) {
     const width = Math.round(resolution * Math.sqrt(screenRatio));
@@ -255,9 +267,10 @@ function Editor2(props) {
   const [delay, setDelay] = useState(Math.round(1000 / FPS));
   const [isPlay, setIsPlay] = useState(false);
 
-  useEffect(() => {
-    setDelay(Math.round(1000 / FPS));
-  }, [FPS]);
+  // useEffect(() => {
+  //   console.log(delay);
+  //   // setDelay(Math.round(1000 / FPS));
+  // }, [delay]);
 
   const [DATA, setDATA] = useState([
     {
@@ -384,8 +397,14 @@ function Editor2(props) {
   const extractToGif = useExtractToGif(email);
   const handleMakeGif = useCallback(async () => {
     let res = getWidthHeight(400);
-    console.log(res);
-    await extractToGif(proccesedFrames, delay, res[0], res[1], pixelConfig);
+    let noisedProccesedFrames = addNoise(proccesedFrames, noiseConfig);
+    await extractToGif(
+      noisedProccesedFrames,
+      delay,
+      res[0],
+      res[1],
+      pixelConfig
+    );
   }, [extractToGif, proccesedFrames, delay, pixelConfig]);
 
   useEffect(() => {
@@ -437,7 +456,9 @@ function Editor2(props) {
             pixelConfig={pixelConfig}
             setPixelConfig={setPixelConfig}
             frames={proccesedFrames}
-            delay={isPlay ? delay : null}
+            setNoiseConfig={setNoiseConfig}
+            delay={delay}
+            setDelay={setDelay}
             exitScreen={() => {
               setFullScreenState(false);
             }}

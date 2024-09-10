@@ -277,9 +277,11 @@ const Tunner = (props) => {
 
 const FancyScreen = (props) => {
   let animationId = useRef(null);
+  const delay = props.delay;
   const pixelConfig = props.pixelConfig;
   const setPixelConfig = props.setPixelConfig;
   const setScreenRatio = props.setScreenRatio;
+  const setNoiseConfig = props.setNoiseConfig;
 
   const timeRef = useRef(null);
 
@@ -287,6 +289,7 @@ const FancyScreen = (props) => {
   function togglePlay() {
     setPlay(!play);
   }
+  const setDelay = props.setDelay;
 
   const size = props.size;
   const frames = props.frames;
@@ -330,7 +333,12 @@ const FancyScreen = (props) => {
 
   const AA = framesRGB;
 
-  const [FPS, setFPS] = useState(50);
+  const [FPS, setFPS] = useState(Math.round(1000 / delay));
+
+  useEffect(() => {
+    console.log(delay);
+    console.log(FPS);
+  }, [delay]);
 
   const [defaultW, setDefaultW] = useState(160);
   const [defaultH, setDefaultH] = useState(160);
@@ -458,6 +466,14 @@ const FancyScreen = (props) => {
   const [noiseLevel1, setNoiseLevel1] = useState(1);
   const [noiseLevel2, setNoiseLevel2] = useState(1);
   const [noiseLevel3, setNoiseLevel3] = useState(1);
+
+  useEffect(() => {
+    setNoiseConfig({
+      noise1: noiseLevel1,
+      noise2: noiseLevel2,
+      noise3: noiseLevel3,
+    });
+  }, [noiseLevel1, noiseLevel2, noiseLevel3]);
 
   // const [n1, setN1] = useState(41);
 
@@ -799,6 +815,7 @@ const FancyScreen = (props) => {
               onChange={(value) => {
                 if (value > 0) {
                   setStep(60 / value);
+                  setDelay(1000 / value);
                   setFPS(value);
                 }
               }}

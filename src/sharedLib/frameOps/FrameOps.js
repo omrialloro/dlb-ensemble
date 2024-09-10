@@ -161,6 +161,77 @@ function ShiftFrame(frame, direction) {
   }
 }
 
+function hexToRgb(hex) {
+  // Remove # if present
+  hex = hex.replace("#", "");
+
+  // Calculate RGB values
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  return { r, g, b };
+}
+
+function rgbToH(r, g, b) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function addNoise(frames, noiseConfig) {
+  console.log(noiseConfig);
+  function getAlpha(level) {
+    return level * 150 * (0.8 - Math.random());
+  }
+
+  function getBeta(level) {
+    return 1 + level * Math.random();
+  }
+
+  function noise1(color, alpha) {
+    const r = Math.round(color.r + alpha);
+    const g = Math.round(color.g + alpha);
+    const b = Math.round(color.b + alpha);
+    return { r, g, b };
+  }
+  function noise2(color, beta) {
+    const r = Math.round(color.r * beta);
+    const g = Math.round(color.g * beta);
+    const b = Math.round(color.b * beta);
+    return { r, g, b };
+  }
+
+  const noisedFrames = [];
+
+  for (let t = 0; t < frames.length; t++) {
+    // let frame = [...frames[t]];
+
+    let frame = createConstFrameState(frames[0].length, frames[0][0].length, 0);
+
+    const beta = getBeta(noiseConfig.noise2);
+
+    for (let i = 0; i < frame.length; i++) {
+      let alpha = 0;
+      if (i == t % frame.length || i + 16 == t % frame.length) {
+        alpha = getAlpha(noiseConfig.noise1);
+      }
+      for (let j = 0; j < frame[i].length; j++) {
+        let pixel_noise = 0;
+
+        if (Math.random() < noiseConfig.noise3) {
+          pixel_noise = 250 * (0.7 - Math.random());
+        }
+        let color = hexToRgb(frames[t][i][j]);
+        const color_nn = noise2(color, beta);
+        const color_n = noise1(color_nn, alpha + pixel_noise);
+        frame[i][j] = rgbToH(color_n.r, color_n.g, color_n.b);
+      }
+    }
+    console.log(frame);
+    noisedFrames.push(frame);
+  }
+  return noisedFrames;
+}
+
 export {
   createDefaultFrameState,
   copyFrame,
@@ -172,4 +243,5 @@ export {
   renderAllFramesToScheme,
   reflectFrame,
   rotateFrame,
+  addNoise,
 };
