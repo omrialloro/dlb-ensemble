@@ -177,6 +177,14 @@ function rgbToH(r, g, b) {
   return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
+function normalizeRGB(color) {
+  const normal = (x) => Math.max(0, Math.min(255, Math.round(x)));
+  const r = normal(color.r);
+  const g = normal(color.g);
+  const b = normal(color.b);
+  return { r, g, b };
+}
+
 function addNoise(frames, noiseConfig) {
   console.log(noiseConfig);
   function getAlpha(level) {
@@ -191,13 +199,17 @@ function addNoise(frames, noiseConfig) {
     const r = Math.round(color.r + alpha);
     const g = Math.round(color.g + alpha);
     const b = Math.round(color.b + alpha);
-    return { r, g, b };
+    return normalizeRGB({ r, g, b });
+
+    // return { r, g, b };
   }
   function noise2(color, beta) {
     const r = Math.round(color.r * beta);
     const g = Math.round(color.g * beta);
     const b = Math.round(color.b * beta);
-    return { r, g, b };
+
+    return normalizeRGB({ r, g, b });
+    // return { r, g, b };
   }
 
   const noisedFrames = [];
@@ -208,6 +220,7 @@ function addNoise(frames, noiseConfig) {
     let frame = createConstFrameState(frames[0].length, frames[0][0].length, 0);
 
     const beta = getBeta(noiseConfig.noise2);
+    let ooo = 15 + 5 * Math.random();
 
     for (let i = 0; i < frame.length; i++) {
       let alpha = 0;
@@ -220,10 +233,21 @@ function addNoise(frames, noiseConfig) {
         if (Math.random() < noiseConfig.noise3) {
           pixel_noise = 250 * (0.7 - Math.random());
         }
+        let ccc = 0;
+        if (noiseConfig.filter == 1) {
+          let aaa = frame.length / 2 - i;
+          let bbb = frame[0].length / 2 - j;
+          ccc = (aaa ** 4 + bbb ** 4) / ooo ** 2.5;
+        } else if (noiseConfig.filter == 2) {
+          let aaa = frame.length / 2 / 2 - i;
+          let bbb = frame[0].length / 2 / 2 - j;
+          ccc = (aaa ** 3 + bbb ** 3) / ooo ** 1.5;
+        }
         let color = hexToRgb(frames[t][i][j]);
         const color_nn = noise2(color, beta);
-        const color_n = noise1(color_nn, alpha + pixel_noise);
+        const color_n = noise1(color_nn, alpha + pixel_noise - ccc);
         frame[i][j] = rgbToH(color_n.r, color_n.g, color_n.b);
+        console.log(color_n.r, color_n.g, color_n.b);
       }
     }
     console.log(frame);
@@ -231,6 +255,19 @@ function addNoise(frames, noiseConfig) {
   }
   return noisedFrames;
 }
+
+// function AddFilter(frames, filter) {
+//   let ccc = 0;
+//   if (filter == 1) {
+//     let aaa = size[0] / 2 - i;
+//     let bbb = size[1] / 2 - j;
+//     ccc = (aaa ** 4 + bbb ** 4) / ooo ** 2.5;
+//   } else if (filter == 2) {
+//     let aaa = size[0] / 2 - i;
+//     let bbb = size[1] / 2 - j;
+//     ccc = (aaa ** 3 + bbb ** 3) / ooo ** 1.5;
+//   }
+// }
 
 export {
   createDefaultFrameState,

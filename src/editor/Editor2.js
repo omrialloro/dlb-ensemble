@@ -100,6 +100,7 @@ function Editor2(props) {
     noise1: 0,
     noise2: 0,
     noise3: 0,
+    filter: 0,
   });
   useEffect(() => {
     console.log(noiseConfig);

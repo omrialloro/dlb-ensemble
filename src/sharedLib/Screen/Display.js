@@ -510,8 +510,9 @@ const FancyScreen = (props) => {
       noise1: noiseLevel1,
       noise2: noiseLevel2,
       noise3: noiseLevel3,
+      filter: filter,
     });
-  }, [noiseLevel1, noiseLevel2, noiseLevel3]);
+  }, [noiseLevel1, noiseLevel2, noiseLevel3, filter]);
 
   // const [n1, setN1] = useState(41);
 
