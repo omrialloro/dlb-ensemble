@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import React, { useRef, useEffect, forwardRef } from "react";
+import React, { useRef, useEffect, forwardRef, useState } from "react";
 import { genIntArray } from "./utils/generators";
 import { useInterval } from "./utils/useInterval";
-
+import { copyFrame } from "./frameOps/FrameOps";
+import { brightnessHex } from "../../sharedLib/Utils/RGB";
 function setFrame(frame, screen_id) {
   let c = frame.length;
   let r = frame[0].length;
@@ -60,9 +61,27 @@ export const Screen = forwardRef((props, ref) => {
     delay,
     id,
     onPixelClick,
+    onPixelSustainClick,
+    onPixelHover,
+    onPixeSustainlHover,
     labels,
     withGrid,
+    isSustain,
   } = props;
+
+  const [downElement, setDownElement] = useState(null);
+
+  const handleMouseUp = (x, y) => {
+    // const element = event.target;
+    onPixelSustainClick(downElement, [x, y], []);
+
+    // console.log("Element ID:", element.id); // Or any other attribute
+  };
+
+  const handleMouseDown = (x, y) => {
+    setDownElement([x, y]);
+    // console.log("Element ID:", element.id); // Or any other attribute
+  };
 
   useEffect(() => {
     setLabels(frames[0], labels, id);
@@ -88,6 +107,25 @@ export const Screen = forwardRef((props, ref) => {
     ref.current = currentFrame;
   }, delay);
 
+  function handleMouseEnter(x, y) {
+    let A = [];
+    let frame = copyFrame(frames[currentFrame]);
+
+    if (!isSustain) {
+      onPixelHover([x, y], A);
+    } else {
+      onPixeSustainlHover(downElement, [x, y], A);
+    }
+
+    for (let i = 0; i < A.length; i++) {
+      frame[A[i][1]][A[i][0]] = brightnessHex(
+        frames[currentFrame][A[i][1]][A[i][0]],
+        0.6
+      );
+    }
+    setFrame(frame, id);
+  }
+
   const rowLen = frames[0].length;
   const colLen = frames[0][0].length;
 
@@ -98,6 +136,9 @@ export const Screen = forwardRef((props, ref) => {
 
   return (
     <div
+      // onMouseUp={handleMouseUp}
+      // onMouseDown={handleMouseDown}
+      onMouseLeave={() => setFrame(frames[currentFrame], id)}
       style={{
         height: `${screenSize}px`,
         width: `${screenSize}px`,
@@ -115,7 +156,16 @@ export const Screen = forwardRef((props, ref) => {
           <div
             id={`${x}_${y}_${id}`}
             key={[x, y]}
-            onClick={() => onPixelClick([x, y])}
+            onMouseEnter={() => handleMouseEnter(x, y)}
+            onMouseUp={() => {
+              handleMouseUp(x, y);
+              setDownElement(null);
+            }}
+            onMouseDown={() => {
+              let A = [];
+              onPixelClick([x, y], A);
+              handleMouseDown(x, y);
+            }}
             style={{
               backgroundColor: frames[pausedFrameIndex][y][x],
               color: "grey",

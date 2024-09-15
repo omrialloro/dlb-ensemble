@@ -375,6 +375,44 @@ const FancyScreen = (props) => {
     ctx.fill();
   }
 
+  function drawPixelWithGradient(point, color, ctx, colorr, op) {
+    ctx.fillStyle = color;
+    // if (Math.random() < noiseLevel3) {
+    //   let rr = 100 + 150 * Math.random();
+    //   ctx.fillStyle = `rgba(${rr},${rr},${rr},${0.5})`;
+    // }
+
+    const gradient = ctx.createRadialGradient(
+      point[0] + pixelSizeX / 2,
+      point[1] + pixelSizeX / 2,
+      pixelSizeX / 4,
+      point[0] + pixelSizeX / 2,
+      point[1] + pixelSizeX / 2,
+      pixelSizeX / 2
+    );
+    ctx.fillStyle = gradient;
+    gradient.addColorStop(
+      0,
+      `rgb(${colorr.r + 70},${colorr.g + 30},${colorr.g + 30},0.7)`
+    );
+    gradient.addColorStop(
+      1,
+      `rgb(${colorr.r - 60},${colorr.g - 60},${colorr.b - 60},0.5)`
+    );
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+      point[0] + (pixelSizeX * (1 - pw)) / 2,
+      point[1] + (pixelSizeY * (1 - pw)) / 2,
+      pixelSizeX * pw,
+      pixelSizeY * ph,
+      [br * 10, br * 7, br * 10, br * 10]
+    );
+
+    ctx.fill();
+  }
+
   const [pw, setPw] = useState(1);
   const [ph, setPh] = useState(1);
   const [br, setBr] = useState(1);

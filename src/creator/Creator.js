@@ -6,7 +6,7 @@ import { Pallet } from "./components/colors/Pallet";
 import { getSchemes, Scheme } from "../sharedLib/schemes/Schemes";
 
 import { Shapes } from "./components/shapes/Shapes";
-import { coloring_shape } from "./components/shapes/ops";
+import { coloring_shape, coloring_rectangle } from "./components/shapes/ops";
 import { Screen } from "./components/Screen";
 import { Play } from "./components/Play";
 import {
@@ -553,8 +553,44 @@ const Creator = forwardRef((props, ref) => {
     setFrameState(s);
   }
 
-  function onPixelClick(pixel) {
-    let xxx = coloring_shape(pixel, frameState, coloringState);
+  function onPixelHover(pixel, pixelArray) {
+    coloring_shape(pixel, frameState, coloringState, pixelArray);
+    return pixelArray;
+  }
+
+  function onPixeSustainlHover(pixel1, pixel2, pixelArray) {
+    coloring_rectangle(
+      pixel1,
+      pixel2,
+      frameState,
+      coloringState.color,
+      pixelArray
+    );
+    return pixelArray;
+  }
+
+  function onPixelClick(pixel, pixelArray) {
+    if (coloringState.shape == 0) {
+      console.log("SS");
+      return;
+    }
+    let xxx = coloring_shape(pixel, frameState, coloringState, pixelArray);
+    setFrameState(xxx);
+    recordUndo(xxx);
+  }
+  function onPixelSustainClick(pixel1, pixel2, pixelArray) {
+    if (coloringState.shape != 0) {
+      return;
+    }
+    console.log(coloringState.shape);
+
+    let xxx = coloring_rectangle(
+      pixel1,
+      pixel2,
+      frameState,
+      coloringState.color,
+      pixelArray
+    );
     setFrameState(xxx);
     recordUndo(xxx);
   }
@@ -990,6 +1026,10 @@ const Creator = forwardRef((props, ref) => {
                   frames={isPlay ? renderedFrames : [currentFrame]}
                   delay={isPlay ? delay : null}
                   onPixelClick={onPixelClick}
+                  onPixelHover={onPixelHover}
+                  onPixelSustainClick={onPixelSustainClick}
+                  onPixeSustainlHover={onPixeSustainlHover}
+                  isSustain={coloringState.shape == 0}
                   withGrid={isGrid}
                 />
                 <div style={{ display: "flex" }}>
