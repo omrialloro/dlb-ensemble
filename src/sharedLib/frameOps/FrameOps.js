@@ -200,8 +200,6 @@ function addNoise(frames, noiseConfig) {
     const g = Math.round(color.g + alpha);
     const b = Math.round(color.b + alpha);
     return normalizeRGB({ r, g, b });
-
-    // return { r, g, b };
   }
   function noise2(color, beta) {
     const r = Math.round(color.r * beta);
@@ -209,14 +207,11 @@ function addNoise(frames, noiseConfig) {
     const b = Math.round(color.b * beta);
 
     return normalizeRGB({ r, g, b });
-    // return { r, g, b };
   }
 
   const noisedFrames = [];
 
   for (let t = 0; t < frames.length; t++) {
-    // let frame = [...frames[t]];
-
     let frame = createConstFrameState(frames[0].length, frames[0][0].length, 0);
 
     const beta = getBeta(noiseConfig.noise2);
@@ -255,19 +250,6 @@ function addNoise(frames, noiseConfig) {
   }
   return noisedFrames;
 }
-
-// function AddFilter(frames, filter) {
-//   let ccc = 0;
-//   if (filter == 1) {
-//     let aaa = size[0] / 2 - i;
-//     let bbb = size[1] / 2 - j;
-//     ccc = (aaa ** 4 + bbb ** 4) / ooo ** 2.5;
-//   } else if (filter == 2) {
-//     let aaa = size[0] / 2 - i;
-//     let bbb = size[1] / 2 - j;
-//     ccc = (aaa ** 3 + bbb ** 3) / ooo ** 1.5;
-//   }
-// }
 
 export {
   createDefaultFrameState,

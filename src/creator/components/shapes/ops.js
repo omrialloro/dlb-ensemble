@@ -20,10 +20,10 @@ function coloring_00(pixel, color, frame, array) {
 
 function coloring_45(pixel, color, frame, array) {
   let num_column = frame[0].length;
+  array.push([pixel[0], pixel[1]]);
+
   frame = pixel_coloring(pixel, color, frame);
   if (pixel[1] < num_column - 1 && 0 < pixel[0]) {
-    array.push([pixel[0], pixel[1]]);
-
     pixel[1] += 1;
     pixel[0] -= 1;
     coloring_45(pixel, color, frame, array);
@@ -35,10 +35,10 @@ function coloring_45(pixel, color, frame, array) {
 
 function coloring_90(pixel, color, frame, array) {
   let num_column = frame[0].length;
+  array.push([pixel[0], pixel[1]]);
+
   frame = pixel_coloring(pixel, color, frame);
   if (pixel[1] < num_column - 1) {
-    array.push([pixel[0], pixel[1]]);
-
     pixel[1] += 1;
 
     coloring_90(pixel, color, frame, array);
@@ -49,9 +49,10 @@ function coloring_90(pixel, color, frame, array) {
 function coloring_135(pixel, color, frame, array) {
   let num_column = frame[0].length;
   let num_rows = frame.length;
+  array.push([pixel[0], pixel[1]]);
+
   frame = pixel_coloring(pixel, color, frame);
   if (pixel[1] < num_column - 1 && pixel[0] < num_rows - 1) {
-    array.push([pixel[0], pixel[1]]);
     pixel[0] += 1;
     pixel[1] += 1;
 
@@ -61,10 +62,10 @@ function coloring_135(pixel, color, frame, array) {
 }
 
 function coloring_180(pixel, color, frame, array) {
+  array.push([pixel[0], pixel[1]]);
+
   frame = pixel_coloring(pixel, color, frame);
   if (pixel[0] > 0) {
-    array.push([pixel[0], pixel[1]]);
-
     pixel[0] -= 1;
 
     coloring_180(pixel, color, frame, array);
@@ -74,10 +75,10 @@ function coloring_180(pixel, color, frame, array) {
 
 function coloring_225(pixel, color, frame, array) {
   let num_rows = frame.length;
+  array.push([pixel[0], pixel[1]]);
+
   pixel_coloring(pixel, color, frame);
   if (0 < pixel[1] && pixel[0] < num_rows - 1) {
-    array.push([pixel[0], pixel[1]]);
-
     pixel[1] -= 1;
     pixel[0] += 1;
 
@@ -87,10 +88,10 @@ function coloring_225(pixel, color, frame, array) {
 }
 
 function coloring_270(pixel, color, frame, array) {
+  array.push([pixel[0], pixel[1]]);
+
   pixel_coloring(pixel, color, frame);
   if (pixel[1] > 0) {
-    array.push([pixel[0], pixel[1]]);
-
     pixel[1] -= 1;
 
     coloring_270(pixel, color, frame, array);
@@ -99,10 +100,10 @@ function coloring_270(pixel, color, frame, array) {
 }
 
 function coloring_315(pixel, color, frame, array) {
+  array.push([pixel[0], pixel[1]]);
+
   pixel_coloring(pixel, color, frame);
   if (0 < pixel[1] && 0 < pixel[0]) {
-    array.push([pixel[0], pixel[1]]);
-
     pixel[0] -= 1;
     pixel[1] -= 1;
 

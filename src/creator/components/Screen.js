@@ -114,7 +114,11 @@ export const Screen = forwardRef((props, ref) => {
     if (!isSustain) {
       onPixelHover([x, y], A);
     } else {
-      onPixeSustainlHover(downElement, [x, y], A);
+      if (downElement == null) {
+        A = [[x, y]];
+      } else {
+        onPixeSustainlHover(downElement, [x, y], A);
+      }
     }
 
     for (let i = 0; i < A.length; i++) {
