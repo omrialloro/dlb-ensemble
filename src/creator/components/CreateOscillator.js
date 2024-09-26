@@ -1,29 +1,60 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Screen } from "./Screen";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { OscillatorAnimation } from "./OscillatorAnimation";
 import { createDefaultFramesRendered } from "./frameOps/FrameOps";
 import Tunner from "../../sharedLib/components/Tunner";
-import Tunner2 from "../../sharedLib/components/Tunner2";
+// import Tunner2 from "../../sharedLib/components/Tunner2";
 
-import { positions } from "@mui/system";
+import CircularSlider from "@fseehawer/react-circular-slider";
+
+import { positions, width } from "@mui/system";
+
+const Tunner2 = (props) => {
+  const setValue = props.setValue;
+  const v = props.value;
+  const radius = 8;
+
+  return (
+    <CircularSlider
+      label=""
+      labelColor="rgb(20,10,20)"
+      max={60}
+      // knobColor="rgb(220,90,20)"
+      knobColor="rgb(20,30,20)"
+      knobSize={12}
+      progressColorFrom="rgb(220,150,0)"
+      progressColorTo="rgb(220,150,0)"
+      progressSize={3}
+      trackColor="rgb(220,100,40)"
+      valueFontSize={radius / 10 + "rem"}
+      labelFontSize={radius / 10 + "rem"}
+      // labelFontSize="1rem"
+      labelBottom={true}
+      trackSize={6}
+      width={8.7 * radius}
+      dataIndex={v}
+      onChange={setValue}
+    />
+  );
+};
 
 const StyledFrames = styled.div`
-  width: 52px;
-  height: 52px;
-  top: 65px;
+  width: 90px;
+  height: 90px;
+  top: 5px;
   left: 16px;
-  position: relative;
+  /* position: relative; */
   overflow: hidden;
-  align-items: center;
-  border-radius: 10%;
+  /* align-items: center; */
+  /* border-radius: 10%; */
   /* background-color: black; */
 `;
 
 const StyledScroll = styled.div`
-  width: 158px;
-  height: 52px;
+  width: 360px;
+  height: 82px;
   position: absolute;
   overflow: scroll;
   align-items: center;
@@ -32,30 +63,80 @@ const StyledScroll = styled.div`
   background-color: #8c8664;
 
   background: #8c8664;
+
+  /* filter: blur(0px); */
+
   /* border: 1px solid #c99700; */
   border-radius: 5%;
 
-  top: 10px;
+  top: 40px;
 
-  margin: 4px;
-  left: 20px;
+  margin: 0px;
+  left: 15px;
+`;
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(420px) translateY(-150px)  scaleY(0.1) scaleX(0.1);
+    transform: translateX(2px) translateY(-110px)  scaleY(1) scaleX(1);
+
+    ;
+
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0)  scaleY(1) scaleX(1);
+  }
 `;
 
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateX(0) translateY(0)  scaleY(1) scaleX(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(420px) translateY(-150px)  scaleY(0.1) scaleX(0.1);
+    transform: translateX(42px) translateY(-50px)  scaleY(0.7) scaleX(0.7);
+
+  }
+`;
 const StyledOscillatorWindow = styled.div`
-  height: 330px;
-  width: 330px;
-  top: 200px;
+  height: 480px;
+  width: 420px;
+  top: 100px;
   border-radius: 12px;
-  border: 2px solid #c99700;
+  border: 12px solid rgb(201, 151, 0);
+  border: 6px solid rgb(181, 131, 20);
+  border: 7px double rgb(181, 131, 20);
+
   padding: 10px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   /* grid-template-rows: repeat(50, 1fr); */
   grid-column-gap: 0;
   /* overflow: scroll; */
-  background: #b5ae9a;
-  visibility: hidden;
+  background: rgb(170, 160, 110);
+
+  background: radial-gradient(
+    circle,
+    rgb(170, 160, 110) 0%,
+    rgb(190, 150, 100) 100%
+  );
+  /* background: rgb(120, 100, 60); */
+
+  left: 400px;
+
+  /* visibility: hidden; */
   position: absolute;
+
+  z-index: 1;
+
+  visibility: ${({ isVisible }) => (isVisible ? "visible" : "hidden")};
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 0.3s
+    ease-in-out;
+  transition: visibility 0.3s;
 
   // border:3px solid salmon;
 `;
@@ -86,19 +167,57 @@ const StyledBtn = styled.div`
   left: 4px;
 `;
 const StyledBtnSubmit = styled.div`
-  background: #ff6666;
-  height: 52px;
-  width: 85px;
-  padding: 14px;
-  margin: 8px;
+  background: ${({ color }) => color};
+  /* background: rgb(255, 102, 102);
+  background: radial-gradient(
+    circle,
+    rgb(255, 102, 102) 0%,
+    rgb(255, 52, 12) 100%
+  ); */
+  height: 38px;
+  width: 90px;
+  padding: 8px;
+  margin: 1px;
   position: relative;
-  border-radius: 8%;
-  border: 2px solid #c99700;
+  border-radius: 4px;
+  border: 4px solid #c99700;
+  border: 2px solid rgb(250, 120, 100);
+
+  background-image: linear-gradient(
+    to right,
+    rgb(220, 130, 90) 0%,
+    rgb(130, 110, 20) 100%
+  );
+  background-size: 4px 1px;
+  /* border: 2px solid rgb(200, 230, 230); */
+
+  text-align: center;
+  font-weight: 900;
+  color: rgba(90, 90, 250, 0.8);
   font-size: 14px;
 
   bottom: 18px;
   left: 2px;
 `;
+// function Btn(props) {
+//   const StyledBtn = styled.div`
+//     background: ${({ color }) => color};
+//     height: 38px;
+//     width: 85px;
+//     padding: 10px;
+//     margin: 2px;
+//     position: relative;
+//     border-radius: 9px;
+//     border: 3px solid #c99700;
+//     text-align: center;
+//     font-weight: 300;
+//     font-size: 14px;
+//     bottom: 18px;
+//     left: 2px;
+//   `;
+//   const A = Array(10)
+//   return (<div>{A.map((k, index) => ())}</div>);
+// }
 
 export default function CreateOscillator(props) {
   const animations_ = props.animations;
@@ -151,11 +270,13 @@ export default function CreateOscillator(props) {
       setData([data[0], Number(id)]);
     }
   }
-  // function reset() {
-  //   setData([-1, -1]);
-  //   setNumFrames(10);
-  //   setFrames(createDefaultFramesRendered(36, 36));
-  // }
+  function reset() {
+    setData([-1, -1]);
+    setNumFrames(10);
+    setFrames(createDefaultFramesRendered(36, 36));
+    setFrames1(createDefaultFramesRendered(36, 36));
+    setFrames2(createDefaultFramesRendered(36, 36));
+  }
 
   useEffect(() => {
     if (data[0] != -1 && data[1] != -1) {
@@ -184,54 +305,93 @@ export default function CreateOscillator(props) {
   return (
     <>
       <DragDropContext onDragEnd={handleOnDragEnd}>
-        <StyledOscillatorWindow
-          style={
-            createOscillatorOn
-              ? { visibility: "visible", transition: "width 2s, height 4s" }
-              : { visibility: "hidden" }
-          }
-        >
-          <Droppable key={"osc11"} droppableId={"osc11"}>
-            {(provided, snapshot) => (
-              <StyledFrames
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <div style={{ top: "-5px", left: "0px", position: "relative" }}>
+        <StyledOscillatorWindow isVisible={createOscillatorOn}>
+          <div
+            style={{
+              display: "flex",
+              position: "relative",
+              pedding: "20px",
+              top: "130px",
+              left: "0px",
+            }}
+          >
+            <Screen
+              ref={rr}
+              onPixelClick={() => {}}
+              screenSize={264}
+              pausedFrameIndex={0}
+              frames={frames}
+              delay={50}
+              id={"ffffff"}
+            />
+          </div>
+          <div
+            style={{
+              width: "120px",
+              height: "300px",
+              position: "relative",
+              top: "95px",
+              marginTop: "40px",
+              left: "20px",
+            }}
+          >
+            <Droppable key={"osc11"} droppableId={"osc11"}>
+              {(provided, snapshot) => (
+                <StyledFrames
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
                   <Screen
                     ref={rrrr}
                     onPixelClick={() => {}}
-                    screenSize={55}
+                    screenSize={80}
                     pausedFrameIndex={0}
                     frames={frames1}
                     delay={null}
                     id={"2fff"}
                   />
-                </div>
-              </StyledFrames>
-            )}
-          </Droppable>
-          <OscillatorAnimation numFrames={numFrames} />
-          <Droppable key={"osc22"} droppableId={"osc22"}>
-            {(provided, snapshot) => (
-              <StyledFrames
-                ref={provided.innerRef}
-                {...provided.droppableProps}
+                </StyledFrames>
+              )}
+            </Droppable>
+            <div style={{ width: "80px" }}>
+              <div
+                style={{
+                  width: "20px",
+                  height: "90px",
+                  top: "10px",
+                  position: "relative",
+                }}
               >
-                <div style={{ top: "-5px", left: "0px", position: "relative" }}>
+                <OscillatorAnimation numFrames={numFrames} />
+              </div>
+
+              <div style={{ top: "96px", position: "absolute" }}>
+                <Tunner2
+                  setValue={(x) => setNumFrames(Math.max(1, x))}
+                  value={numFrames}
+                  Text={"FPS"}
+                />
+              </div>
+            </div>
+            <Droppable key={"osc22"} droppableId={"osc22"}>
+              {(provided, snapshot) => (
+                <StyledFrames
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
                   <Screen
                     ref={rrrr}
                     onPixelClick={() => {}}
-                    screenSize={55}
+                    screenSize={80}
                     pausedFrameIndex={0}
                     frames={frames2}
                     delay={null}
                     id={"2fffee"}
                   />
-                </div>
-              </StyledFrames>
-            )}
-          </Droppable>
+                </StyledFrames>
+              )}
+            </Droppable>
+          </div>
           <Droppable droppableId="droppable" direction="horizontal">
             {(provided) => {
               return (
@@ -243,7 +403,7 @@ export default function CreateOscillator(props) {
                     // <Draggable key={k["id"]+4000} draggableId={k["id"]+333} index={index}>
                     //   {(provided)=>(
 
-                    <div style={{ margin: "3px" }}>
+                    <div>
                       <Draggable
                         key={"motor" + index + 103000}
                         draggableId={String(k.id)}
@@ -259,7 +419,7 @@ export default function CreateOscillator(props) {
                             <Screen
                               ref={rrrr}
                               onPixelClick={() => {}}
-                              screenSize={38}
+                              screenSize={78}
                               pausedFrameIndex={0}
                               frames={k.frames}
                               delay={null}
@@ -277,41 +437,31 @@ export default function CreateOscillator(props) {
 
           <StyledClose onClick={closeWindow}>X</StyledClose>
 
-          <div
-            style={{
-              display: "flex",
-              position: "relative",
-              pedding: "10px",
-              bottom: "-130px",
-              left: "-140px",
-            }}
-          >
-            <Screen
-              ref={rr}
-              onPixelClick={() => {}}
-              screenSize={164}
-              pausedFrameIndex={0}
-              frames={frames}
-              delay={50}
-              id={"ffffff"}
-            />
-          </div>
-
           <div style={{ position: "absolute", bottom: 0, right: 20 }}>
             {oscillatorData == null ? (
-              <StyledBtnSubmit onClick={submit}>SUBMIT</StyledBtnSubmit>
-            ) : (
-              <>
-                <StyledBtn onClick={update}>UPDATE</StyledBtn>
-                <StyledBtn
-                  onClick={() => {
-                    oscillatorData != null &&
-                      deleteOscillator(oscillatorData.id);
-                  }}
-                >
+              <div
+                style={{
+                  display: "flex",
+                  top: "29px",
+                  left: "-14px",
+                  position: "relative",
+                }}
+              >
+                <StyledBtnSubmit color={"rgb(220,130,90)"} onClick={submit}>
+                  SUBMIT
+                </StyledBtnSubmit>
+                <StyledBtnSubmit color={"rgb(120,130,120)"} onClick={reset}>
+                  UPDATE
+                </StyledBtnSubmit>
+                <StyledBtnSubmit color={"rgb(120,130,120)"} onClick={submit}>
                   REMOVE
-                </StyledBtn>
-              </>
+                </StyledBtnSubmit>
+                <StyledBtnSubmit color={"rgb(120,130,120)"} onClick={submit}>
+                  RESET
+                </StyledBtnSubmit>
+              </div>
+            ) : (
+              <></>
             )}
 
             <div
@@ -321,18 +471,7 @@ export default function CreateOscillator(props) {
 
                 positions: "relative",
               }}
-            >
-              {/* <Tunner
-                setValue={setNumFrames}
-                currentValue={32}
-                minValue={-15}
-                maxValue={70}
-                radius={38}
-                label={""}
-                value={numFrames}
-              /> */}
-              <Tunner2 setValue={setNumFrames} radius={8} Text={"FPS"} />
-            </div>
+            ></div>
           </div>
         </StyledOscillatorWindow>
       </DragDropContext>

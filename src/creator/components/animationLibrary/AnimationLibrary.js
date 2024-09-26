@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useFetch } from "../../../sharedLib/Server/useFetch";
 import { serverUrl } from "../../../settings";
 import { AuthContext } from "../../../login/authContext";
@@ -18,6 +18,29 @@ import { nestedCopy } from "../../../editor/components/Utils";
 import { renderAllFrames } from "../frameOps/FrameOps";
 
 const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/";
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(420px) translateY(-150px)  scaleY(0.1) scaleX(0.1);
+    ;
+
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0)  scaleY(1) scaleX(1);
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateX(0) translateY(0)  scaleY(1) scaleX(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(420px) translateY(-150px)  scaleY(0.1) scaleX(0.1);
+  }
+`;
 
 const StyledFrames = styled.div`
   transform: scale(${(props) => props.scale});
@@ -48,13 +71,22 @@ const StyledBoxx = styled.div`
   display: flex;
   scale: 1.1;
   border: 2px solid #c99700;
+  z-index: 1;
+  position: absolute;
+  top: 100px;
+  left: 500px;
 
   /* background: #faf1d7; */
   background: #b5ae9a;
 
   /* #b5ae9a */
-  transform: translatE(3%, 30%);
   position: absolute;
+
+  visibility: ${({ isVisible }) => (isVisible ? "visible" : "hidden")};
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 0.3s
+    ease-in-out;
+  transition: visibility 0.3s;
 `;
 
 const StyledContainer = styled.div`
@@ -500,17 +532,7 @@ export default function AnimationLibrary(props) {
   }, [browserdOn]);
 
   return (
-    <StyledBoxx
-      ref={rrrr}
-      style={
-        browserdOn
-          ? {
-              visibility: "visible",
-              transition: "width 2s, height 4s",
-            }
-          : { visibility: "hidden" }
-      }
-    >
+    <StyledBoxx ref={rrrr} isVisible={browserdOn}>
       <StyledBtn
         onClick={() => {
           resetBrowse();

@@ -4,6 +4,7 @@ import CircularSlider from "@fseehawer/react-circular-slider";
 import DimensionsForm from "./DimensionsForm";
 // import { Slider } from "./../components/Slider";
 import { minHeight } from "@mui/system";
+import MyButton from "../FancyButtons/FancyButtons";
 const StyledBox = styled.div`
   display: flex;
   height: 80px;
@@ -884,6 +885,7 @@ const FancyScreen = (props) => {
           BACK TO EDITOR
         </StyledBackToEditor>
       </div>
+      <MyButton />
     </div>
   );
 };

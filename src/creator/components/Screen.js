@@ -73,6 +73,9 @@ export const Screen = forwardRef((props, ref) => {
 
   const handleMouseUp = (x, y) => {
     // const element = event.target;
+    if (onPixelSustainClick == undefined) {
+      return;
+    }
     onPixelSustainClick(downElement, [x, y], []);
 
     // console.log("Element ID:", element.id); // Or any other attribute
@@ -108,6 +111,9 @@ export const Screen = forwardRef((props, ref) => {
   }, delay);
 
   function handleMouseEnter(x, y) {
+    if (onPixelHover == undefined || onPixeSustainlHover == undefined) {
+      return;
+    }
     let A = [];
     let frame = copyFrame(frames[currentFrame]);
 

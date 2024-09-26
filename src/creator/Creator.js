@@ -946,10 +946,38 @@ const Creator = forwardRef((props, ref) => {
     <div className="App" onTouchStart={handleTouchStart}>
       {
         <body ref={bodyRef}>
+          <AnimationLibrary
+            username={email}
+            addAnimation={addAnimation}
+            browserdOn={browserdOn}
+            setBrowserOn={setBrowserOn}
+            resetBrowse={resetBrowse}
+            settedId={selectedId}
+            getFramesById={getFramesById}
+            colorMapping={colorMapping}
+            onAnimationDelete={onAnimationDelete}
+          />
+          <CreateOscillator
+            createOscillatorOn={createOscillatorOn}
+            animations={renderedAnimations}
+            closeWindow={closeOscillatorWindow}
+            buildOscillator={renderOscillator}
+            createOscillator={createOscillator}
+            updateOscillator={updateOscillator}
+            data={oscillatorData}
+            deleteOscillator={onAnimationDelete}
+          />
           {/* <div className="logo-creater">
             <img src="logo_block.png" />
           </div> */}
-          <div className="interface">
+          <div
+            className="interface"
+            style={
+              createOscillatorOn || browserdOn
+                ? { filter: "blur(3px)" }
+                : { filter: "none" }
+            }
+          >
             <main>
               <section className="action left">
                 <div className="colors">
@@ -987,7 +1015,7 @@ const Creator = forwardRef((props, ref) => {
                 <Shapes pickedShape={coloringState.shape} setShape={setShape} />
                 <ClearBtn onClick={clearFrame} />
               </section>
-              <AnimationLibrary
+              {/* <AnimationLibrary
                 username={email}
                 addAnimation={addAnimation}
                 browserdOn={browserdOn}
@@ -997,8 +1025,8 @@ const Creator = forwardRef((props, ref) => {
                 getFramesById={getFramesById}
                 colorMapping={colorMapping}
                 onAnimationDelete={onAnimationDelete}
-              />
-              <CreateOscillator
+              /> */}
+              {/* <CreateOscillator
                 createOscillatorOn={createOscillatorOn}
                 animations={renderedAnimations}
                 closeWindow={closeOscillatorWindow}
@@ -1007,7 +1035,7 @@ const Creator = forwardRef((props, ref) => {
                 updateOscillator={updateOscillator}
                 data={oscillatorData}
                 deleteOscillator={onAnimationDelete}
-              />
+              /> */}
 
               <div style={{ display: "block", margin: "0" }}>
                 <Screen

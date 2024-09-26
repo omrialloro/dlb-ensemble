@@ -10,11 +10,12 @@ const Tunner2 = (props) => {
       label="FPS"
       labelColor="rgb(20,10,20)"
       max={60}
+      knobSize={20}
       // knobColor="rgb(220,90,20)"
       knobColor="rgb(20,30,20)"
-      progressColorFrom="rgb(120,50,0)"
-      progressColorTo="rgb(120,50,0)"
-      progressSize={6}
+      progressColorFrom="rgb(180,150,20)"
+      progressColorTo="rgb(180,150,20)"
+      progressSize={3}
       trackColor="brown"
       valueFontSize={radius / 7 + "rem"}
       labelFontSize={radius / 10 + "rem"}

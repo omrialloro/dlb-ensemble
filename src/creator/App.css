@@ -3,7 +3,11 @@
 
 
 body {
-  background: #527a7a;
+  background: rgb(82, 122, 122);
+  background: rgb(142, 152, 128);
+  /* background-color:rgb(130,150,110); */
+
+
   /* background: #637572; */
 
   font-size: 24px;
@@ -14,6 +18,7 @@ body {
   margin-left: 20px;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
+  
 
   display: flex;
 }
@@ -150,6 +155,10 @@ strong {
 .interface {
   margin-top: 48px;
   margin-left: 200px;
+  transition: filter 0.5s ease; /* Smooth transition for fade and blur */
+
+
+
 }
 
 .timeline {
@@ -241,8 +250,9 @@ main {
     border-radius: 5px;
 
     background-color:rgb(50,110,110);
-    background-color:rgb(50,110,110);
-    background: radial-gradient(circle, rgba(90,120,100,1) 0%, rgba(50,140,120,1) 100%);
+    background-color:rgb(130,140,100);
+
+    /* background: radial-gradient(circle, rgba(90,120,100,1) 0%, rgba(50,140,120,1) 100%); */
 
 
     
@@ -397,14 +407,18 @@ cursor: pointer;
 
 .creation_buttons {
   height: 560px;
-  width: 137px;
+  width: 147px;
   border-radius: 5px;
   padding:5px;
 /* 
   background-color: rgb(60,140,130);
   background-color:rgb(50,110,110); */
   /* background: rgb(63,94,251); */
-background: radial-gradient(circle, rgba(70,150,110,1) 0%, rgba(50,140,140,1) 100%);
+  background-color:rgb(130,150,110);
+  background-color:rgb(130,140,100);
+
+
+/* background: radial-gradient(circle, rgba(70,150,110,1) 0%, rgba(50,140,140,1) 100%); */
 
 
   /* background-color:rgb(60,130,120); */

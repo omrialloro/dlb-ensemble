@@ -20,11 +20,11 @@ function OscillatorAnimation(props) {
   let counter = 0;
 
   function drawLine(ctx, angle, radius, opacity) {
-    const startX = 30;
-    const startY = 85;
+    const startX = 35;
+    const startY = 30;
     ctx.strokeStyle = `rgba(220,90,20,${opacity})`;
     ctx.beginPath();
-    let a = radianstocoordinates(angle, radius + 5, startX, startY);
+    let a = radianstocoordinates(angle, radius + 15, startX, startY);
     let b = radianstocoordinates(angle, radius, startX, startY);
     ctx.moveTo(b.x, b.y);
     ctx.lineTo(a.x, a.y);
@@ -34,8 +34,8 @@ function OscillatorAnimation(props) {
 
   useInterval(() => {
     const canvas = canvasRef.current;
-    canvas.width = 50;
-    canvas.height = 150;
+    canvas.width = 70;
+    canvas.height = 70;
     const ctx = canvas.getContext("2d");
     ctx.font = "10px Arial";
 
@@ -46,14 +46,24 @@ function OscillatorAnimation(props) {
       counter = 0;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.arc(35, 30, 30, 0, 2 * Math.PI);
+    ctx.fillStyle = `rgba(220,190,20,${0.4})`;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "red";
+
+    ctx.fill();
+    ctx.lineWidth = 7;
+
+    ctx.stroke();
     drawLine(ctx, i * alpha * Math.PI, 0, 0.2);
     drawLine(ctx, i * alpha * Math.PI, 10, 0.5);
-    drawLine(ctx, i * alpha * Math.PI, 15, 0.9);
+    drawLine(ctx, i * alpha * Math.PI, 20, 2.9);
   }, 50);
 
   return (
     <canvas
-      style={{ position: "relative", left: "10px", top: "7px" }}
+      style={{ position: "relative", left: "0px", top: "0px" }}
       ref={canvasRef}
       {...props}
     />
