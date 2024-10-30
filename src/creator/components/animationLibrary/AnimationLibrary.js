@@ -208,7 +208,9 @@ export default function AnimationLibrary(props) {
   const rr = useRef();
 
   const [delay, setDelay] = useState(null);
-  const [frames, setFrames] = useState(createDefaultFramesRendered(36, 36));
+
+  // const [frames, setFrames] = useState(createDefaultFramesRendered(36, 36));
+
   const [imgURLs, setImgURLs] = useState([]);
   const [isCheckedArray, setIsCheckedArray] = useState([]);
 
@@ -224,6 +226,40 @@ export default function AnimationLibrary(props) {
 
   const [rowFrames, setRowFrames] = useState(null);
 
+  const {
+    renderedFrames,
+    setBrowserOn,
+    browserdOn,
+    resetBrowse,
+    addAnimation,
+    storeAnimation,
+    colorMapping,
+    getFramesById,
+    onAnimationDelete,
+  } = props;
+  const [settedId, setSettedId] = useState(props.settedId);
+  useEffect(() => {
+    setSettedId(props.settedId);
+  }, [props]);
+
+  console.log(settedId);
+  console.log(settedId);
+  console.log(settedId);
+  console.log(settedId);
+  // const [frames, setFrames] = useState(rederedFrames);
+
+  const [frames, setFrames] = useState(createDefaultFramesRendered(36, 36));
+
+  useEffect(() => {
+    console.log(renderedFrames);
+    if (renderedFrames != undefined && settedId == -1) {
+      console.log(renderedFrames);
+      if (renderedFrames.length > 0) {
+        setFrames(renderedFrames);
+      }
+    }
+  }, [renderedFrames]);
+
   const [opState, setOpState] = useState({
     reverse: 0,
     reflect: 0,
@@ -234,20 +270,6 @@ export default function AnimationLibrary(props) {
   });
 
   const [editeStates, setEditeStates] = useState(opState);
-
-  const {
-    setBrowserOn,
-    browserdOn,
-    resetBrowse,
-    addAnimation,
-    colorMapping,
-    getFramesById,
-    onAnimationDelete,
-  } = props;
-  const [settedId, setSettedId] = useState(props.settedId);
-  useEffect(() => {
-    setSettedId(props.settedId);
-  }, [props]);
 
   // const [selectedAnimation, setSelectedAnimation] = useState(null);
 
@@ -335,14 +357,6 @@ export default function AnimationLibrary(props) {
     setIsCheckedArray(data["ids"].map((id) => false));
   }, [data]);
 
-  function consoleIt() {
-    console.log("cashedAnimations", cashedAnimations);
-    console.log("animationsData", animationsData);
-    console.log("settedId", settedId);
-    console.log("selectedId", selectedId);
-    console.log("offset", opState["offset"]);
-  }
-
   function submitDelete(id) {
     async function markAsDeleted(id) {
       fetch(serverUrl + "/markAsDeleted", {
@@ -401,6 +415,15 @@ export default function AnimationLibrary(props) {
   const rrr = useRef();
 
   async function submitSelect() {
+    console.log(settedId);
+    console.log(settedId);
+    console.log(settedId);
+    console.log(settedId);
+
+    if (selectedId == -1) {
+      storeAnimation();
+      return;
+    }
     rr.current.style.transition = "0.1s";
     rr.current.style.backgroundColor = "#fd8446";
     rr.current.style.scale = 0.95;
@@ -424,6 +447,12 @@ export default function AnimationLibrary(props) {
     let animationsData_ = animationsData;
     animationsData_[id] = { id: id, animationId: selectedId, state: opState };
     setAnimationsData(animationsData_);
+    console.log(selectedId);
+    console.log(selectedId);
+    console.log(selectedId);
+    console.log(selectedId);
+    console.log(selectedId);
+
     addAnimation({
       id: id,
       data: prepareAnimation(rowFrames, opState),
@@ -480,7 +509,7 @@ export default function AnimationLibrary(props) {
       offset: newValue,
     });
   }
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(-1);
 
   function select(id) {
     setSettedId(null);
@@ -491,19 +520,20 @@ export default function AnimationLibrary(props) {
   useEffect(() => {}, [opState]);
 
   useEffect(() => {
-    if (settedId != null) {
+    if (settedId != null && settedId != -1) {
       setSelected(settedId);
       console.log("SEEEEEETTTT", settedId);
+    } else if (settedId == -1 && renderedFrames.length > 0) {
+      console.log("SEEEEEETTTT", settedId);
+
+      setFrames(renderedFrames);
     }
-    // select([settedId]);
   }, [settedId]);
 
   useEffect(() => {
-    if (settedId != null) {
-      setSelected(settedId);
-      console.log("SEEEEEETTTT", settedId);
+    if (settedId == -1) {
+      setSelectedId(-1);
     }
-    // select([settedId]);
   }, [settedId]);
 
   function updateRange(range) {
@@ -561,9 +591,7 @@ export default function AnimationLibrary(props) {
           >
             APPLAY CHANGES
           </StyledBtn5>
-          {/* <StyledBtn2 onClick={submitDelete}>SAVE</StyledBtn2> */}
-          {/* <StyledBtn2 onClick={consoleIt}>SAVE</StyledBtn2> */}
-          {/* <StyledBtn3 onClick={submitDelete}>DELETE</StyledBtn3> */}
+
           <StyledBtn3
             ref={refRemove}
             onClick={() => {
