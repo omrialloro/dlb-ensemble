@@ -58,4 +58,4 @@ function colorOscillator(hex1, hex2, num_frames, index) {
   }
 }
 
-export { grayRGB, colorOscillator, brightnessHex };
+export { grayRGB, colorOscillator, brightnessHex, rgbToH, hexToRgb };

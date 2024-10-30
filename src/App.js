@@ -4,21 +4,22 @@ import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom";
 import { Login } from "./login/Login";
 // import Editorr from "./editor/Editorr";
 import Editor2 from "./editor/Editor2";
+import { getSchemes, Scheme } from "./sharedLib/schemes/Schemes";
 
 import Creator from "./creator/Creator";
-import CreatorTablet from "./creator/CreatorTablet";
 
 import { AuthContext } from "./login/authContext";
 import { Header } from "./Header";
-import { isTablet } from "./sharedLib/Utils/Utils";
+import { AnimationsProvider } from "./creator/components/animationData/AnimationContext";
 
 function App() {
   const creatorRef = useRef();
+  console.log();
 
   const [save, setSave] = useState(0);
   const [saveEditor, setSaveEditor] = useState(0);
 
-  const [browse, setBrowse] = useState(0);
+  // const [browse, setBrowse] = useState(0);
   const [gif, setGif] = useState(0);
   const [gifEditor, setGifEditor] = useState(0);
 
@@ -26,18 +27,18 @@ function App() {
   console.log("isAuthenticated", isAuthenticated);
   const reset = () => {
     setSave(0);
-    setBrowse(0);
+    // setBrowse(0);
     setGif(0);
   };
   const [selected, setSelected] = useState("creator");
 
-  const clickBrowse = () => {
-    if (selected == "creator") {
-      setBrowse(browse + 1);
-    } else if (selected == "editor") {
-      console.log(selected);
-    }
-  };
+  // const clickBrowse = () => {
+  //   if (selected == "creator") {
+  //     setBrowse(browse + 1);
+  //   } else if (selected == "editor") {
+  //     console.log(selected);
+  //   }
+  // };
   const clickSave = () => {
     creatorRef.current();
     // setSave(save + 1);
@@ -60,7 +61,7 @@ function App() {
     return (
       <BrowserRouter>
         <Header
-          browse={clickBrowse}
+          // browse={clickBrowse}
           save={clickSave}
           gif={clickGif}
           selected={selected}
@@ -85,58 +86,49 @@ function App() {
     );
 
   return (
-    <>
-      <BrowserRouter>
-        <div style={{ display: "flex" }}>
-          <Header
-            browse={clickBrowse}
-            save={clickSave}
-            gif={clickGif}
-            selected={selected}
-          />
-          <Routes>
-            <Route path="/*" element={<Navigate to="/creator" />} />
-            <Route
-              path="/editor"
-              element={
-                <Editor2
-                  setSelected={setSelected}
-                  gif={gif}
-                  browse={browse}
-                  resetGif={() => setGif(0)}
-                />
-              }
+    <AnimationsProvider colorScheme={[...getSchemes()["omri"]]}>
+      <>
+        <BrowserRouter>
+          <div style={{ display: "flex" }}>
+            <Header
+              // browse={clickBrowse}
+              save={clickSave}
+              gif={clickGif}
+              selected={selected}
             />
-            <Route
-              onClick={reset}
-              path="/creator"
-              element={
-                isTablet ? (
+            <Routes>
+              <Route path="/*" element={<Navigate to="/creator" />} />
+              <Route
+                path="/editor"
+                element={
+                  <Editor2
+                    setSelected={setSelected}
+                    gif={gif}
+                    // browse={browse}
+                    resetGif={() => setGif(0)}
+                  />
+                }
+              />
+              <Route
+                onClick={reset}
+                path="/creator"
+                element={
                   <Creator
                     ref={creatorRef}
-                    browse={browse}
+                    // browse={browse}
                     // save={save}
                     gif={gif}
                     resetGif={() => setGif(0)}
-                    resetBrowse={() => setBrowse(0)}
+                    // resetBrowse={() => setBrowse(0)}
                     setSelected={setSelected}
                   />
-                ) : (
-                  <CreatorTablet
-                    browse={browse}
-                    save={save}
-                    gif={gif}
-                    resetGif={() => setGif(0)}
-                    resetBrowse={() => setBrowse(0)}
-                    setSelected={setSelected}
-                  />
-                )
-              }
-            />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </>
+                }
+              />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </>
+    </AnimationsProvider>
   );
   // );
   // }

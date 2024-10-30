@@ -6,7 +6,15 @@ const StyledStoreAnimation = styled.div`
   /* background-color: #ff471a; */
   /* border: 0.1px solid orange; */
 
-  background-color: #c73d1e;
+  background-color: rgb(199, 61, 30);
+
+  background-image: linear-gradient(
+    to right,
+    rgb(199, 61, 30) 0%,
+    rgb(240, 100, 50) 100%
+  );
+  background-size: 3px 1px;
+
   color: rgb(90, 50, 0);
   padding: 14px;
   margin-top: 7px;
@@ -15,13 +23,20 @@ const StyledStoreAnimation = styled.div`
   border-radius: 5px;
   width: 120px;
   height: 55px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
 
   text-transform: uppercase;
+  border: 5px ridge rgb(231, 131, 120);
 
   &:hover {
     background-color: palevioletred;
+    background-image: linear-gradient(
+      to right,
+      rgb(199, 81, 30) 0%,
+      rgb(250, 110, 20) 100%
+    );
+    background-size: 3px 1px;
   }
   cursor: pointer;
 `;
@@ -32,6 +47,13 @@ const StyledRecoredAnimation = styled.div`
   /* border: 0.1px solid orange; */
 
   background-color: #c73d1e;
+
+  background-image: linear-gradient(
+    to right,
+    rgb(199, 81, 30) 0%,
+    rgb(250, 110, 20) 100%
+  );
+  background-size: 3px 1px;
   /* color: #000; */
 
   padding: 10px;
@@ -56,11 +78,19 @@ const StyledAnimationOps = styled.div`
   height: 35px;
   width: 55px;
   /* background-color: #f7b947; */
-  background-color: #c99700;
+  background-color: rgb(201, 151, 0);
+
+  background-image: linear-gradient(
+    to right,
+    rgb(201, 171, 0) 0%,
+    rgb(180, 110, 10) 100%
+  );
+  background-size: 3px 1px;
   color: rgb(90, 80, 0);
 
   border-radius: 10%;
-  border: px solid black;
+  border: 3px ridge rgb(211, 171, 80);
+
   text-align: center;
   line-height: 35px;
   margin: 2px;
@@ -69,59 +99,22 @@ const StyledAnimationOps = styled.div`
   text-transform: uppercase;
   &:hover {
     background-color: #f7b947;
+    background-image: linear-gradient(
+      to right,
+      rgb(187, 155, 71) 0%,
+      rgb(220, 160, 50) 100%
+    );
+    background-size: 3px 1px;
   }
 
   cursor: pointer;
 `;
 
-function animationColorMappingCb(animation, colors) {
-  let frames = animation.frames;
-  function mapping(pixel, frame_index) {
-    let res_index = frame_index % frames.length;
-    return colors[frames[res_index][pixel[0]][pixel[1]]];
-  }
-  return mapping;
-}
-
-function animationStateMappingCb(frames) {
-  function mapping(pixel, frame_index) {
-    let res_index = frame_index % frames.length;
-    return frames[res_index][pixel[0]][pixel[1]];
-  }
-  return mapping;
-}
-
-function oscillateAnimationsColorMappingCb(
-  animation1,
-  animation2,
-  num_frames,
-  colors
-) {
-  let animation1_ = animation1;
-  let animation2_ = animation2;
-  let num_frames_ = num_frames;
-
-  function mapping(pixel, frame_index) {
-    let frames1 = animation1_.frames;
-    let frames2 = animation2_.frames;
-
-    let ind1 = frame_index % frames1.length;
-    let ind2 = frame_index % frames2.length;
-    let p1 = frames1[ind1][pixel[0]][pixel[1]];
-    let p2 = frames2[ind2][pixel[0]][pixel[1]];
-    let pp1 = colors[p1];
-    let pp2 = colors[p2];
-
-    return colorOscillator(pp1, pp2, num_frames_, frame_index);
-  }
-  return mapping;
-}
-
 function StoreAnimation(props) {
   const onClick = props.onClick;
   return (
     <StyledStoreAnimation onClick={onClick}>
-      <p>+ Animation</p>
+      <p>New Layer</p>
     </StyledStoreAnimation>
   );
 }
@@ -129,7 +122,7 @@ function CreateOscillatorBtn(props) {
   const onClick = props.onClick;
   return (
     <StyledStoreAnimation onClick={onClick}>
-      <p>+ Oscillator</p>
+      <p>New Oscillator</p>
     </StyledStoreAnimation>
   );
 }
@@ -170,12 +163,66 @@ function RecoredAnimation(props) {
   );
 }
 
+const StyledGrid = styled.div`
+  background-color: rgb(140, 115, 115);
+  background-color: rgb(240, 115, 115);
+
+  background-color: ${({ gridOn }) =>
+    gridOn ? "rgb(240, 115, 115)" : "rgb(140, 115, 115)"};
+
+  background-color: palevioletred;
+
+  background-image: ${({ gridOn }) =>
+    gridOn
+      ? "linear-gradient(to right, rgb(229, 81, 90) 0%, rgb(250, 110, 60) 100%)"
+      : "linear-gradient(to right, rgb(190, 125, 115) 0%, rgb(150, 100, 50) 100%)"};
+
+  /* background-image: linear-gradient(
+    to right,
+    rgb(160, 95, 95) 0%,
+    rgb(150, 130, 100) 100%
+  ); */
+  background-size: 3px 1px;
+
+  color: #1c0f0f;
+  padding: 4px;
+  width: 124px;
+  text-align: center;
+  margin: 0px;
+  margin-left: 3px;
+  margin-bottom: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  display: flex;
+  justify-content: flex-end;
+  cursor: pointer;
+  border: 2px solid rgb(50, 35, 30);
+
+  &:hover {
+    background-color: palevioletred;
+    background-image: linear-gradient(
+      to right,
+      rgb(199, 81, 50) 0%,
+      rgb(250, 100, 60) 100%
+    );
+    background-size: 3px 1px;
+  }
+  cursor: pointer;
+`;
+
+function GridBtn(props) {
+  return (
+    <StyledGrid onClick={props.onClick} gridOn={props.gridOn}>
+      -------GRID--------{" "}
+    </StyledGrid>
+  );
+}
+
 export {
   StoreAnimation,
   CreateOscillatorBtn,
   Reset,
-  oscillateAnimationsColorMappingCb,
-  animationColorMappingCb,
-  animationStateMappingCb,
+  GridBtn,
   RecoredAnimation,
 };

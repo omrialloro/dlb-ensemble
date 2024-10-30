@@ -142,7 +142,7 @@ export const Header = (props) => {
           marginLeft: "100px",
         }}
       >
-        <StyledLi
+        {/* <StyledLi
           style={{
             fontSize: "22px",
             color: "#992600",
@@ -155,7 +155,7 @@ export const Header = (props) => {
           onClick={browse}
         >
           BROWSE
-        </StyledLi>
+        </StyledLi> */}
         <StyledLi
           style={{
             fontSize: "22px",

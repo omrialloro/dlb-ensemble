@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { serverUrl } from "../../settings";
 import { AuthContext } from "../../login/authContext";
+import { useFetch } from "./useFetch";
+import { useCallback } from "react";
 
 const gifPath = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/gifs/ooo";
 
@@ -115,9 +117,50 @@ function useSaveStoredAnimations() {
   };
 }
 
+function useAnimationFromServer() {
+  const { data, error, loading } = useFetch(`/animationsList?type=row`, true);
+  const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/";
+  const [animationsServer, setAnimationsServer] = useState([]);
+
+  useEffect(() => {
+    if (!data || error) return;
+    let animations_ = [];
+    for (let i = 0; i < data["names"].length; i++) {
+      let id = data["ids"][i];
+      animations_.push({
+        id: id,
+        name: data["names"][i],
+        imgUrl: thumbnailsUrl + String(id) + ".png",
+        isChecked: false,
+      });
+    }
+    setAnimationsServer(animations_);
+  }, [data]);
+  return animationsServer;
+}
+function useLoadAnimation() {
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
+  async function loadAnimation(animationId) {
+    console.log(serverUrl);
+    const res = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(res);
+    return res.json();
+  }
+  return loadAnimation;
+}
+
 export {
   useSaveAnimation,
   useExtractToGif,
   useDeleteAnimationFromServer,
   useSaveStoredAnimations,
+  useAnimationFromServer,
+  useLoadAnimation,
 };

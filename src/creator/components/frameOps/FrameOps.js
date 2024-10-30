@@ -1,5 +1,3 @@
-import { genIntArray } from "./../../components/utils/generators";
-
 function createDefaultFrameState(col_size, row_size) {
   let frame_color_state = [];
   for (let r = 0; r < row_size; r++) {
@@ -72,48 +70,6 @@ function copyFrame(ref_frame) {
   return frame_copy;
 }
 
-function renderFrame(frame, color_mapping, frameIndex) {
-  let num_column = frame[0].length;
-  let num_rows = frame.length;
-  let render_frame = [];
-
-  for (let c = 0; c < num_column; c++) {
-    let col = [];
-    for (let r = 0; r < num_rows; r++) {
-      let state = frame[r][c];
-      col.push(color_mapping[state]([r, c], frameIndex));
-    }
-    render_frame.push(col);
-  }
-  return render_frame;
-}
-
-function renderAllFrames(frames, color_mapping) {
-  let renderedFrames = [];
-  for (let i = 0; i < frames.length; i++) {
-    console.log("iii");
-    renderedFrames.push(renderFrame(frames[i], color_mapping, i));
-  }
-  return renderedFrames;
-}
-
-function synthOscillator(
-  num_column,
-  num_rows,
-  oscillator_id,
-  color_mapping,
-  num_frames
-) {
-  const constFrame = createConstFrameState(num_column, num_rows, oscillator_id);
-  let synthFrames = [];
-  for (let i = 0; i < num_frames; i++) {
-    console.log("ttt");
-
-    synthFrames.push(renderFrame(constFrame, color_mapping, i));
-  }
-  return synthFrames;
-}
-
 function CyclUp(frame) {
   let cc = copyFrame(frame);
   cc = cc.slice(1);
@@ -164,10 +120,7 @@ export {
   createDefaultFrameState,
   createConstFrameState,
   copyFrame,
-  renderFrame,
-  renderAllFrames,
   ShiftFrame,
-  synthOscillator,
   stateToLAbels,
   createDefaultFramesRendered,
 };

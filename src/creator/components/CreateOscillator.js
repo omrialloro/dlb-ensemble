@@ -6,6 +6,7 @@ import { OscillatorAnimation } from "./OscillatorAnimation";
 import { createDefaultFramesRendered } from "./frameOps/FrameOps";
 import Tunner from "../../sharedLib/components/Tunner";
 // import Tunner2 from "../../sharedLib/components/Tunner2";
+import { useAnimations } from "./animationData/AnimationContext";
 
 import CircularSlider from "@fseehawer/react-circular-slider";
 
@@ -199,41 +200,20 @@ const StyledBtnSubmit = styled.div`
   bottom: 18px;
   left: 2px;
 `;
-// function Btn(props) {
-//   const StyledBtn = styled.div`
-//     background: ${({ color }) => color};
-//     height: 38px;
-//     width: 85px;
-//     padding: 10px;
-//     margin: 2px;
-//     position: relative;
-//     border-radius: 9px;
-//     border: 3px solid #c99700;
-//     text-align: center;
-//     font-weight: 300;
-//     font-size: 14px;
-//     bottom: 18px;
-//     left: 2px;
-//   `;
-//   const A = Array(10)
-//   return (<div>{A.map((k, index) => ())}</div>);
-// }
 
 export default function CreateOscillator(props) {
-  const animations_ = props.animations;
-  const animations = animations_.filter((x) => !x.isOscillator);
+  const {
+    animations,
+    instances,
+    renderInstanceFrames,
+    renderOscillator,
+    addInstancesOsc,
+  } = useAnimations();
 
   const createOscillatorOn = props.createOscillatorOn;
-  // console.log(props.createOscillatorOn);
-  // const [createOscillatorOn, setCreateOscillatorOn] = useState(
-  //   props.createOscillatorOn
-  // );
+
   const closeWindow = props.closeWindow;
-  const buildOscillator = props.buildOscillator;
-  const createOscillator = props.createOscillator;
-  const updateOscillator = props.updateOscillator;
   const oscillatorData = props.data;
-  const deleteOscillator = props.deleteOscillator;
 
   const rrrr = useRef();
   const rr = useRef();
@@ -248,7 +228,6 @@ export default function CreateOscillator(props) {
   useEffect(() => {
     if (oscillatorData != null) {
       setNumFrames(oscillatorData.framesLen);
-      // setCreateOscillatorOn(true);
       setData([oscillatorData.animationId1, oscillatorData.animationId2]);
       setFrames1(Id2frames(oscillatorData.animationId1));
       setFrames2(Id2frames(oscillatorData.animationId2));
@@ -263,10 +242,10 @@ export default function CreateOscillator(props) {
     let index = result.destination.droppableId;
     let id = result.draggableId;
     if (index == "osc11") {
-      setFrames1(Id2frames(id));
+      setFrames1(renderInstanceFrames(id));
       setData([Number(id), data[1]]);
     } else if (index == "osc22") {
-      setFrames2(Id2frames(id));
+      setFrames2(renderInstanceFrames(id));
       setData([data[0], Number(id)]);
     }
   }
@@ -280,25 +259,16 @@ export default function CreateOscillator(props) {
 
   useEffect(() => {
     if (data[0] != -1 && data[1] != -1) {
-      let frames = buildOscillator(data[1], data[0], numFrames);
+      const frames = renderOscillator(data[1], data[0], numFrames);
       setFrames(frames);
     }
   }, [numFrames, data]);
 
   function submit() {
-    if (data[0] != -1 && data[1] != -1 && numFrames > 0) {
-      createOscillator(data[0], data[1], numFrames);
-    }
-  }
+    const osc_id = String(Date.now());
 
-  function update() {
-    if (
-      data[0] != -1 &&
-      data[1] != -1 &&
-      numFrames > 0 &&
-      oscillatorData != null
-    ) {
-      updateOscillator(data[0], data[1], numFrames, oscillatorData.id);
+    if (data[0] != -1 && data[1] != -1 && numFrames > 0) {
+      addInstancesOsc(osc_id, data[0], data[1], numFrames);
     }
   }
 
@@ -399,7 +369,7 @@ export default function CreateOscillator(props) {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  {animations.map((k, index) => (
+                  {instances.map((k, index) => (
                     // <Draggable key={k["id"]+4000} draggableId={k["id"]+333} index={index}>
                     //   {(provided)=>(
 
@@ -421,7 +391,7 @@ export default function CreateOscillator(props) {
                               onPixelClick={() => {}}
                               screenSize={78}
                               pausedFrameIndex={0}
-                              frames={k.frames}
+                              frames={renderInstanceFrames(k.id)}
                               delay={null}
                               id={"2" + k.id}
                             />

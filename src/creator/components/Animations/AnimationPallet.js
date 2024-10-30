@@ -1,6 +1,7 @@
 import { Screen } from "./../Screen";
 import { useState, forwardRef, useRef } from "react";
 import styled from "styled-components";
+import { useAnimations } from "../animationData/AnimationContext";
 
 const StyledBox = styled.div`
   height: 50px;
@@ -31,17 +32,10 @@ const StyledCircle = styled.div`
   overflow: clip;
 `;
 
-const StyledArrange = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
 const SmallScreen = forwardRef((props, ref) => {
   const onClick = props.onClick;
   const id = props.id;
   const frames = props.frames;
-  const handleDelete = props.handleDelete;
   const isPicked = props.isPicked;
   const [delay, setDelay] = useState(null);
   ref = { ref };
@@ -66,41 +60,38 @@ const SmallScreen = forwardRef((props, ref) => {
         delay={delay}
         id={"s333" + id}
       />
-      <StyledArrange>
-        <div className="minus" onClick={handleDelete}>
-          <img src="delete_frame.svg"></img>
-        </div>
-      </StyledArrange>
     </div>
   );
 });
 
 export function AnimationPallet(props) {
-  const data = props.data;
+  // const data = props.data;
   const onAnimationSelect = props.onAnimationSelect;
   const onAnimationDelete = props.onAnimationDelete;
   const pickedIndex = props.pickedIndex;
   const onDoubleClick = props.onDoubleClick;
   const [countClicks, setCountClicks] = useState(0);
 
-  console.log(data);
+  const {
+    renderInstanceFrames,
+    instances,
+    instancesOsc,
+    renderOscillatorInstance,
+  } = useAnimations();
 
   function handleDoubleClick(id) {
     setCountClicks(countClicks + 1);
     if (countClicks >= 1) {
       onDoubleClick(id);
-      console.log("double click");
-      // onDoubleClick();
     }
     setTimeout(() => {
       setCountClicks(0);
     }, 300);
   }
-  // const ref = useRef()
 
-  return (
+  return instances.length > 0 ? (
     <StyledBox>
-      {data.map((e, index) => (
+      {instances.map((e, index) => (
         <StyledCircle scale={e.id == pickedIndex ? 1.17 : 1}>
           <SmallScreen
             isPicked={e.id == pickedIndex}
@@ -109,12 +100,29 @@ export function AnimationPallet(props) {
               handleDoubleClick(e.id);
             }}
             key={"screen" + index}
-            frames={e.frames}
+            frames={renderInstanceFrames(e.id)}
             id={"screenId" + index}
             handleDelete={() => onAnimationDelete(e.id)}
           />
         </StyledCircle>
       ))}
+      {instancesOsc !== undefined
+        ? instancesOsc.map((e, index) => (
+            <StyledCircle scale={e.id == pickedIndex ? 1.17 : 1}>
+              <SmallScreen
+                isPicked={e.id == pickedIndex}
+                onClick={() => {
+                  onAnimationSelect(e.id);
+                  handleDoubleClick(e.id);
+                }}
+                key={"screene_" + index}
+                frames={renderOscillatorInstance(e.id)}
+                id={"screenIde_" + index}
+                handleDelete={() => onAnimationDelete(e.id)}
+              />
+            </StyledCircle>
+          ))
+        : null}
     </StyledBox>
-  );
+  ) : null;
 }

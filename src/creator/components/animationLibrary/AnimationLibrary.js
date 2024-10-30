@@ -1,13 +1,19 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled, { keyframes } from "styled-components";
-import { useFetch } from "../../../sharedLib/Server/useFetch";
-import { serverUrl } from "../../../settings";
-import { AuthContext } from "../../../login/authContext";
+import {
+  useAnimationFromServer,
+  useLoadAnimation,
+} from "../../../sharedLib/Server/api";
+
 import { Screen } from "../Screen";
-import { createDefaultFramesRendered } from "../frameOps/FrameOps";
+import {
+  createDefaultFramesRendered,
+  createDefaultFrameState,
+} from "../frameOps/FrameOps";
 import { Operators } from "../../../editor/views/Operators";
 import { TrimSlider } from "../../../editor/views/editor/trimSlider/TrimSlider";
 import { VerticalSlider } from "../../../sharedLib/components/VerticalSlider";
+import { useAnimations } from "../animationData/AnimationContext";
 
 import {
   reflectFrame,
@@ -15,9 +21,7 @@ import {
   offsetAnimation,
 } from "../../../editor/components/frameTransformations";
 import { nestedCopy } from "../../../editor/components/Utils";
-import { renderAllFrames } from "../frameOps/FrameOps";
 
-const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/";
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -75,13 +79,8 @@ const StyledBoxx = styled.div`
   position: absolute;
   top: 100px;
   left: 500px;
-
-  /* background: #faf1d7; */
   background: #b5ae9a;
-
-  /* #b5ae9a */
   position: absolute;
-
   visibility: ${({ isVisible }) => (isVisible ? "visible" : "hidden")};
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 0.3s
@@ -95,11 +94,8 @@ const StyledContainer = styled.div`
   border-radius: 12px;
   margin-left: 2px;
   margin-top: 22px;
-  /* margin-top: 22px; */
-
   padding: 2px;
   display: flex;
-  /* background: #faf1d7; */
   background: #b5ae9a;
 
   transform: translatE(0%, 0%);
@@ -109,7 +105,6 @@ const StyledBox = styled.div`
   height: 60px;
   width: 320px;
   border-radius: 9px;
-  /* border: 1px solid #909090; */
   padding: 6px;
   margin: 12px;
   display: grid;
@@ -118,27 +113,15 @@ const StyledBox = styled.div`
   grid-column-gap: 0;
   top: 69%;
   right: 4%;
-
-  /* overflow: scroll; */
   overflow-x: scroll;
-  /* background: #c1c1c1; */
   background: #8c8664;
-
   visibility: hidden;
-  /* transform: translatE(3%, 35%); */
   transform: translatE(5%, 10%);
-
   position: absolute;
 `;
 const StyledBtn = styled.div`
-  /* background: #b5ae9a; */
-
-  /* background: #f3f1e0; */
   font-size: 15px;
   font-weight: 500;
-
-  /* font-weight: bold; */
-
   height: 53px;
   width: 10;
   left: 5px;
@@ -149,7 +132,6 @@ const StyledBtn = styled.div`
 
 const StyledBtn1 = styled.div`
   background-color: #cfa700;
-  /* background-color: #376f78; */
 
   transition: 0.2s;
 
@@ -161,24 +143,17 @@ const StyledBtn1 = styled.div`
   margin-top: 2px;
   padding: 12px;
   margin-bottom: 5px;
-  /* border: 12px solid yellow; */
 `;
+
 const StyledBtn5 = styled.div`
   transition: 0.2s;
-
-  /* background-color: #85b2af; */
   background-color: #468c85;
-
   width: 80px;
   height: 50px;
   margin-left: 10px;
   border-radius: 6%;
-
-  /* margin-top: 12px; */
   padding: 12px;
   margin-bottom: 8px;
-  /* color: #1c0f0f; */
-  /* border: 11px solid yellow; */
 `;
 const StyledBtn2 = styled.div`
   background-color: #c73d1e;
@@ -191,8 +166,6 @@ const StyledBtn2 = styled.div`
 `;
 const StyledBtn3 = styled.div`
   background-color: #fa4400;
-  /* background-color: #f26442; */
-
   width: 80px;
   height: 25px;
   margin-left: 10px;
@@ -200,65 +173,46 @@ const StyledBtn3 = styled.div`
   padding: 2px;
   margin-bottom: 4px;
   border-radius: 6%;
-  /* border: 13px solid yellow; */
 `;
+
+function prepareAnimation(frames, opState) {
+  let raw_frames = nestedCopy(frames);
+
+  raw_frames = offsetAnimation(raw_frames, opState["offset"]);
+
+  if (opState["reflect"] == 1) {
+    raw_frames = raw_frames.map((x) => reflectFrame(x));
+  }
+  if (opState["reverse"] == 1) {
+    raw_frames.reverse();
+  }
+  if (opState["rotate"] > 0) {
+    for (let i = 0; i < opState["rotate"]; i++) {
+      raw_frames = raw_frames.map((x) => rotateFrame(x));
+    }
+  }
+  let range = opState["range"];
+  raw_frames = raw_frames.slice(range[0], range[1]);
+
+  return raw_frames;
+}
 
 export default function AnimationLibrary(props) {
   const oooo = useRef();
   const rr = useRef();
-
-  const [delay, setDelay] = useState(null);
-
-  // const [frames, setFrames] = useState(createDefaultFramesRendered(36, 36));
-
-  const [imgURLs, setImgURLs] = useState([]);
-  const [isCheckedArray, setIsCheckedArray] = useState([]);
-
-  async function loadAnimation(animationId) {
-    const res = await fetch(serverUrl + `/loadAnimation/${animationId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.json();
-  }
-
-  const [rowFrames, setRowFrames] = useState(null);
-
+  const { setBrowserOn, browserdOn, instanceId } = props;
   const {
-    renderedFrames,
-    setBrowserOn,
-    browserdOn,
-    resetBrowse,
-    addAnimation,
-    storeAnimation,
-    colorMapping,
-    getFramesById,
-    onAnimationDelete,
-  } = props;
-  const [settedId, setSettedId] = useState(props.settedId);
-  useEffect(() => {
-    setSettedId(props.settedId);
-  }, [props]);
-
-  console.log(settedId);
-  console.log(settedId);
-  console.log(settedId);
-  console.log(settedId);
-  // const [frames, setFrames] = useState(rederedFrames);
-
-  const [frames, setFrames] = useState(createDefaultFramesRendered(36, 36));
-
-  useEffect(() => {
-    console.log(renderedFrames);
-    if (renderedFrames != undefined && settedId == -1) {
-      console.log(renderedFrames);
-      if (renderedFrames.length > 0) {
-        setFrames(renderedFrames);
-      }
-    }
-  }, [renderedFrames]);
+    addInstance_,
+    addAnimation_,
+    renderAllFramesRGB_,
+    currentFrames,
+    animations,
+    getInstanceById,
+    updateInstance,
+    renderInstanceFrames,
+    removeInstance_,
+    isContainingOscillators,
+  } = useAnimations();
 
   const [opState, setOpState] = useState({
     reverse: 0,
@@ -266,233 +220,126 @@ export default function AnimationLibrary(props) {
     rotate: 0,
     scheme: -1,
     offset: 0,
-    range: [0, frames.length],
+    range: [0, 1],
   });
-
-  const [editeStates, setEditeStates] = useState(opState);
-
-  // const [selectedAnimation, setSelectedAnimation] = useState(null);
-
-  async function setScreen(animationId) {
-    if (cashedAnimations.hasOwnProperty(animationId)) {
-      const A = cashedAnimations[animationId];
-      setRowFrames(A);
-      setFrames(renderAllFrames(A, colorMapping));
-    } else {
-      const A = await loadAnimation(animationId);
-      const AA = renderAllFrames(A["data"], colorMapping);
-      setRowFrames(A["data"]);
-      setFrames(AA);
-    }
-    // const A = await loadAnimation(animationId);
-    // const AA = renderAllFrames(A["data"], colorMapping);
-    // setRowFrames(A);
-    // setFrames(AA);
-  }
-
-  const {
-    auth: { token },
-  } = useContext(AuthContext);
-
-  const [animationsData, setAnimationsData] = useState({});
-  const [cashedAnimations, setCashedAnimations] = useState({});
-
-  const { data, error, loading } = useFetch(
-    `/animationsList?type=row`,
-    browserdOn
-  );
-  const [animations, setAnimations] = useState([]);
-
-  function resetState() {}
-
-  function prepareAnimation(frames, opState) {
-    let raw_frames = nestedCopy(frames);
-
-    raw_frames = offsetAnimation(raw_frames, opState["offset"]);
-
-    if (opState["reflect"] == 1) {
-      raw_frames = raw_frames.map((x) => reflectFrame(x));
-    }
-    if (opState["reverse"] == 1) {
-      raw_frames.reverse();
-    }
-    if (opState["rotate"] > 0) {
-      for (let i = 0; i < opState["rotate"]; i++) {
-        raw_frames = raw_frames.map((x) => rotateFrame(x));
-      }
-    }
-    let range = opState["range"];
-    raw_frames = raw_frames.slice(range[0], range[1]);
-
-    return raw_frames;
-  }
 
   const [editedFrames, setEditedFrames] = useState(
     createDefaultFramesRendered(36, 36)
   );
 
-  useEffect(() => {
-    setEditedFrames(prepareAnimation(frames, opState));
-  }, [opState, frames]);
+  const animationsServer = useAnimationFromServer();
+
+  const [animationId, setAnimationId] = useState(props.animationId);
+
+  const [delay, setDelay] = useState(null);
+
+  const [rowFrames, setRowFrames] = useState([createDefaultFrameState(36, 36)]);
+
+  console.log(currentFrames);
 
   useEffect(() => {
-    let a = prepareAnimation(frames, opState);
-  }, [opState, frames]);
+    if (instanceId === -1) {
+      if (animationId === -1) {
+        const xxxx = isContainingOscillators();
+        if (currentFrames.length > 0 && !xxxx) {
+          setRowFrames(currentFrames);
+          prepareAnimation(renderAllFramesRGB_(currentFrames), opState);
+          setOpState({ ...opState, range: [0, currentFrames.length] });
+        }
+      }
+    }
+  }, [currentFrames]);
 
-  useEffect(() => {
-    if (!data || error) return;
-    let animations_ = [];
-    for (let i = 0; i < data["names"].length; i++) {
-      let id = data["ids"][i];
-      animations_.push({
-        id: id,
-        name: data["names"][i],
-        imgUrl: thumbnailsUrl + String(id) + ".png",
-        isChecked: false,
-      });
-    }
-    setAnimations(animations_);
-    setFilenames(data["names"]);
-    setImgURLs(data["ids"].map((id) => thumbnailsUrl + String(id) + ".png"));
-    setIsCheckedArray(data["ids"].map((id) => false));
-  }, [data]);
+  const loadAnimation = useLoadAnimation();
+  const selectAnimation = useCallback(
+    async (animation_id) => {
+      setAnimationId(animation_id);
+      if (animations.hasOwnProperty(animation_id)) {
+        const frames_ = animations[animation_id];
+        setRowFrames(frames_);
+        setOpState({ ...opState, range: [0, frames_.length] });
+      } else {
+        const A = await loadAnimation(animation_id);
+        const frames_ = A["data"];
+        setRowFrames(frames_);
+        setOpState({ ...opState, range: [0, frames_.length] });
+      }
+    },
+    [animations]
+  );
 
-  function submitDelete(id) {
-    async function markAsDeleted(id) {
-      fetch(serverUrl + "/markAsDeleted", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify([id]),
-      });
+  function submit() {
+    const instance_id = String(Date.now());
+    let animation_id = animationId;
+    if (animationId === -1) {
+      animation_id = String(Date.now());
     }
-    if (window.confirm("Are you sure you want to delete?")) {
-      markAsDeleted(id);
-      // setBrowserOn(false);
-    }
-    // setBrowserOn(false);
+    setAnimationId(animation_id);
+    addAnimation_(animation_id, rowFrames);
+
+    addInstance_({
+      id: instance_id,
+      animationId: animation_id,
+      opState: opState,
+    });
   }
 
-  function setSelected(id) {
-    if (!animationsData.hasOwnProperty(id)) {
-      const frames_ = getFramesById(id);
-      const defaultOpState = {
-        reverse: 0,
-        reflect: 0,
-        rotate: 0,
-        scheme: -1,
-        offset: 0,
-        range: [0, frames_.length],
-      };
-      let newAnimationId = String(Date.now());
-      cashedAnimations[newAnimationId] = frames_;
+  function onUpdateInstance() {
+    if (instanceId === -1) {
+      return;
+    }
 
-      const newData = { state: defaultOpState, animationId: newAnimationId };
-      let animationsData_ = animationsData;
-      animationsData_[id] = newData;
-      setAnimationsData(animationsData_);
-      setFrames(renderAllFrames(frames_, colorMapping));
-      setOpState(defaultOpState);
-      setRowFrames(frames_);
-      prepareAnimation(frames_, opState);
+    updateInstance(instanceId, {
+      id: instanceId,
+      animationId: animationId,
+      opState: { ...opState },
+    });
+    if (!animations.hasOwnProperty(animationId)) {
+      addAnimation_(animationId, rowFrames);
+    }
+  }
+
+  useEffect(() => {
+    if (rowFrames != undefined && rowFrames.length > 0) {
+      setEditedFrames(
+        prepareAnimation(renderAllFramesRGB_(rowFrames), opState)
+      );
+    }
+  }, [rowFrames, opState]);
+
+  function setInstance(instanceId) {
+    const inst = getInstanceById(instanceId);
+    setOpState(inst.opState);
+    setEditedFrames(renderInstanceFrames(instanceId));
+    setRowFrames(animations[inst.animationId]);
+  }
+
+  useEffect(() => {
+    if (instanceId === -1) {
+      if (animationId === -1) {
+        if (currentFrames.length > 0 && !isContainingOscillators()) {
+          setRowFrames(currentFrames);
+          setOpState({
+            reverse: 0,
+            reflect: 0,
+            rotate: 0,
+            scheme: -1,
+            offset: 0,
+            range: [0, currentFrames.length],
+          });
+        }
+      } else {
+      }
     } else {
-      const data_ = animationsData[id];
-      const selectedId_ = data_["animationId"];
-      const row_frames_ = cashedAnimations[selectedId_];
-      setOpState(data_["state"]);
-      setSelectedId(selectedId_);
-      setFrames(renderAllFrames(row_frames_, colorMapping));
-      setOpState(data_["state"]);
-
-      setRowFrames(row_frames_);
-      prepareAnimation(row_frames_, opState);
+      setInstance(instanceId);
     }
+  }, [instanceId]);
 
-    // select(id);
+  function updateRange(range) {
+    setOpState({ ...opState, range: range });
   }
+
   const rrr = useRef();
-
-  async function submitSelect() {
-    console.log(settedId);
-    console.log(settedId);
-    console.log(settedId);
-    console.log(settedId);
-
-    if (selectedId == -1) {
-      storeAnimation();
-      return;
-    }
-    rr.current.style.transition = "0.1s";
-    rr.current.style.backgroundColor = "#fd8446";
-    rr.current.style.scale = 0.95;
-    setTimeout(() => {
-      rr.current.style.transition = "0.3s";
-
-      rr.current.style.backgroundColor = "#cfa700";
-      rr.current.style.scale = 1;
-    }, 170);
-    if (!cashedAnimations.hasOwnProperty(selectedId)) {
-      const cashedAnimations_ = cashedAnimations;
-      cashedAnimations_[selectedId] = rowFrames;
-      setCashedAnimations(cashedAnimations_);
-    }
-    let id = String(Date.now());
-
-    // setAnimationsData([
-    //   ...animationsData,
-    //   { id: id, animationId: selectedId, state: opState },
-    // ]);
-    let animationsData_ = animationsData;
-    animationsData_[id] = { id: id, animationId: selectedId, state: opState };
-    setAnimationsData(animationsData_);
-    console.log(selectedId);
-    console.log(selectedId);
-    console.log(selectedId);
-    console.log(selectedId);
-    console.log(selectedId);
-
-    addAnimation({
-      id: id,
-      data: prepareAnimation(rowFrames, opState),
-      isDeleted: false,
-    });
-  }
-
-  function updateSelect() {
-    rrr.current.style.transition = "0.1s";
-
-    rrr.current.style.backgroundColor = "#fd8446";
-    rrr.current.style.scale = 0.95;
-    setTimeout(() => {
-      rrr.current.style.transition = "0.3s";
-
-      rrr.current.style.backgroundColor = "#468c85";
-      rrr.current.style.scale = 1;
-    }, 170);
-    if (settedId == null) {
-      return;
-    }
-    if (!cashedAnimations.hasOwnProperty(selectedId)) {
-      console.log(selectedId);
-      const cashedAnimations_ = cashedAnimations;
-      cashedAnimations_[selectedId] = rowFrames;
-      setCashedAnimations(cashedAnimations_);
-    }
-
-    let id = settedId;
-    let animationsData_ = animationsData;
-    animationsData_[id] = { id: id, animationId: selectedId, state: opState };
-    setAnimationsData(animationsData_);
-    addAnimation({
-      id: id,
-      data: prepareAnimation(rowFrames, opState),
-      isDeleted: false,
-    });
-  }
-
-  const [filenames, setFilenames] = useState([]);
 
   function updateOperatorsState(state) {
     setOpState({
@@ -503,55 +350,23 @@ export default function AnimationLibrary(props) {
   }
 
   function onChangeOffset(event, newValue) {
-    console.log("newValue", newValue);
     setOpState({
       ...opState,
       offset: newValue,
     });
   }
-  const [selectedId, setSelectedId] = useState(-1);
 
-  function select(id) {
-    setSettedId(null);
-    setSelectedId(id);
-    setScreen(id);
-    setOpState({ ...opState, range: [0, frames.length] });
-  }
-  useEffect(() => {}, [opState]);
-
-  useEffect(() => {
-    if (settedId != null && settedId != -1) {
-      setSelected(settedId);
-      console.log("SEEEEEETTTT", settedId);
-    } else if (settedId == -1 && renderedFrames.length > 0) {
-      console.log("SEEEEEETTTT", settedId);
-
-      setFrames(renderedFrames);
-    }
-  }, [settedId]);
-
-  useEffect(() => {
-    if (settedId == -1) {
-      setSelectedId(-1);
-    }
-  }, [settedId]);
-
-  function updateRange(range) {
-    setOpState({ ...opState, range: range });
-  }
   const refDelete = useRef();
   const refRemove = useRef();
   const rrrr = useRef();
 
   useEffect(() => {
     if (browserdOn) {
-      console.log("FDFFFD");
       function enableScrolling() {
         document.body.style.overflow = "";
         document.body.removeEventListener("touchmove", preventDefault, {
           passive: false,
         });
-        console.log(document.body.style.overflow);
       }
 
       function preventDefault(e) {
@@ -565,7 +380,6 @@ export default function AnimationLibrary(props) {
     <StyledBoxx ref={rrrr} isVisible={browserdOn}>
       <StyledBtn
         onClick={() => {
-          resetBrowse();
           setBrowserOn(false);
         }}
       >
@@ -580,15 +394,10 @@ export default function AnimationLibrary(props) {
             // padding: "10px",
           }}
         >
-          <StyledBtn1 ref={rr} onClick={submitSelect}>
+          <StyledBtn1 ref={rr} onClick={submit}>
             SUBMIT NEW
           </StyledBtn1>
-          <StyledBtn5
-            ref={rrr}
-            onClick={() => {
-              updateSelect();
-            }}
-          >
+          <StyledBtn5 ref={rrr} onClick={onUpdateInstance}>
             APPLAY CHANGES
           </StyledBtn5>
 
@@ -603,12 +412,8 @@ export default function AnimationLibrary(props) {
                 refRemove.current.style.backgroundColor = "#fa4400";
                 refRemove.current.style.scale = 1;
               }, 170);
-              onAnimationDelete(settedId);
+              removeInstance_(instanceId);
             }}
-
-            // onClick={() => {
-            //   onAnimationDelete(settedId);
-            // }}
           >
             REMOVE
           </StyledBtn3>
@@ -623,12 +428,6 @@ export default function AnimationLibrary(props) {
                 refDelete.current.style.backgroundColor = "#fa4400";
                 refDelete.current.style.scale = 1;
               }, 170);
-              console.log(animationsData);
-              console.log(settedId);
-              console.log(animationsData[settedId]);
-              console.log(animationsData[settedId]["animationId"]);
-
-              // submitDelete(animationsData[settedId]["animationId"]);
             }}
           >
             DELETE
@@ -636,7 +435,7 @@ export default function AnimationLibrary(props) {
         </div>
         <VerticalSlider
           min={0}
-          max={frames.length}
+          max={rowFrames == undefined ? 1 : rowFrames.length}
           value={opState["offset"]}
           onChangeCommitted={onChangeOffset}
         />
@@ -686,7 +485,7 @@ export default function AnimationLibrary(props) {
               <div style={{ marginBottom: "-16px" }}>
                 <TrimSlider
                   min={0}
-                  max={frames.length}
+                  max={rowFrames == undefined ? 1 : rowFrames.length}
                   range={opState["range"]}
                   updateRange={updateRange}
                   width={"158px"}
@@ -711,10 +510,10 @@ export default function AnimationLibrary(props) {
         }
       >
         <div className="order"></div>
-        {animations.map((x, index) => (
+        {animationsServer.map((x, index) => (
           <StyledFrames
             key={"llll" + x["id"]}
-            scale={selectedId == x["id"] ? 1.2 : 1}
+            scale={animationId == x["id"] ? 1.2 : 1}
           >
             <XX
               style={x["isChecked"] ? { height: "90%" } : { height: "70%" }}
@@ -725,7 +524,7 @@ export default function AnimationLibrary(props) {
               //   fff(index);
               // }}
               onClick={() => {
-                select(x["id"]);
+                selectAnimation(x["id"]);
               }}
             ></XX>
           </StyledFrames>
