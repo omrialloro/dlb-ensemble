@@ -186,7 +186,6 @@ function normalizeRGB(color) {
 }
 
 function addNoise(frames, noiseConfig) {
-  console.log(noiseConfig);
   function getAlpha(level) {
     return level * 150 * (0.8 - Math.random());
   }
@@ -242,10 +241,8 @@ function addNoise(frames, noiseConfig) {
         const color_nn = noise2(color, beta);
         const color_n = noise1(color_nn, alpha + pixel_noise - ccc);
         frame[i][j] = rgbToH(color_n.r, color_n.g, color_n.b);
-        console.log(color_n.r, color_n.g, color_n.b);
       }
     }
-    console.log(frame);
     noisedFrames.push(frame);
   }
   return noisedFrames;

@@ -25,7 +25,7 @@ import {
 import { useEffect, useRef, useState, useCallback, forwardRef } from "react";
 import { PlayBar } from "./components/PlayBar";
 import { AnimationPallet } from "./components/Animations/AnimationPallet";
-import { useSaveAnimation, useExtractToGif } from "../sharedLib/Server/api";
+import { useSaveAnimation } from "../sharedLib/Server/api";
 import AnimationLibrary from "./components/animationLibrary/AnimationLibrary.js";
 import CreateOscillator from "./components/CreateOscillator";
 import Tunner2 from "../sharedLib/components/Tunner2";
@@ -34,12 +34,8 @@ import { ClearBtn } from "./components/ClearBtn";
 const dim = [36, 36];
 
 const Creator = forwardRef((props, ref) => {
-  const gif = props.gif;
-  const resetGif = props.resetGif;
-
   const setSelected = props.setSelected;
   setSelected("creator");
-
   const [selectedId, setSelectedId] = useState(-1);
 
   const { saveAnimation } = useSaveAnimation();
@@ -49,7 +45,6 @@ const Creator = forwardRef((props, ref) => {
 
   const resetAnimation = () => {
     setCurrentFrames([]);
-    setRenderedFrames([currentFrame]);
     setFrameIndex(0);
   };
 
@@ -123,14 +118,6 @@ const Creator = forwardRef((props, ref) => {
   const [currentFrame, setCurrentFrame] = useState(
     renderFrameToRGB(frameState, Math.max(0, frameIndex))
   );
-  // const [renderedFrames, setRenderedFrames] = useState([currentFrame]);
-  const [renderedFrames, setRenderedFrames] = useState([
-    currentFrames[frameIndex],
-  ]);
-
-  useEffect(() => {
-    setRenderedFrames(renderAllFramesRGB_(currentFrames));
-  }, [currentFrames]);
 
   const [undoData, setUndoData] = useState({
     historyLen: 20,
@@ -263,7 +250,8 @@ const Creator = forwardRef((props, ref) => {
     if (isPlay) {
       setFrameIndex(Math.max(1, screenRef.current));
     }
-    if (renderedFrames.length > 1 && !isPlay) {
+    // if (renderedFrames.length > 1 && !isPlay) {
+    if (currentFrames.length > 1 && !isPlay) {
       setIsPlay(true);
     } else if (isPlay) {
       setIsPlay(false);
@@ -280,10 +268,6 @@ const Creator = forwardRef((props, ref) => {
     setTimeout(function () {
       bodyRef.current.style.backgroundColor = "#637572";
     }, 50);
-    setRenderedFrames([
-      ...renderedFrames,
-      renderFrameToRGB(frameState, frameIndex),
-    ]);
   }
 
   const lastTouchTimeRef = useRef(0);
@@ -351,17 +335,17 @@ const Creator = forwardRef((props, ref) => {
 
   ref.current = handleSaveAnimation;
 
-  useEffect(() => {
-    if (gif > 0) {
-      handleGifExtraction();
-      resetGif();
-    }
-  }, [gif]);
+  // useEffect(() => {
+  //   if (gif > 0) {
+  //     handleGifExtraction();
+  //     resetGif();
+  //   }
+  // }, [gif]);
 
-  const extractToGif = useExtractToGif(email);
-  const handleGifExtraction = useCallback(async () => {
-    await extractToGif(renderedFrames, delay);
-  }, [extractToGif, renderedFrames, delay]);
+  // const extractToGif = useExtractToGif(email);
+  // const handleGifExtraction = useCallback(async () => {
+  //   await extractToGif(renderedFrames, delay);
+  // }, [extractToGif, renderedFrames, delay]);
 
   const [isGrid, setIsGrid] = useState(false);
 
@@ -438,7 +422,7 @@ const Creator = forwardRef((props, ref) => {
                   // frames={isPlay ? renderedFrames : [currentFrame]}
                   frames={
                     isPlay
-                      ? renderedFrames
+                      ? renderAllFramesRGB_(currentFrames)
                       : [renderFrameToRGB(frameState, Math.max(0, frameIndex))]
                   }
                   delay={isPlay ? delay : null}
@@ -459,7 +443,9 @@ const Creator = forwardRef((props, ref) => {
                   <PlayBar
                     delay={isPlay ? delay : null}
                     pausedFrameIndex={frameIndex}
-                    length={renderedFrames.length}
+                    // length={renderedFrames.length}
+                    length={currentFrames.length}
+                    currentFrames
                     updateFrameIndex={setFrameIndex}
                   />
                 </div>
