@@ -7,10 +7,9 @@ import { createDefaultFramesRendered } from "./frameOps/FrameOps";
 import Tunner from "../../sharedLib/components/Tunner";
 // import Tunner2 from "../../sharedLib/components/Tunner2";
 import { useAnimations } from "./animationData/AnimationContext";
+import { createDefaultFrameState } from "./../components/frameOps/FrameOps";
 
 import CircularSlider from "@fseehawer/react-circular-slider";
-
-import { positions, width } from "@mui/system";
 
 const Tunner2 = (props) => {
   const setValue = props.setValue;
@@ -208,6 +207,7 @@ export default function CreateOscillator(props) {
     renderInstanceFrames,
     renderOscillator,
     addInstancesOsc,
+    renderAllFramesRGB_,
   } = useAnimations();
 
   const createOscillatorOn = props.createOscillatorOn;
@@ -241,12 +241,26 @@ export default function CreateOscillator(props) {
   function handleOnDragEnd(result) {
     let index = result.destination.droppableId;
     let id = result.draggableId;
-    if (index == "osc11") {
-      setFrames1(renderInstanceFrames(id));
-      setData([Number(id), data[1]]);
-    } else if (index == "osc22") {
-      setFrames2(renderInstanceFrames(id));
-      setData([data[0], Number(id)]);
+    if (Number(id) < 6) {
+      if (index == "osc11") {
+        setFrames1(
+          renderAllFramesRGB_([createDefaultFrameState(36, 36, Number(id))])
+        );
+        setData([Number(id), data[1]]);
+      } else if (index == "osc22") {
+        setFrames2(
+          renderAllFramesRGB_([createDefaultFrameState(36, 36, Number(id))])
+        );
+        setData([data[0], Number(id)]);
+      }
+    } else {
+      if (index == "osc11") {
+        setFrames1(renderInstanceFrames(id));
+        setData([Number(id), data[1]]);
+      } else if (index == "osc22") {
+        setFrames2(renderInstanceFrames(id));
+        setData([data[0], Number(id)]);
+      }
     }
   }
   function reset() {
@@ -369,10 +383,37 @@ export default function CreateOscillator(props) {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
+                  {[0, 1, 2, 3, 4, 5].map((index) => (
+                    <div>
+                      <Draggable
+                        key={"motor" + index + 103000}
+                        draggableId={String(index)}
+                        index={index + 111}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            isDragging={snapshot.isDragging}
+                            {...provided.dragHandleProps}
+                            {...provided.draggableProps}
+                            ref={provided.innerRef}
+                          >
+                            <Screen
+                              ref={rrrr}
+                              onPixelClick={() => {}}
+                              screenSize={78}
+                              pausedFrameIndex={0}
+                              frames={renderAllFramesRGB_([
+                                createDefaultFrameState(36, 36, index),
+                              ])}
+                              delay={null}
+                              id={"2" + index + 1003}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    </div>
+                  ))}
                   {instances.map((k, index) => (
-                    // <Draggable key={k["id"]+4000} draggableId={k["id"]+333} index={index}>
-                    //   {(provided)=>(
-
                     <div>
                       <Draggable
                         key={"motor" + index + 103000}

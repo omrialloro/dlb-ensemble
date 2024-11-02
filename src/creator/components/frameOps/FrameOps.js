@@ -1,9 +1,9 @@
-function createDefaultFrameState(col_size, row_size) {
+function createDefaultFrameState(col_size, row_size, state) {
   let frame_color_state = [];
   for (let r = 0; r < row_size; r++) {
     let col = [];
     for (let c = 0; c < col_size; c++) {
-      col.push(0);
+      col.push(state);
     }
     frame_color_state.push(col);
   }

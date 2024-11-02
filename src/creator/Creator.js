@@ -117,7 +117,7 @@ const Creator = forwardRef((props, ref) => {
   const [frameState, setFrameState] = useState(
     currentFrames.length > 0
       ? currentFrames[currentFrames.length - 1]
-      : createDefaultFrameState(dim[0], dim[1])
+      : createDefaultFrameState(dim[0], dim[1], 0)
   );
 
   const [currentFrame, setCurrentFrame] = useState(
@@ -166,7 +166,8 @@ const Creator = forwardRef((props, ref) => {
   }
 
   const clearFrame = () => {
-    setFrameState(createDefaultFrameState(dim[0], dim[1]));
+    console.log("FFF");
+    setFrameState(createDefaultFrameState(dim[0], dim[1], 0));
   };
 
   // useEffect(() => {

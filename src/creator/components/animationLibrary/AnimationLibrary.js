@@ -233,7 +233,9 @@ export default function AnimationLibrary(props) {
 
   const [delay, setDelay] = useState(null);
 
-  const [rowFrames, setRowFrames] = useState([createDefaultFrameState(36, 36)]);
+  const [rowFrames, setRowFrames] = useState([
+    createDefaultFrameState(36, 36, 0),
+  ]);
 
   console.log(currentFrames);
 

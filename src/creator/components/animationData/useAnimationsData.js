@@ -182,6 +182,10 @@ export default function useAnimationsData(props) {
 
   const stateToColorState = useCallback(
     (state, pixel, frameIndex) => {
+      if (state < colorScheme.length) {
+        //handeling oscillator single color
+        return state;
+      }
       const instance = instances.filter(
         (x) => Number(x.id) === Number(state)
       )[0];
@@ -205,9 +209,11 @@ export default function useAnimationsData(props) {
       if (instances.length === 0) {
         return null;
       }
-      let rr = (x) => (x == -1 ? "" : x); //-5 very ufgy hack for color animation for oscilator
+      let rr = (x) => (x === -1 ? "" : x);
+      console.log([...instances, ...instancesOsc]);
 
-      let labelMap = (state) => instances.findIndex((e) => e.id == state);
+      let labelMap = (state) =>
+        [...instances, ...instancesOsc].findIndex((e) => e.id === state);
       let labelFrame = copyFrame(frame);
       let num_column = frame[0].length;
       let num_rows = frame.length;
@@ -219,7 +225,7 @@ export default function useAnimationsData(props) {
       }
       return labelFrame;
     },
-    [instances]
+    [instances, instancesOsc]
   );
 
   const oscillatorRGB_ = useCallback(
