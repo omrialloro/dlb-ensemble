@@ -13,6 +13,7 @@ import {
 import { Operators } from "../../../editor/views/Operators";
 import { TrimSlider } from "../../../editor/views/editor/trimSlider/TrimSlider";
 import { VerticalSlider } from "../../../sharedLib/components/VerticalSlider";
+
 import { useAnimations } from "../animationData/AnimationContext";
 
 import {
@@ -200,15 +201,17 @@ function prepareAnimation(frames, opState) {
 export default function AnimationLibrary(props) {
   const oooo = useRef();
   const rr = useRef();
-  const { setBrowserOn, browserdOn, instanceId } = props;
+  const { setBrowserOn, browserdOn, instanceId, flag } = props;
   const {
     addInstance_,
+    addInstanceEditor,
     addAnimation_,
     renderAllFramesRGB_,
     currentFrames,
     animations,
     getInstanceById,
     updateInstance,
+    updateInstanceEditor,
     renderInstanceFrames,
     removeInstance_,
     isContainingOscillators,
@@ -218,7 +221,7 @@ export default function AnimationLibrary(props) {
     reverse: 0,
     reflect: 0,
     rotate: 0,
-    scheme: -1,
+    scheme: 0,
     offset: 0,
     range: [0, 1],
   });
@@ -236,8 +239,6 @@ export default function AnimationLibrary(props) {
   const [rowFrames, setRowFrames] = useState([
     createDefaultFrameState(36, 36, 0),
   ]);
-
-  console.log(currentFrames);
 
   useEffect(() => {
     if (instanceId === -1) {
@@ -278,26 +279,45 @@ export default function AnimationLibrary(props) {
     }
     setAnimationId(animation_id);
     addAnimation_(animation_id, rowFrames);
-
-    addInstance_({
-      id: instance_id,
-      animationId: animation_id,
-      opState: opState,
-    });
+    if (flag === "creator") {
+      addInstance_({
+        id: instance_id,
+        animationId: animation_id,
+        opState: { ...opState },
+      });
+    } else if (flag === "editor") {
+      addInstanceEditor({
+        id: instance_id,
+        animationId: animation_id,
+        opState: { ...opState },
+      });
+    }
   }
 
   function onUpdateInstance() {
-    if (instanceId === -1) {
-      return;
-    }
+    if (flag === "creator") {
+      if (instanceId === -1) {
+        return;
+      }
 
-    updateInstance(instanceId, {
-      id: instanceId,
-      animationId: animationId,
-      opState: { ...opState },
-    });
-    if (!animations.hasOwnProperty(animationId)) {
-      addAnimation_(animationId, rowFrames);
+      updateInstance(instanceId, {
+        id: instanceId,
+        animationId: animationId,
+        opState: { ...opState },
+      });
+      if (!animations.hasOwnProperty(animationId)) {
+        addAnimation_(animationId, rowFrames);
+      }
+    } else if (flag === "editor") {
+      console.log(instanceId);
+      console.log(animationId);
+      console.log(opState);
+
+      updateInstanceEditor(instanceId, {
+        id: instanceId,
+        animationId: animationId,
+        opState: { ...opState },
+      });
     }
   }
 
@@ -312,6 +332,7 @@ export default function AnimationLibrary(props) {
   function setInstance(instanceId) {
     const inst = getInstanceById(instanceId);
     setOpState(inst.opState);
+    setAnimationId(inst.animationId);
     setEditedFrames(renderInstanceFrames(instanceId));
     setRowFrames(animations[inst.animationId]);
   }
