@@ -309,10 +309,6 @@ export default function AnimationLibrary(props) {
         addAnimation_(animationId, rowFrames);
       }
     } else if (flag === "editor") {
-      console.log(instanceId);
-      console.log(animationId);
-      console.log(opState);
-
       updateInstanceEditor(instanceId, {
         id: instanceId,
         animationId: animationId,
@@ -331,7 +327,7 @@ export default function AnimationLibrary(props) {
 
   function setInstance(instanceId) {
     const inst = getInstanceById(instanceId);
-    setOpState(inst.opState);
+    setOpState({ ...inst.opState });
     setAnimationId(inst.animationId);
     setEditedFrames(renderInstanceFrames(instanceId));
     setRowFrames(animations[inst.animationId]);

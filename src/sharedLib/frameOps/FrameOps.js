@@ -12,6 +12,25 @@ function createDefaultFrameState(col_size, row_size) {
   return frame_color_state;
 }
 
+function MakeGrayFrame(col_size, row_size, alpha) {
+  return Array(col_size)
+    .fill(0)
+    .map(() =>
+      Array(row_size)
+        .fill(0)
+        .map(() => {
+          return grayRGB(alpha);
+        })
+    );
+}
+
+function createGrayFrames(col_size, row_size, num_frames_) {
+  let alpha = 1 / num_frames_;
+  return Array.from(Array(num_frames_).keys()).map((t) =>
+    MakeGrayFrame(col_size, row_size, 1 - alpha * t)
+  );
+}
+
 function createConstFrameState(col_size, row_size, state) {
   let frame_color_state = [];
   for (let r = 0; r < row_size; r++) {
@@ -177,6 +196,12 @@ function rgbToH(r, g, b) {
   return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
+function grayRGB(alpha) {
+  const max = 255;
+  let x = Math.round(255 * alpha);
+  return rgbToH(x, x, x);
+}
+
 function normalizeRGB(color) {
   const normal = (x) => Math.max(0, Math.min(255, Math.round(x)));
   const r = normal(color.r);
@@ -250,6 +275,7 @@ function addNoise(frames, noiseConfig) {
 
 export {
   createDefaultFrameState,
+  createGrayFrames,
   copyFrame,
   renderFrame,
   renderAllFrames,

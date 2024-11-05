@@ -3,7 +3,7 @@ import "./base.css";
 
 import { Pallet } from "./components/colors/Pallet";
 import { getSchemes, Scheme } from "../sharedLib/schemes/Schemes";
-import { useAnimations } from "./components/animationData/AnimationContext";
+import { useAnimations } from "./components/animationData/AnimationContext.js";
 
 import { Shapes } from "./components/shapes/Shapes";
 import { coloring_shape, coloring_rectangle } from "./components/shapes/ops";
@@ -65,10 +65,12 @@ const Creator = forwardRef((props, ref) => {
     getInstanceOscById,
     stateToLAbels,
     isSessionLoaded,
+    // setSchemeKey,
   } = useAnimations();
 
   useEffect(() => {
     setColorScheme(colors);
+    // setSchemeKey(coloringState.scheme);
   }, []);
 
   useEffect(() => {
@@ -83,6 +85,7 @@ const Creator = forwardRef((props, ref) => {
   useEffect(() => {
     setColors(getSchemes()[coloringState.scheme]);
     setColorScheme(getSchemes()[coloringState.scheme]);
+    // setSchemeKey(coloringState.scheme);
   }, [coloringState]);
 
   const setColor = (color) => {
@@ -156,13 +159,6 @@ const Creator = forwardRef((props, ref) => {
     console.log("FFF");
     setFrameState(createDefaultFrameState(dim[0], dim[1], 0));
   };
-
-  // useEffect(() => {
-  //   if (frames.length > 0) {
-  //     let m = Math.max(frameIndex - 1, 0);
-  //     setFrameState(frames[m]);
-  //   }
-  // }, [isPlay, frameIndex]);
 
   useEffect(() => {
     if (currentFrames.length > 0) {
@@ -366,6 +362,7 @@ const Creator = forwardRef((props, ref) => {
         <body ref={bodyRef}>
           {browserdOn ? (
             <AnimationLibrary
+              flag={"creator"}
               username={email}
               browserdOn={browserdOn}
               setBrowserOn={setBrowserOn}

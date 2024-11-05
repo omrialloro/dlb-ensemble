@@ -6,6 +6,7 @@ import ColorThemeBtn from "./../components/ColorThemeBtn";
 
 import { Rotate, Reflect, Reverse } from "../components/OperatorsBtns";
 import { Scheme, getSchemes } from "../../sharedLib/schemes/Schemes";
+// import { ColorThemeBtn } from "../../../sharedLib/FancyButtons/ThemeBtn";
 
 import styled from "styled-components";
 

@@ -85,6 +85,8 @@ export default function useAnimationsData(props) {
 
   const [animations, setAnimations] = useState({});
   const [instances, setInstances] = useState([]);
+  const [instancesEditor, setInstancesEditor] = useState([]);
+
   const [instancesOsc, setInstancesOsc] = useState([]);
   const [colorScheme, setColorScheme] = useState(props.colorScheme);
 
@@ -96,9 +98,14 @@ export default function useAnimationsData(props) {
 
   const getInstanceById = useCallback(
     (instanceId) => {
-      return instances.find((x) => x.id === instanceId);
+      let el = instances.find((x) => x.id === instanceId);
+      if (el === undefined) {
+        el = instancesEditor.find((x) => x.id === instanceId);
+      }
+      // return instances.find((x) => x.id === instanceId);
+      return el;
     },
-    [instances]
+    [instances, instancesEditor]
   );
 
   const getInstanceOscById = useCallback(
@@ -108,8 +115,19 @@ export default function useAnimationsData(props) {
     [instancesOsc]
   );
 
+  const getInstanceEditorById = useCallback(
+    (id) => {
+      return instancesEditor.find((x) => x.id === id);
+    },
+    [instancesEditor]
+  );
+
   const addInstance_ = (newInstance) => {
     setInstances((prevInstance) => [...prevInstance, newInstance]);
+  };
+
+  const addInstanceEditor = (newInstance) => {
+    setInstancesEditor((prevInstance) => [...prevInstance, newInstance]);
   };
 
   useEffect(() => {
@@ -145,6 +163,17 @@ export default function useAnimationsData(props) {
     },
     [instances]
   );
+
+  const updateInstanceEditor = useCallback(
+    (instanceId, updatedInstance) => {
+      const updatedInstancesArr = instancesEditor.map((item) =>
+        item.id === instanceId ? updatedInstance : item
+      );
+      setInstancesEditor(updatedInstancesArr);
+    },
+    [instancesEditor]
+  );
+
   const removeAnimation_ = useCallback(
     (id) => {
       setAnimations((prevState) => {
@@ -158,7 +187,7 @@ export default function useAnimationsData(props) {
   const removeIfNeeded = useCallback(
     (animatoion_id, updatedInstances) => {
       for (let i = 0; i < updatedInstances.length; i++) {
-        if (updatedInstances.animationId === animatoion_id) {
+        if (updatedInstances[i].animationId === animatoion_id) {
           return;
         }
       }
@@ -174,10 +203,40 @@ export default function useAnimationsData(props) {
       const updateInstances = instances.filter(
         (item) => item.id !== instanceId
       );
-      removeIfNeeded(animation_id, updateInstances);
+
+      removeIfNeeded(animation_id, [...updateInstances, ...instancesEditor]);
       setInstances(updateInstances);
     },
-    [instances, setInstances, getInstanceById, removeIfNeeded]
+    [instances, instancesEditor, setInstances, getInstanceById, removeIfNeeded]
+  );
+
+  const removeInstanceEditor = useCallback(
+    (instanceId) => {
+      const inst = instancesEditor.find((x) => x.id === instanceId);
+      const animation_id = inst.animationId;
+      const updateInstancesEditor = instancesEditor.filter(
+        (item) => item.id !== instanceId
+      );
+      removeIfNeeded(animation_id, [...updateInstancesEditor, ...instances]);
+
+      // removeIfNeeded(animation_id, updateInstancesEditor);
+      setInstancesEditor(updateInstancesEditor);
+    },
+    [instancesEditor, instances, removeIfNeeded]
+  );
+
+  const duplicateInstanceEditor = useCallback(
+    (instanceId) => {
+      const el = instancesEditor.find((x) => x.id === instanceId);
+      const index = instancesEditor.findIndex((el) => el["id"] === instanceId);
+
+      let new_id = Date.now().toString();
+      const instancesEditor_ = [...instancesEditor];
+      instancesEditor_.splice(index, 0, { ...el, id: new_id });
+      setInstancesEditor(instancesEditor_);
+    },
+
+    [instancesEditor]
   );
 
   const stateToColorState = useCallback(
@@ -210,7 +269,6 @@ export default function useAnimationsData(props) {
         return null;
       }
       let rr = (x) => (x === -1 ? "" : x);
-      console.log([...instances, ...instancesOsc]);
 
       let labelMap = (state) =>
         [...instances, ...instancesOsc].findIndex((e) => e.id === state);
@@ -326,7 +384,10 @@ export default function useAnimationsData(props) {
 
   const renderInstanceFrames = useCallback(
     (instanceId) => {
-      const el = instances.find((el) => el.id === instanceId);
+      let el = instances.find((el) => el.id === instanceId);
+      if (el === undefined) {
+        el = instancesEditor.find((el) => el.id === instanceId);
+      }
       const animationId = el.animationId;
       const opState = el.opState;
       const frames = animations[animationId];
@@ -343,7 +404,7 @@ export default function useAnimationsData(props) {
       }
       return renderedFrames;
     },
-    [instances, animations, renderFrameToRGB]
+    [instances, instancesEditor, animations, renderFrameToRGB]
   );
 
   const renderFrameToStates = useCallback(
@@ -353,16 +414,16 @@ export default function useAnimationsData(props) {
     [renderFrame]
   );
 
-  const renderAllFrames_ = useCallback(
-    (frames) => {
-      let renderedFrames = [];
-      for (let i = 0; i < frames.length; i++) {
-        renderedFrames.push(renderFrame(frames[i], i));
-      }
-      return renderedFrames;
-    },
-    [renderFrame]
-  );
+  // const renderAllFrames_ = useCallback(
+  //   (frames) => {
+  //     let renderedFrames = [];
+  //     for (let i = 0; i < frames.length; i++) {
+  //       renderedFrames.push(renderFrame(frames[i], i));
+  //     }
+  //     return renderedFrames;
+  //   },
+  //   [renderFrame]
+  // );
 
   const renderAllFramesRGB_ = useCallback(
     (frames) => {
@@ -501,33 +562,36 @@ export default function useAnimationsData(props) {
     }
   }, [isStoredLoaded]);
 
-  useEffect(() => {
-    console.log(instancesOsc);
-  }, [instancesOsc]);
-
   return {
     removeAnimation_,
     isContainingOscillators,
     addInstance_,
+    addInstanceEditor,
     addAnimation_,
     renderAllFramesRGB_,
-    renderAllFrames_,
+    // renderAllFrames_,
     renderFrameToStates,
     renderFrameToRGB,
     setColorScheme,
     renderInstanceFrames,
     renderOscillatorInstance,
     renderAllFramesToStates,
+    removeInstanceEditor,
     getInstanceOscById,
+    getInstanceEditorById,
     renderOscillator,
     setCurrentFrames,
     getInstanceById,
     updateInstance,
+    updateInstanceEditor,
+    duplicateInstanceEditor,
     removeInstance_,
     stateToLAbels,
     addInstancesOsc,
     isSessionLoaded,
     instancesOsc,
+    setInstancesEditor,
+    instancesEditor,
     currentFrames,
     animations,
     instances,

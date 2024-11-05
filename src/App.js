@@ -86,7 +86,10 @@ function App() {
     );
 
   return (
-    <AnimationsProvider colorScheme={[...getSchemes()["omri"]]}>
+    <AnimationsProvider
+      schemeKey={"omri"}
+      colorScheme={[...getSchemes()["omri"]]}
+    >
       <>
         <BrowserRouter>
           <div style={{ display: "flex" }}>

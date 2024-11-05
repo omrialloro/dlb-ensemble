@@ -16,7 +16,7 @@ const StyledLi = styled.div`
 
 export const Header = (props) => {
   const { isAuthenticated, logout } = useContext(AuthContext);
-  const { browse, save, gif, selected } = props;
+  const { save, selected } = props;
 
   return (
     <header>
@@ -180,9 +180,7 @@ export const Header = (props) => {
 
             fontWeight: "bold",
           }}
-        >
-          <div onClick={gif}>GIF</div>
-        </StyledLi>
+        ></StyledLi>
       </ul>
     </header>
   );

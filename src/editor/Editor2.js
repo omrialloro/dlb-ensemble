@@ -6,7 +6,6 @@ import React, {
   useCallback,
 } from "react";
 import "./components/App.css";
-// import "./components/base.css";
 import "./components/fonts.css";
 
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
@@ -16,7 +15,6 @@ import { nestedCopy } from "./components/Utils";
 import { grayRGB } from "./components/RGB";
 import BrowseAnimations from "./components/BrowseAnimations";
 import { Preview } from "./views/preview/Preview";
-import { FullScreen } from "./views/fullScreen/FullScreen.js";
 import { FancyScreen } from "../sharedLib/Screen/Display";
 
 import { Editor } from "./views/editor/Editor";
@@ -33,7 +31,6 @@ import { useSaveAnimation, useExtractToGif } from "../sharedLib/Server/api";
 import { AuthContext } from "../login/authContext";
 import { serverUrl } from "../settings";
 import { WaveformTunner, LoadMusicBts } from "./components/WaveformTunner.js";
-// import { Rotate, Reflect } from "./components/OperatorsBtns";
 
 let schemes_array = Object.values(getSchemes());
 
@@ -59,8 +56,6 @@ const StyledSmall = styled.div`
 
 function Editor2(props) {
   const setSelected = props.setSelected;
-  const gif = props.gif;
-  const resetGif = props.resetGif;
   setSelected("editor");
   const {
     auth: {
@@ -75,7 +70,7 @@ function Editor2(props) {
   } = useContext(AuthContext);
 
   const { saveAnimation } = useSaveAnimation();
-  const [fullScreenState, setFullScreenState] = useState(false);
+  const [fullScreenState, setFullScreenState] = useState(true);
 
   let num_frames = 50;
   let dim = [36, 36];
@@ -185,7 +180,6 @@ function Editor2(props) {
       info["dim"] = mainScreen["dim"];
       info["range"] = mainScreen["range"];
       info["operators"] = nestedCopy(mainScreen["operators"]);
-      console.log(DATA);
 
       if (result.destination.index >= -1) {
         items.splice(result.destination.index + 1, 0, info);
@@ -267,11 +261,6 @@ function Editor2(props) {
   let FPS = 24;
   const [delay, setDelay] = useState(Math.round(1000 / FPS));
   const [isPlay, setIsPlay] = useState(false);
-
-  // useEffect(() => {
-  //   console.log(delay);
-  //   // setDelay(Math.round(1000 / FPS));
-  // }, [delay]);
 
   const [DATA, setDATA] = useState([
     {
@@ -409,13 +398,6 @@ function Editor2(props) {
   }, [extractToGif, proccesedFrames, delay, pixelConfig]);
 
   useEffect(() => {
-    if (gif > 0) {
-      handleMakeGif();
-      resetGif();
-    }
-  }, [gif]);
-
-  useEffect(() => {
     var tt = sessionStorage.getItem("editData");
     let editData_ = JSON.parse(tt);
     console.log(editData_);
@@ -441,16 +423,8 @@ function Editor2(props) {
 
   return (
     <SelectedIdProvider>
-      {/* <div className="logo-creater" style={{ top: "10px", left: "1px " }}>
-        <img src="logo_block.png" />
-      </div> */}
       <div className="bodyInner">
         {fullScreenState ? (
-          // <FullScreen
-          //   frames={proccesedFrames}
-          //   delay={isPlay ? delay : null}
-          //   toggleFullScreen={setFullScreenState}
-          // />
           <FancyScreen
             size={[36, 36]}
             setScreenRatio={setScreenRatio}
@@ -459,12 +433,14 @@ function Editor2(props) {
             frames={proccesedFrames}
             setNoiseConfig={setNoiseConfig}
             delay={delay}
+            clickGif={handleMakeGif}
             setDelay={setDelay}
             exitScreen={() => {
               setFullScreenState(false);
             }}
           />
         ) : (
+          // <></>
           <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable droppableId="droppable" direction="horizontal">
               {(provided) => {
@@ -474,7 +450,7 @@ function Editor2(props) {
                       <div className="inner_container_left">
                         <div className="container_monitor">
                           <div className="monitor">
-                            <StyledBox>
+                            {/* <StyledBox>
                               {[...Array(49).keys()].map((k, index) => (
                                 <Draggable
                                   key={"monitor" + k + 100000}
@@ -492,7 +468,7 @@ function Editor2(props) {
                                 </Draggable>
                               ))}
                               {provided.placeholder}
-                            </StyledBox>
+                            </StyledBox> */}
 
                             <Editor
                               frames={frammmes}

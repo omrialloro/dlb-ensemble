@@ -56,8 +56,8 @@ const ButtonText = styled.span`
   /* Any specific styles for the text can go here */
 `;
 
-const MyButton = () => (
-  <Button40 role="button">
+const MyButton = (props) => (
+  <Button40 onClick={props.onClick} role="button">
     <ButtonText>Button 40</ButtonText>
   </Button40>
 );

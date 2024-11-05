@@ -5,6 +5,13 @@ import DimensionsForm from "./DimensionsForm";
 // import { Slider } from "./../components/Slider";
 import { minHeight } from "@mui/system";
 import MyButton from "../FancyButtons/FancyButtons";
+import AnimationLibrary from "./../../creator/components/animationLibrary/AnimationLibrary.js";
+import { ScrollMenu } from "react-horizontal-scrolling-menu";
+import { SmallScreen } from "./../../editor/views/smallScreen/SmallScreen";
+import { useAnimations } from "../../creator/components/animationData/AnimationContext.js";
+import { createGrayFrames } from "./../frameOps/FrameOps";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 const StyledBox = styled.div`
   display: flex;
   height: 80px;
@@ -228,7 +235,6 @@ function RGBFrame(frame) {
   for (let c = 0; c < num_column; c++) {
     let col = [];
     for (let r = 0; r < num_rows; r++) {
-      // let rgb = hexToRgb(frame[c][r]);
       col.push(hexToRgb(frame[c][r]));
     }
     rgb_frame.push(col);
@@ -277,12 +283,30 @@ const Tunner = (props) => {
 };
 
 const FancyScreen = (props) => {
+  const {
+    renderInstanceFrames,
+    instancesEditor,
+    removeInstanceEditor,
+    duplicateInstanceEditor,
+    setInstancesEditor,
+    // renderInstanceFramesScheme,
+  } = useAnimations();
+
+  function selectScreen(id) {
+    // setMainScreen(DATA.find((x) => x["id"] == id));
+    console.log("FFS");
+  }
+  useEffect(() => {
+    console.log(instancesEditor);
+  }, [instancesEditor]);
+
   let animationId = useRef(null);
   const delay = props.delay;
   const pixelConfig = props.pixelConfig;
   const setPixelConfig = props.setPixelConfig;
   const setScreenRatio = props.setScreenRatio;
   const setNoiseConfig = props.setNoiseConfig;
+  const clickGif = props.clickGif;
 
   const timeRef = useRef(null);
 
@@ -294,7 +318,10 @@ const FancyScreen = (props) => {
 
   const size = props.size;
   const frames = props.frames;
-  const framesRGB = RGBFrames(frames);
+  const [editedFrames, setEditedFrames] = useState(
+    createGrayFrames(36, 36, 40)
+  );
+
   const exitScreen = props.exitScreen;
   const canvasRef = useRef(null);
   const canvasPixelRef = useRef(null);
@@ -332,14 +359,9 @@ const FancyScreen = (props) => {
   const pixelSizeX = dims.width / size[0];
   const pixelSizeY = dims.height / size[1];
 
-  const AA = framesRGB;
+  // const AA = framesRGB;
 
   const [FPS, setFPS] = useState(Math.round(1000 / delay));
-
-  useEffect(() => {
-    console.log(delay);
-    console.log(FPS);
-  }, [delay]);
 
   const [defaultW, setDefaultW] = useState(160);
   const [defaultH, setDefaultH] = useState(160);
@@ -354,7 +376,7 @@ const FancyScreen = (props) => {
 
   const [step, setStep] = useState(60 / FPS);
 
-  const duration = (AA.length * step) / 60;
+  const duration = (editedFrames.length * step) / 60;
 
   function drawPixel(point, color, ctx) {
     ctx.fillStyle = color;
@@ -378,10 +400,6 @@ const FancyScreen = (props) => {
 
   function drawPixelWithGradient(point, color, ctx, colorr, op) {
     ctx.fillStyle = color;
-    // if (Math.random() < noiseLevel3) {
-    //   let rr = 100 + 150 * Math.random();
-    //   ctx.fillStyle = `rgba(${rr},${rr},${rr},${0.5})`;
-    // }
 
     const gradient = ctx.createRadialGradient(
       point[0] + pixelSizeX / 2,
@@ -515,12 +533,25 @@ const FancyScreen = (props) => {
     });
   }, [noiseLevel1, noiseLevel2, noiseLevel3, filter]);
 
-  // const [n1, setN1] = useState(41);
+  function prepareOutScreenData() {
+    let outFrames = [];
 
-  // function resetNoiseTune() {
-  //   setN1(33);
-  //   setN1(1);
-  // }
+    instancesEditor.forEach((element) => {
+      console.log(element["opState"]["scheme"]);
+      outFrames = outFrames.concat(
+        // renderInstanceFramesScheme(element["id"], element["opState"]["scheme"])
+        renderInstanceFrames(element["id"])
+      );
+    });
+    return RGBFrames(outFrames);
+  }
+
+  useEffect(() => {
+    const outFrames = prepareOutScreenData();
+    if (outFrames.length > 0) {
+      setEditedFrames(outFrames);
+    }
+  }, [instancesEditor]);
 
   function getAlpha(level) {
     return level * 150 * (0.8 - Math.random());
@@ -590,7 +621,7 @@ const FancyScreen = (props) => {
         }
       }
 
-      if (frame_index > AA.length - 1) {
+      if (frame_index > editedFrames.length - 1) {
         index = 0;
         frame_index = 0;
       }
@@ -599,7 +630,8 @@ const FancyScreen = (props) => {
       })`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      let A = AA[frame_index];
+      let A = editedFrames[frame_index];
+      // console.log(A);
       // const alpha = getAlpha(noiseLevel1);
       const beta = getBeta(noiseLevel2);
       let ooo = 15 + 5 * Math.random();
@@ -660,10 +692,41 @@ const FancyScreen = (props) => {
     noiseLevel3,
     filter,
     dims,
+    editedFrames,
   ]);
+
+  const [browserdOn, setBrowserOn] = useState(true);
+  // let browserdOn = true;
+
+  const [selectedId, setSelectedId] = useState(-1);
+
+  function editInstance(id) {
+    setSelectedId(id);
+    setBrowserOn(true);
+  }
+
+  function handleOnDragEnd(result) {
+    const items = Array.from(instancesEditor);
+    console.log(result.source.index);
+
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setInstancesEditor(items);
+    // setDATA(items);
+  }
 
   return (
     <div>
+      {browserdOn ? (
+        <AnimationLibrary
+          flag={"editor"}
+          username={"email"}
+          browserdOn={browserdOn}
+          setBrowserOn={setBrowserOn}
+          instanceId={selectedId}
+          animationId={-1}
+        />
+      ) : null}
       <div style={{ display: "flex" }}>
         <div>
           <DimensionsForm dimensions={dims} setDimensions={setDim_} />
@@ -861,7 +924,7 @@ const FancyScreen = (props) => {
               }}
               knobSize={20}
             />
-            <StyledGif>Gif</StyledGif>
+            <StyledGif onClick={clickGif}>Gif</StyledGif>
           </StyleTimeControl>
 
           <StyledBox onClick={togglePlay}>
@@ -873,7 +936,6 @@ const FancyScreen = (props) => {
           </StyledBox>
         </div>
         <canvas
-          // onClick={exitScreen}
           ref={canvasRef}
           width={dims.width}
           height={dims.height}
@@ -885,7 +947,51 @@ const FancyScreen = (props) => {
           BACK TO EDITOR
         </StyledBackToEditor>
       </div>
-      <MyButton />
+      <MyButton
+        onClick={() => {
+          setBrowserOn(true);
+        }}
+      />
+
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="droppable" direction="horizontal">
+          {(provided) => {
+            return (
+              <ScrollMenu>
+                <div
+                  className="order"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {instancesEditor.map((k, index) => (
+                    <Draggable
+                      key={k["id"] + 1000}
+                      draggableId={k["id"]}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <SmallScreen
+                          provided={provided}
+                          id={k["id"]}
+                          frames={renderInstanceFrames(k["id"])}
+                          selectScreen={() => editInstance(k["id"])}
+                          handleDelete={() => removeInstanceEditor(k["id"])}
+                          handleDuplicate={() =>
+                            duplicateInstanceEditor(k["id"])
+                          }
+                        />
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              </ScrollMenu>
+            );
+          }}
+        </Droppable>
+      </DragDropContext>
+
+      {/* <MyButton /> */}
     </div>
   );
 };
