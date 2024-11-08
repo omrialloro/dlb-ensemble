@@ -325,16 +325,50 @@ export default function useAnimationsData(props) {
     },
     [oscillatorRGB_, getInstanceOscById]
   );
+
+  // const renderFrame = useCallback(
+  //   (frame, frameIndex, toRGB) => {
+  //     const renderedFrame = [];
+  //     for (let c = 0; c < DEFAULTS_FRAME_SETTINGS.COL; c++) {
+  //       const col = [];
+  //       for (let r = 0; r < DEFAULTS_FRAME_SETTINGS.ROW; r++) {
+  //         const state = frame[r][c];
+  //         if (state < colorScheme.length) {
+  //           if (toRGB) {
+  //             col.push(colorScheme[state]);
+  //           } else {
+  //             col.push(state);
+  //           }
+  //         } else {
+  //           if (undefined !== getInstanceOscById(state)) {
+  //             col.push(oscillatorRGB(state, [r, c], frameIndex));
+  //           } else {
+  //             const color_state = stateToColorState(state, [r, c], frameIndex);
+  //             if (toRGB) {
+  //               col.push(colorScheme[color_state]);
+  //             } else {
+  //               col.push(color_state);
+  //             }
+  //           }
+  //         }
+  //       }
+  //       renderedFrame.push(col);
+  //     }
+  //     return renderedFrame;
+  //   },
+  //   [oscillatorRGB, getInstanceOscById, colorScheme, stateToColorState]
+  // );
+
   const renderFrame = useCallback(
-    (frame, frameIndex, toRGB) => {
+    (frame, frameIndex, color_scheme) => {
       const renderedFrame = [];
       for (let c = 0; c < DEFAULTS_FRAME_SETTINGS.COL; c++) {
         const col = [];
         for (let r = 0; r < DEFAULTS_FRAME_SETTINGS.ROW; r++) {
           const state = frame[r][c];
           if (state < colorScheme.length) {
-            if (toRGB) {
-              col.push(colorScheme[state]);
+            if (color_scheme !== -1) {
+              col.push(color_scheme[state]);
             } else {
               col.push(state);
             }
@@ -343,8 +377,8 @@ export default function useAnimationsData(props) {
               col.push(oscillatorRGB(state, [r, c], frameIndex));
             } else {
               const color_state = stateToColorState(state, [r, c], frameIndex);
-              if (toRGB) {
-                col.push(colorScheme[color_state]);
+              if (color_scheme != -1) {
+                col.push(color_scheme[color_state]);
               } else {
                 col.push(color_state);
               }
@@ -357,11 +391,19 @@ export default function useAnimationsData(props) {
     },
     [oscillatorRGB, getInstanceOscById, colorScheme, stateToColorState]
   );
-  const renderFrameToRGB = useCallback(
-    (frame, frameIndex) => {
-      return renderFrame(frame, frameIndex, true);
+
+  const renderFrameToRGBScheme = useCallback(
+    (frame, frameIndex, color_scheme) => {
+      return renderFrame(frame, frameIndex, color_scheme);
     },
     [renderFrame]
+  );
+
+  const renderFrameToRGB = useCallback(
+    (frame, frameIndex) => {
+      return renderFrame(frame, frameIndex, colorScheme);
+    },
+    [renderFrame, colorScheme]
   );
   const animationsServer = useAnimationFromServer();
 
@@ -406,24 +448,71 @@ export default function useAnimationsData(props) {
     },
     [instances, instancesEditor, animations, renderFrameToRGB]
   );
-
-  const renderFrameToStates = useCallback(
-    (frame, frameIndex) => {
-      return renderFrame(frame, frameIndex, false);
+  const renderInstanceFramesScheme = useCallback(
+    (instanceId, color_scheme) => {
+      let el = instances.find((el) => el.id === instanceId);
+      if (el === undefined) {
+        el = instancesEditor.find((el) => el.id === instanceId);
+      }
+      const animationId = el.animationId;
+      const opState = el.opState;
+      const frames = animations[animationId];
+      const range = opState.range;
+      const animationLen = frames.length;
+      const len = range[1] - range[0];
+      const renderedFrames = Array(len);
+      for (let i = 0; i < len; i++) {
+        const T_index = transformFrameIndex(opState, animationLen, i);
+        renderedFrames[i] = renderFrameToRGBScheme(
+          transformFrame(frames[T_index], opState),
+          i,
+          color_scheme
+        );
+      }
+      return renderedFrames;
     },
-    [renderFrame]
+    [instances, instancesEditor, animations, renderFrameToRGBScheme]
   );
 
-  // const renderAllFrames_ = useCallback(
-  //   (frames) => {
-  //     let renderedFrames = [];
-  //     for (let i = 0; i < frames.length; i++) {
-  //       renderedFrames.push(renderFrame(frames[i], i));
+  // const renderInstanceFrames = useCallback(
+  //   (instanceId) => {
+  //     let el = instances.find((el) => el.id === instanceId);
+  //     if (el === undefined) {
+  //       el = instancesEditor.find((el) => el.id === instanceId);
+  //     }
+  //     const animationId = el.animationId;
+  //     const opState = el.opState;
+  //     const frames = animations[animationId];
+  //     const range = opState.range;
+  //     const animationLen = frames.length;
+  //     const len = range[1] - range[0];
+  //     const renderedFrames = Array(len);
+  //     for (let i = 0; i < len; i++) {
+  //       const T_index = transformFrameIndex(opState, animationLen, i);
+  //       renderedFrames[i] = renderFrameToRGB(
+  //         transformFrame(frames[T_index], opState),
+  //         i,
+  //         colorScheme
+  //       );
   //     }
   //     return renderedFrames;
   //   },
+  //   [instances, colorScheme, instancesEditor, animations, renderFrameToRGB]
+  // );
+
+  // const renderFrameToStates = useCallback(
+  //   (frame, frameIndex) => {
+  //     return renderFrame(frame, frameIndex, false);
+  //   },
   //   [renderFrame]
   // );
+
+  const renderFrameToStates = useCallback(
+    (frame, frameIndex) => {
+      return renderFrame(frame, frameIndex, -1);
+    },
+    [renderFrame]
+  );
 
   const renderAllFramesRGB_ = useCallback(
     (frames) => {
@@ -435,6 +524,30 @@ export default function useAnimationsData(props) {
     },
     [renderFrameToRGB]
   );
+
+  const renderAllFramesRGBScheme = useCallback(
+    (frames, color_scheme) => {
+      let renderedFrames = [];
+      for (let i = 0; i < frames.length; i++) {
+        renderedFrames.push(renderFrameToRGBScheme(frames[i], i, color_scheme));
+      }
+      return renderedFrames;
+    },
+    [renderFrameToRGB]
+  );
+
+  // const renderAllFramesRGB_ = useCallback(
+  //   (frames) => {
+  //     let renderedFrames = [];
+  //     console.log(colorScheme);
+  //     for (let i = 0; i < frames.length; i++) {
+  //       renderedFrames.push(renderFrameToRGB(frames[i], i, colorScheme));
+  //     }
+  //     return renderedFrames;
+  //   },
+  //   [renderFrameToRGB, colorScheme]
+  // );
+
   const renderAllFramesToStates = useCallback(
     (frames) => {
       let renderedFrames = [];
@@ -565,11 +678,12 @@ export default function useAnimationsData(props) {
   return {
     removeAnimation_,
     isContainingOscillators,
+    renderInstanceFramesScheme,
     addInstance_,
     addInstanceEditor,
     addAnimation_,
     renderAllFramesRGB_,
-    // renderAllFrames_,
+    renderAllFramesRGBScheme,
     renderFrameToStates,
     renderFrameToRGB,
     setColorScheme,

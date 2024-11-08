@@ -13,6 +13,7 @@ import {
 import { Operators } from "../../../editor/views/Operators";
 import { TrimSlider } from "../../../editor/views/editor/trimSlider/TrimSlider";
 import { VerticalSlider } from "../../../sharedLib/components/VerticalSlider";
+import { getSchemes } from "../../../sharedLib/schemes/Schemes";
 
 import { useAnimations } from "../animationData/AnimationContext";
 
@@ -176,6 +177,8 @@ const StyledBtn3 = styled.div`
   border-radius: 6%;
 `;
 
+const scheme_array = Object.values(getSchemes());
+
 function prepareAnimation(frames, opState) {
   let raw_frames = nestedCopy(frames);
 
@@ -215,6 +218,7 @@ export default function AnimationLibrary(props) {
     renderInstanceFrames,
     removeInstance_,
     isContainingOscillators,
+    renderAllFramesRGBScheme,
   } = useAnimations();
 
   const [opState, setOpState] = useState({
@@ -225,6 +229,10 @@ export default function AnimationLibrary(props) {
     offset: 0,
     range: [0, 1],
   });
+
+  useEffect(() => {
+    console.log(opState);
+  }, [opState]);
 
   const [editedFrames, setEditedFrames] = useState(
     createDefaultFramesRendered(36, 36)
@@ -246,7 +254,7 @@ export default function AnimationLibrary(props) {
         const xxxx = isContainingOscillators();
         if (currentFrames.length > 0 && !xxxx) {
           setRowFrames(currentFrames);
-          prepareAnimation(renderAllFramesRGB_(currentFrames), opState);
+          // prepareAnimation(renderAllFramesRGB_(currentFrames), opState);
           setOpState({ ...opState, range: [0, currentFrames.length] });
         }
       }
@@ -319,9 +327,18 @@ export default function AnimationLibrary(props) {
 
   useEffect(() => {
     if (rowFrames != undefined && rowFrames.length > 0) {
-      setEditedFrames(
-        prepareAnimation(renderAllFramesRGB_(rowFrames), opState)
-      );
+      if (flag === "editor") {
+        setEditedFrames(
+          prepareAnimation(
+            renderAllFramesRGBScheme(rowFrames, scheme_array[opState.scheme]),
+            opState
+          )
+        );
+      } else {
+        setEditedFrames(
+          prepareAnimation(renderAllFramesRGB_(rowFrames), opState)
+        );
+      }
     }
   }, [rowFrames, opState]);
 
@@ -342,7 +359,7 @@ export default function AnimationLibrary(props) {
             reverse: 0,
             reflect: 0,
             rotate: 0,
-            scheme: -1,
+            scheme: flag === "editor" ? 0 : -1,
             offset: 0,
             range: [0, currentFrames.length],
           });

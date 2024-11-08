@@ -10,6 +10,8 @@ import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import { SmallScreen } from "./../../editor/views/smallScreen/SmallScreen";
 import { useAnimations } from "../../creator/components/animationData/AnimationContext.js";
 import { createGrayFrames } from "./../frameOps/FrameOps";
+import { getSchemes } from "../schemes/Schemes";
+
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const StyledBox = styled.div`
@@ -56,6 +58,8 @@ const StyledGif = styled.div`
   );
   /* display: flex; */
 `;
+
+let schemes_array = Object.values(getSchemes());
 
 function FiltersBtn(props) {
   const StyledFiltersBtn = styled.div`
@@ -289,16 +293,8 @@ const FancyScreen = (props) => {
     removeInstanceEditor,
     duplicateInstanceEditor,
     setInstancesEditor,
-    // renderInstanceFramesScheme,
+    renderInstanceFramesScheme,
   } = useAnimations();
-
-  function selectScreen(id) {
-    // setMainScreen(DATA.find((x) => x["id"] == id));
-    console.log("FFS");
-  }
-  useEffect(() => {
-    console.log(instancesEditor);
-  }, [instancesEditor]);
 
   let animationId = useRef(null);
   const delay = props.delay;
@@ -537,10 +533,13 @@ const FancyScreen = (props) => {
     let outFrames = [];
 
     instancesEditor.forEach((element) => {
-      console.log(element["opState"]["scheme"]);
+      console.log(schemes_array[element["opState"]["scheme"]]);
       outFrames = outFrames.concat(
-        // renderInstanceFramesScheme(element["id"], element["opState"]["scheme"])
-        renderInstanceFrames(element["id"])
+        renderInstanceFramesScheme(
+          element["id"],
+          schemes_array[element["opState"]["scheme"]]
+        )
+        // renderInstanceFrames(element["id"])
       );
     });
     return RGBFrames(outFrames);
@@ -707,8 +706,6 @@ const FancyScreen = (props) => {
 
   function handleOnDragEnd(result) {
     const items = Array.from(instancesEditor);
-    console.log(result.source.index);
-
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     setInstancesEditor(items);
@@ -947,51 +944,64 @@ const FancyScreen = (props) => {
           BACK TO EDITOR
         </StyledBackToEditor>
       </div>
-      <MyButton
-        onClick={() => {
-          setBrowserOn(true);
+      <div
+        style={{
+          width: "950px",
+          height: "80px",
+          display: "flex",
+          padding: "10px",
+          background: "rgb(50,110,130)",
         }}
-      />
-
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="droppable" direction="horizontal">
-          {(provided) => {
-            return (
-              <ScrollMenu>
-                <div
-                  className="order"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {instancesEditor.map((k, index) => (
-                    <Draggable
-                      key={k["id"] + 1000}
-                      draggableId={k["id"]}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <SmallScreen
-                          provided={provided}
-                          id={k["id"]}
-                          frames={renderInstanceFrames(k["id"])}
-                          selectScreen={() => editInstance(k["id"])}
-                          handleDelete={() => removeInstanceEditor(k["id"])}
-                          handleDuplicate={() =>
-                            duplicateInstanceEditor(k["id"])
-                          }
-                        />
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              </ScrollMenu>
-            );
+      >
+        <MyButton
+          onClick={() => {
+            setBrowserOn(true);
           }}
-        </Droppable>
-      </DragDropContext>
+        />
 
-      {/* <MyButton /> */}
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="droppable" direction="horizontal">
+            {(provided) => {
+              return (
+                <ScrollMenu>
+                  <div
+                    style={{
+                      width: "850px",
+
+                      overflow: "scroll",
+                    }}
+                    className="order"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {instancesEditor.map((k, index) => (
+                      <Draggable
+                        key={k["id"] + 1000}
+                        draggableId={k["id"]}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <SmallScreen
+                            provided={provided}
+                            id={k["id"]}
+                            frames={renderInstanceFrames(k["id"])}
+                            selectScreen={() => editInstance(k["id"])}
+                            handleDelete={() => removeInstanceEditor(k["id"])}
+                            handleDuplicate={() =>
+                              duplicateInstanceEditor(k["id"])
+                            }
+                          />
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                </ScrollMenu>
+              );
+            }}
+          </Droppable>
+        </DragDropContext>
+      </div>
     </div>
   );
 };
