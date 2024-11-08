@@ -293,7 +293,6 @@ const FancyScreen = (props) => {
     removeInstanceEditor,
     duplicateInstanceEditor,
     setInstancesEditor,
-    renderInstanceFramesScheme,
   } = useAnimations();
 
   let animationId = useRef(null);
@@ -533,9 +532,8 @@ const FancyScreen = (props) => {
     let outFrames = [];
 
     instancesEditor.forEach((element) => {
-      console.log(schemes_array[element["opState"]["scheme"]]);
       outFrames = outFrames.concat(
-        renderInstanceFramesScheme(
+        renderInstanceFrames(
           element["id"],
           schemes_array[element["opState"]["scheme"]]
         )
@@ -630,8 +628,7 @@ const FancyScreen = (props) => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       let A = editedFrames[frame_index];
-      // console.log(A);
-      // const alpha = getAlpha(noiseLevel1);
+
       const beta = getBeta(noiseLevel2);
       let ooo = 15 + 5 * Math.random();
 

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 
 import { useState, useCallback } from "react";
+import { getSchemes } from "../../../sharedLib/schemes/Schemes";
+
 import {
   rotateFrame,
   reflectFrame,
@@ -37,6 +39,8 @@ function getAllColors(frames) {
   });
   return colors;
 }
+
+const scheme_array = Object.values(getSchemes());
 
 function transformFrameIndex(OpState, animationLen, frameIndex) {
   const len = OpState.range[1] - OpState.range[0];
@@ -326,39 +330,6 @@ export default function useAnimationsData(props) {
     [oscillatorRGB_, getInstanceOscById]
   );
 
-  // const renderFrame = useCallback(
-  //   (frame, frameIndex, toRGB) => {
-  //     const renderedFrame = [];
-  //     for (let c = 0; c < DEFAULTS_FRAME_SETTINGS.COL; c++) {
-  //       const col = [];
-  //       for (let r = 0; r < DEFAULTS_FRAME_SETTINGS.ROW; r++) {
-  //         const state = frame[r][c];
-  //         if (state < colorScheme.length) {
-  //           if (toRGB) {
-  //             col.push(colorScheme[state]);
-  //           } else {
-  //             col.push(state);
-  //           }
-  //         } else {
-  //           if (undefined !== getInstanceOscById(state)) {
-  //             col.push(oscillatorRGB(state, [r, c], frameIndex));
-  //           } else {
-  //             const color_state = stateToColorState(state, [r, c], frameIndex);
-  //             if (toRGB) {
-  //               col.push(colorScheme[color_state]);
-  //             } else {
-  //               col.push(color_state);
-  //             }
-  //           }
-  //         }
-  //       }
-  //       renderedFrame.push(col);
-  //     }
-  //     return renderedFrame;
-  //   },
-  //   [oscillatorRGB, getInstanceOscById, colorScheme, stateToColorState]
-  // );
-
   const renderFrame = useCallback(
     (frame, frameIndex, color_scheme) => {
       const renderedFrame = [];
@@ -434,30 +405,13 @@ export default function useAnimationsData(props) {
       const opState = el.opState;
       const frames = animations[animationId];
       const range = opState.range;
-      const animationLen = frames.length;
-      const len = range[1] - range[0];
-      const renderedFrames = Array(len);
-      for (let i = 0; i < len; i++) {
-        const T_index = transformFrameIndex(opState, animationLen, i);
-        renderedFrames[i] = renderFrameToRGB(
-          transformFrame(frames[T_index], opState),
-          i
-        );
+      const scheme = opState.scheme;
+      let color_scheme = colorScheme;
+
+      if (scheme !== -1) {
+        color_scheme = scheme_array[scheme];
       }
-      return renderedFrames;
-    },
-    [instances, instancesEditor, animations, renderFrameToRGB]
-  );
-  const renderInstanceFramesScheme = useCallback(
-    (instanceId, color_scheme) => {
-      let el = instances.find((el) => el.id === instanceId);
-      if (el === undefined) {
-        el = instancesEditor.find((el) => el.id === instanceId);
-      }
-      const animationId = el.animationId;
-      const opState = el.opState;
-      const frames = animations[animationId];
-      const range = opState.range;
+
       const animationLen = frames.length;
       const len = range[1] - range[0];
       const renderedFrames = Array(len);
@@ -471,58 +425,20 @@ export default function useAnimationsData(props) {
       }
       return renderedFrames;
     },
-    [instances, instancesEditor, animations, renderFrameToRGBScheme]
+    [
+      instances,
+      colorScheme,
+      instancesEditor,
+      animations,
+      renderFrameToRGBScheme,
+    ]
   );
-
-  // const renderInstanceFrames = useCallback(
-  //   (instanceId) => {
-  //     let el = instances.find((el) => el.id === instanceId);
-  //     if (el === undefined) {
-  //       el = instancesEditor.find((el) => el.id === instanceId);
-  //     }
-  //     const animationId = el.animationId;
-  //     const opState = el.opState;
-  //     const frames = animations[animationId];
-  //     const range = opState.range;
-  //     const animationLen = frames.length;
-  //     const len = range[1] - range[0];
-  //     const renderedFrames = Array(len);
-  //     for (let i = 0; i < len; i++) {
-  //       const T_index = transformFrameIndex(opState, animationLen, i);
-  //       renderedFrames[i] = renderFrameToRGB(
-  //         transformFrame(frames[T_index], opState),
-  //         i,
-  //         colorScheme
-  //       );
-  //     }
-  //     return renderedFrames;
-  //   },
-  //   [instances, colorScheme, instancesEditor, animations, renderFrameToRGB]
-  // );
-
-  // const renderFrameToStates = useCallback(
-  //   (frame, frameIndex) => {
-  //     return renderFrame(frame, frameIndex, false);
-  //   },
-  //   [renderFrame]
-  // );
 
   const renderFrameToStates = useCallback(
     (frame, frameIndex) => {
       return renderFrame(frame, frameIndex, -1);
     },
     [renderFrame]
-  );
-
-  const renderAllFramesRGB_ = useCallback(
-    (frames) => {
-      let renderedFrames = [];
-      for (let i = 0; i < frames.length; i++) {
-        renderedFrames.push(renderFrameToRGB(frames[i], i));
-      }
-      return renderedFrames;
-    },
-    [renderFrameToRGB]
   );
 
   const renderAllFramesRGBScheme = useCallback(
@@ -533,20 +449,15 @@ export default function useAnimationsData(props) {
       }
       return renderedFrames;
     },
-    [renderFrameToRGB]
+    [renderFrameToRGBScheme]
   );
 
-  // const renderAllFramesRGB_ = useCallback(
-  //   (frames) => {
-  //     let renderedFrames = [];
-  //     console.log(colorScheme);
-  //     for (let i = 0; i < frames.length; i++) {
-  //       renderedFrames.push(renderFrameToRGB(frames[i], i, colorScheme));
-  //     }
-  //     return renderedFrames;
-  //   },
-  //   [renderFrameToRGB, colorScheme]
-  // );
+  const renderAllFramesRGB_ = useCallback(
+    (frames) => {
+      return renderAllFramesRGBScheme(frames, colorScheme);
+    },
+    [renderAllFramesRGBScheme, colorScheme]
+  );
 
   const renderAllFramesToStates = useCallback(
     (frames) => {
@@ -678,7 +589,6 @@ export default function useAnimationsData(props) {
   return {
     removeAnimation_,
     isContainingOscillators,
-    renderInstanceFramesScheme,
     addInstance_,
     addInstanceEditor,
     addAnimation_,
