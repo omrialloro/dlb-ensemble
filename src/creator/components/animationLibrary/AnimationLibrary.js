@@ -178,6 +178,10 @@ const StyledBtn3 = styled.div`
 `;
 
 const scheme_array = Object.values(getSchemes());
+// Function to test if variable is a string
+function isString(variable) {
+  return typeof variable === "string";
+}
 
 function prepareAnimation(frames, opState) {
   let raw_frames = nestedCopy(frames);
@@ -237,8 +241,13 @@ export default function AnimationLibrary(props) {
   const [editedFrames, setEditedFrames] = useState(
     createDefaultFramesRendered(36, 36)
   );
+  let type = "row";
 
-  const animationsServer = useAnimationFromServer();
+  if (flag === "editor") {
+    type = "all";
+  }
+
+  const animationsServer = useAnimationFromServer(type);
 
   const [animationId, setAnimationId] = useState(props.animationId);
 
@@ -328,12 +337,16 @@ export default function AnimationLibrary(props) {
   useEffect(() => {
     if (rowFrames != undefined && rowFrames.length > 0) {
       if (flag === "editor") {
-        setEditedFrames(
-          prepareAnimation(
-            renderAllFramesRGBScheme(rowFrames, scheme_array[opState.scheme]),
-            opState
-          )
-        );
+        if (isString(rowFrames[0][0][0])) {
+          setEditedFrames(prepareAnimation(rowFrames, opState));
+        } else {
+          setEditedFrames(
+            prepareAnimation(
+              renderAllFramesRGBScheme(rowFrames, scheme_array[opState.scheme]),
+              opState
+            )
+          );
+        }
       } else {
         setEditedFrames(
           prepareAnimation(renderAllFramesRGB_(rowFrames), opState)

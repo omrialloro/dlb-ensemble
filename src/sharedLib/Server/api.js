@@ -117,8 +117,11 @@ function useSaveStoredAnimations() {
   };
 }
 
-function useAnimationFromServer() {
-  const { data, error, loading } = useFetch(`/animationsList?type=row`, true);
+function useAnimationFromServer(type) {
+  const { data, error, loading } = useFetch(
+    `/animationsList?type=${type}`,
+    true
+  );
   const thumbnailsUrl = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/";
   const [animationsServer, setAnimationsServer] = useState([]);
 

@@ -246,6 +246,7 @@ export default function useAnimationsData(props) {
   const stateToColorState = useCallback(
     (state, pixel, frameIndex) => {
       if (state < colorScheme.length) {
+        console.log("F");
         //handeling oscillator single color
         return state;
       }
@@ -337,7 +338,9 @@ export default function useAnimationsData(props) {
         const col = [];
         for (let r = 0; r < DEFAULTS_FRAME_SETTINGS.ROW; r++) {
           const state = frame[r][c];
-          if (state < colorScheme.length) {
+          if (state[0] === "#") {
+            col.push(state);
+          } else if (state < colorScheme.length) {
             if (color_scheme !== -1) {
               col.push(color_scheme[state]);
             } else {
@@ -376,7 +379,7 @@ export default function useAnimationsData(props) {
     },
     [renderFrame, colorScheme]
   );
-  const animationsServer = useAnimationFromServer();
+  const animationsServer = useAnimationFromServer("row");
 
   const storeAnimation = (frames, id) => {
     const serverAnimationsIds = animationsServer.map((x) => x.id);
@@ -399,11 +402,14 @@ export default function useAnimationsData(props) {
     (instanceId) => {
       let el = instances.find((el) => el.id === instanceId);
       if (el === undefined) {
+        console.log("FFfffffFF");
         el = instancesEditor.find((el) => el.id === instanceId);
       }
       const animationId = el.animationId;
       const opState = el.opState;
       const frames = animations[animationId];
+      console.log(frames);
+
       const range = opState.range;
       const scheme = opState.scheme;
       let color_scheme = colorScheme;

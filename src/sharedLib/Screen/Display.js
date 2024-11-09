@@ -691,7 +691,7 @@ const FancyScreen = (props) => {
     editedFrames,
   ]);
 
-  const [browserdOn, setBrowserOn] = useState(true);
+  const [browserdOn, setBrowserOn] = useState(false);
   // let browserdOn = true;
 
   const [selectedId, setSelectedId] = useState(-1);
