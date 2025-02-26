@@ -97,9 +97,6 @@ function Editor2(props) {
     noise3: 0,
     filter: 0,
   });
-  useEffect(() => {
-    console.log(noiseConfig);
-  }, [noiseConfig]);
 
   function getWidthHeight(resolution) {
     const width = Math.round(resolution * Math.sqrt(screenRatio));
@@ -107,10 +104,6 @@ function Editor2(props) {
 
     return [width, height];
   }
-
-  useEffect(() => {
-    console.log(pixelConfig);
-  }, [pixelConfig]);
 
   const AudioRef = React.useRef({ ref1, ref2, ref3 });
 
@@ -137,7 +130,6 @@ function Editor2(props) {
   }
 
   function prepareFrames(data) {
-    // console.log(data["filename"])
     let raw_frames = [];
     if (!animations.hasOwnProperty(data["filename"])) {
       raw_frames = nestedCopy(animations["gray"]);
@@ -169,7 +161,6 @@ function Editor2(props) {
   }
 
   function handleOnDragEnd(result) {
-    console.log(result);
     // if (!result.destination) return;
     const items = Array.from(DATA);
     const id = "x" + Date.now().toString();
@@ -385,22 +376,29 @@ function Editor2(props) {
   };
 
   const extractToGif = useExtractToGif(email);
-  const handleMakeGif = useCallback(async () => {
-    let res = getWidthHeight(400);
-    let noisedProccesedFrames = addNoise(proccesedFrames, noiseConfig);
-    await extractToGif(
-      noisedProccesedFrames,
-      delay,
-      res[0],
-      res[1],
-      pixelConfig
-    );
-  }, [extractToGif, proccesedFrames, delay, pixelConfig]);
+  const handleMakeGif = useCallback(
+    async (x) => {
+      let res = getWidthHeight(400);
+      // console.log(proccesedFrames[0][1]);
+      let proccesedFrames_ = proccesedFrames;
+      if (x.length > 0) {
+        proccesedFrames_ = x;
+      }
+      let noisedProccesedFrames = addNoise(proccesedFrames_, noiseConfig);
+      await extractToGif(
+        noisedProccesedFrames,
+        delay,
+        res[0],
+        res[1],
+        pixelConfig
+      );
+    },
+    [extractToGif, proccesedFrames, delay, pixelConfig]
+  );
 
   useEffect(() => {
     var tt = sessionStorage.getItem("editData");
     let editData_ = JSON.parse(tt);
-    console.log(editData_);
     if (editData_ != null) {
       PrepareSession(editData_.DATA);
       setDATA(editData_.DATA);

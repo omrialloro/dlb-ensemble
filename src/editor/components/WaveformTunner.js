@@ -52,10 +52,10 @@ function createWaveform(len_sec) {
 
   return A.map((x) => (
     <>
-      <Bar style={{ height: "25px" }} />
-      <Bar style={{ height: "32px" }} />
-      <Bar style={{ height: "40px" }} />
-      <Bar style={{ height: "32px" }} />
+      <Bar style={{ height: "20px" }} />
+      <Bar style={{ height: "29px" }} />
+      <Bar style={{ height: "35px" }} />
+      <Bar style={{ height: "29px" }} />
     </>
   ));
 }
@@ -102,27 +102,26 @@ const StyledBox = styled.div`
     box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
   }
 
-  height: 63px;
-  width: 450px;
+  height: 53px;
+  width: 900px;
   border-radius: 12px;
   border: 1px solid #909090;
-  padding: 12px;
+  padding: 8px;
   display: grid;
   grid-template-columns: repeat(5000, 1fr);
   grid-template-rows: repeat(1, 1fr);
   grid-column-gap: 0;
   overflow-x: scroll;
   overflow-y: hidden;
-
   align-items: center;
   background: #c1c1c1;
   // border:3px solid salmon;
 `;
 
 const StyledTimeScreen = styled.div`
-  height: 60px;
+  height: 47px;
   width: 50px;
-  padding: 20px;
+  padding: 15px;
   margin: 2px;
 
   margin-right: 4px;
@@ -141,6 +140,7 @@ const StyledManu = styled.div`
   width: 380px;
   position: absolute;
   top: 200px;
+  left: 500px;
   border-radius: 5px;
   padding: 10px;
   display: grid;
@@ -298,7 +298,7 @@ export const WaveformTunner = forwardRef((props, ref) => {
   const { ref1, ref2, ref3 } = ref.current;
 
   const refLen = useRef();
-  refLen.current = 30;
+  refLen.current = 40;
 
   const rrr = useRef();
 
@@ -316,7 +316,7 @@ export const WaveformTunner = forwardRef((props, ref) => {
   );
 
   return (
-    <div style={{ marginTop: "40px", display: "flex" }}>
+    <div style={{ marginTop: "10px", display: "flex" }}>
       {manuOn ? (
         <MusicManu setUrl={setUrl} setManuOn={setManuOn}></MusicManu>
       ) : (

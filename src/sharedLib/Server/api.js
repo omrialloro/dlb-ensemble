@@ -128,6 +128,7 @@ function useAnimationFromServer(type) {
   useEffect(() => {
     if (!data || error) return;
     let animations_ = [];
+    console.log(data);
     for (let i = 0; i < data["names"].length; i++) {
       let id = data["ids"][i];
       animations_.push({
