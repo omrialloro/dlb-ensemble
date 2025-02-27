@@ -438,7 +438,6 @@ function Editor2(props) {
             }}
           />
         ) : (
-          // <></>
           <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable droppableId="droppable" direction="horizontal">
               {(provided) => {
@@ -448,26 +447,6 @@ function Editor2(props) {
                       <div className="inner_container_left">
                         <div className="container_monitor">
                           <div className="monitor">
-                            {/* <StyledBox>
-                              {[...Array(49).keys()].map((k, index) => (
-                                <Draggable
-                                  key={"monitor" + k + 100000}
-                                  draggableId={"fff" + k}
-                                  index={-index - 1}
-                                >
-                                  {(provided, snapshot) => (
-                                    <StyledSmall
-                                      isDragging={snapshot.isDragging}
-                                      {...provided.dragHandleProps}
-                                      {...provided.draggableProps}
-                                      ref={provided.innerRef}
-                                    />
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </StyledBox> */}
-
                             <Editor
                               frames={frammmes}
                               border={mainScreen["range"]}
