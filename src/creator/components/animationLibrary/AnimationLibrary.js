@@ -234,6 +234,10 @@ export default function AnimationLibrary(props) {
     range: [0, 1],
   });
 
+  useEffect(() => {
+    console.log(opState);
+  }, [opState]);
+
   const [editedFrames, setEditedFrames] = useState(
     createDefaultFramesRendered(36, 36)
   );
@@ -244,10 +248,6 @@ export default function AnimationLibrary(props) {
   }
 
   const animationsServer = useAnimationFromServer(type);
-  console.log(animationsServer.length);
-  console.log(animationsServer.length);
-  console.log(animationsServer.length);
-  console.log(animationsServer.length);
 
   const [animationId, setAnimationId] = useState(props.animationId);
 
@@ -337,12 +337,16 @@ export default function AnimationLibrary(props) {
   useEffect(() => {
     if (rowFrames != undefined && rowFrames.length > 0) {
       if (flag === "editor") {
-        setEditedFrames(
-          prepareAnimation(
-            renderAllFramesRGBScheme(rowFrames, scheme_array[opState.scheme]),
-            opState
-          )
-        );
+        if (isString(rowFrames[0][0][0])) {
+          setEditedFrames(prepareAnimation(rowFrames, opState));
+        } else {
+          setEditedFrames(
+            prepareAnimation(
+              renderAllFramesRGBScheme(rowFrames, scheme_array[opState.scheme]),
+              opState
+            )
+          );
+        }
       } else {
         setEditedFrames(
           prepareAnimation(renderAllFramesRGB_(rowFrames), opState)
