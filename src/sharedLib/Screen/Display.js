@@ -11,6 +11,7 @@ import { SmallScreen } from "./../../editor/views/smallScreen/SmallScreen";
 import { useAnimations } from "../../creator/components/animationData/AnimationContext.js";
 import { createGrayFrames } from "./../frameOps/FrameOps";
 import { getSchemes } from "../schemes/Schemes";
+import LoadMusicBtn from "./../../editor/components/LoadMusicBtn.js";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
@@ -957,6 +958,8 @@ const FancyScreen = (props) => {
         />
 
         <DragDropContext onDragEnd={handleOnDragEnd}>
+          <LoadMusicBtn />
+
           <Droppable droppableId="droppable" direction="horizontal">
             {(provided) => {
               return (
