@@ -9,9 +9,8 @@ const Button40 = styled.button`
   border: 0.25em solid var(--glow-color);
   padding: 1em 3em;
   color: var(--glow-color);
-  font-size: 20px;
+  font-size: 15px;
   font-weight: bold;
-  height: 50px;
   background-color: var(--btn-color);
   border-radius: 1em;
   outline: none;
@@ -54,17 +53,12 @@ const Button40 = styled.button`
 `;
 
 const ButtonText = styled.span`
-  top: 10px;
-  left: 20px;
-  position: absolute;
-  color: rgb(150, 150, 90);
-  background: transparent;
   /* Any specific styles for the text can go here */
 `;
 
 const MyButton = (props) => (
   <Button40 onClick={props.onClick} role="button">
-    <ButtonText>browse </ButtonText>
+    <ButtonText>Button 40</ButtonText>
   </Button40>
 );
 
