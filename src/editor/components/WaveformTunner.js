@@ -103,7 +103,7 @@ const StyledBox = styled.div`
   }
 
   height: 63px;
-  width: 450px;
+  width: 900px;
   border-radius: 12px;
   border: 1px solid #909090;
   padding: 12px;
@@ -141,6 +141,7 @@ const StyledManu = styled.div`
   width: 380px;
   position: absolute;
   top: 200px;
+  left: 400px;
   border-radius: 5px;
   padding: 10px;
   display: grid;
@@ -193,10 +194,12 @@ const StyledLoadMusic = styled.div`
   padding: 15px;
   margin: 2px;
   padding-left: 8px;
-  margin-top: 40px;
+  margin-top: 20px;
   border-radius: 5px;
   font-weight: bold;
   font-size: 18px;
+  left: 40px;
+  position: absolute;
 
   background-color: rgb(100, 100, 130);
   color: rgb(250, 220, 120);
@@ -316,25 +319,41 @@ export const WaveformTunner = forwardRef((props, ref) => {
   );
 
   return (
-    <div style={{ marginTop: "40px", display: "flex" }}>
+    <div
+      style={{
+        marginTop: "15px",
+        display: "flex",
+        // position: "absolute",
+        left: "40px",
+      }}
+    >
       {manuOn ? (
         <MusicManu setUrl={setUrl} setManuOn={setManuOn}></MusicManu>
       ) : (
         <></>
       )}
 
-      <AudioPlayer ref={aaa} isPlay={isPlay} url={url} />
-      <StyledTimeScreen ref={rrr}>0.0</StyledTimeScreen>
-
-      <StyledBox
-        ref={containerRef}
-        onDoubleClick={() => {
-          setManuOn(true);
+      <div
+        style={{
+          marginTop: "5px",
+          display: "flex",
+          position: "absolute",
+          left: "40px",
         }}
       >
-        {createWaveform(lenSec)}
-      </StyledBox>
-      <Xelement position={"relative"} onClick={offMusic} />
+        <AudioPlayer ref={aaa} isPlay={isPlay} url={url} />
+        <StyledTimeScreen ref={rrr}>0.0</StyledTimeScreen>
+
+        <StyledBox
+          ref={containerRef}
+          onDoubleClick={() => {
+            setManuOn(true);
+          }}
+        >
+          {createWaveform(lenSec)}
+        </StyledBox>
+        <Xelement position={"relative"} onClick={offMusic} />
+      </div>
     </div>
   );
 });

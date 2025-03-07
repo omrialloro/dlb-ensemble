@@ -11,6 +11,11 @@ import { SmallScreen } from "./../../editor/views/smallScreen/SmallScreen";
 import { useAnimations } from "../../creator/components/animationData/AnimationContext.js";
 import { createGrayFrames } from "./../frameOps/FrameOps";
 import { getSchemes } from "../schemes/Schemes";
+import {
+  WaveformTunner,
+  LoadMusicBts,
+} from "./../../editor/components/WaveformTunner.js";
+
 import LoadMusicBtn from "./../../editor/components/LoadMusicBtn.js";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -307,6 +312,7 @@ const FancyScreen = (props) => {
   const timeRef = useRef(null);
 
   const [play, setPlay] = useState(true);
+
   function togglePlay() {
     setPlay(!play);
   }
@@ -328,6 +334,24 @@ const FancyScreen = (props) => {
     minHeight: 500,
     maxHeight: 650,
   };
+
+  const ref1 = useRef();
+  const ref2 = useRef();
+  const ref3 = useRef();
+
+  const [waveOn, setWaveOn] = useState(false);
+
+  useEffect(() => {
+    if (waveOn) {
+      if (!play) {
+        ref2.current(false);
+      } else {
+        ref2.current(true);
+      }
+    }
+  }, [play, waveOn]);
+
+  const AudioRef = useRef({ ref1, ref2, ref3 });
 
   function setDim_(d) {
     let w = d.width;
@@ -620,6 +644,9 @@ const FancyScreen = (props) => {
       }
 
       if (frame_index > editedFrames.length - 1) {
+        if (waveOn) {
+          ref2.current(true);
+        }
         index = 0;
         frame_index = 0;
       }
@@ -956,51 +983,65 @@ const FancyScreen = (props) => {
             setBrowserOn(true);
           }}
         />
+        <div>
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+            <Droppable droppableId="droppable" direction="horizontal">
+              {(provided) => {
+                return (
+                  <ScrollMenu>
+                    <div
+                      style={{
+                        width: "850px",
 
-        <DragDropContext onDragEnd={handleOnDragEnd}>
-          <LoadMusicBtn />
-
-          <Droppable droppableId="droppable" direction="horizontal">
-            {(provided) => {
-              return (
-                <ScrollMenu>
-                  <div
-                    style={{
-                      width: "850px",
-
-                      overflow: "scroll",
-                    }}
-                    className="order"
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                  >
-                    {instancesEditor.map((k, index) => (
-                      <Draggable
-                        key={k["id"] + 1000}
-                        draggableId={k["id"]}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <SmallScreen
-                            provided={provided}
-                            id={k["id"]}
-                            frames={renderInstanceFrames(k["id"])}
-                            selectScreen={() => editInstance(k["id"])}
-                            handleDelete={() => removeInstanceEditor(k["id"])}
-                            handleDuplicate={() =>
-                              duplicateInstanceEditor(k["id"])
-                            }
-                          />
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                </ScrollMenu>
-              );
-            }}
-          </Droppable>
-        </DragDropContext>
+                        overflow: "scroll",
+                      }}
+                      className="order"
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                    >
+                      {instancesEditor.map((k, index) => (
+                        <Draggable
+                          key={k["id"] + 1000}
+                          draggableId={k["id"]}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <SmallScreen
+                              provided={provided}
+                              id={k["id"]}
+                              frames={renderInstanceFrames(k["id"])}
+                              selectScreen={() => editInstance(k["id"])}
+                              handleDelete={() => removeInstanceEditor(k["id"])}
+                              handleDuplicate={() =>
+                                duplicateInstanceEditor(k["id"])
+                              }
+                            />
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  </ScrollMenu>
+                );
+              }}
+            </Droppable>
+          </DragDropContext>
+          {waveOn ? (
+            <WaveformTunner
+              ref={AudioRef}
+              lenSec={120}
+              offMusic={() => setWaveOn(false)}
+              playFunc={play}
+              durationSec={9.0}
+            />
+          ) : (
+            <LoadMusicBts
+              loadMusic={() => {
+                setWaveOn(true);
+              }}
+            ></LoadMusicBts>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -246,7 +246,6 @@ export default function useAnimationsData(props) {
   const stateToColorState = useCallback(
     (state, pixel, frameIndex) => {
       if (state < colorScheme.length) {
-        console.log("F");
         //handeling oscillator single color
         return state;
       }
@@ -402,14 +401,11 @@ export default function useAnimationsData(props) {
     (instanceId) => {
       let el = instances.find((el) => el.id === instanceId);
       if (el === undefined) {
-        console.log("FFfffffFF");
         el = instancesEditor.find((el) => el.id === instanceId);
       }
       const animationId = el.animationId;
       const opState = el.opState;
       const frames = animations[animationId];
-      console.log(frames);
-
       const range = opState.range;
       const scheme = opState.scheme;
       let color_scheme = colorScheme;
