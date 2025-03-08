@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  forwardRef,
+} from "react";
 import styled, { keyframes } from "styled-components";
 import {
   useAnimationFromServer,
@@ -23,6 +29,7 @@ import {
   offsetAnimation,
 } from "../../../editor/components/frameTransformations";
 import { nestedCopy } from "../../../editor/components/Utils";
+import { display } from "@mui/system";
 
 const fadeIn = keyframes`
   from {
@@ -70,7 +77,7 @@ const XX = styled.img`
 `;
 
 const StyledBoxx = styled.div`
-  height: 315px;
+  height: 335px;
   width: 340px;
   border-radius: 12px;
   margin: 12px;
@@ -113,6 +120,51 @@ const StyledBox = styled.div`
   grid-template-columns: repeat(120, 1fr);
   grid-template-rows: repeat(10, 1fr);
   grid-column-gap: 0;
+  top: 68%;
+  right: 4%;
+  overflow-x: scroll;
+  background: #8c8664;
+  visibility: hidden;
+  transform: translatE(5%, 10%);
+  position: absolute;
+`;
+
+const StyledSwitch = styled.div`
+  height: 15px;
+  width: 150px;
+  border-radius: 4px;
+  padding-left: 40px;
+  margin-top: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+
+  display: grid;
+  grid-template-columns: repeat(120, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  grid-column-gap: 0;
+  top: 90%;
+  right: 4%;
+  overflow-x: scroll;
+  background: #8c8664;
+  background: ${(props) =>
+    props.on ? "rgb(250,124,120)" : "rgb(120,144,120)"};
+
+  visibility: visible;
+  transform: translatE(5%, 10%);
+  text-align: center;
+  font-size: 12px;
+  /* position: absolute; */
+`;
+const StyledSwitchBtn = styled.div`
+  height: 20px;
+  width: 150px;
+  border-radius: 9px;
+  padding: 6px;
+  margin: 12px;
+  display: grid;
+  grid-template-columns: repeat(120, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  grid-column-gap: 0;
   top: 69%;
   right: 4%;
   overflow-x: scroll;
@@ -121,6 +173,7 @@ const StyledBox = styled.div`
   transform: translatE(5%, 10%);
   position: absolute;
 `;
+
 const StyledBtn = styled.div`
   font-size: 15px;
   font-weight: 500;
@@ -146,6 +199,50 @@ const StyledBtn1 = styled.div`
   padding: 12px;
   margin-bottom: 5px;
 `;
+const StyledCircle = styled.div`
+  transform: scale(${(props) => props.scale});
+  transition: 0.3s;
+
+  height: 40px;
+  width: 40px;
+  margin-left: 28px;
+  border-radius: 100%;
+  background-color: black;
+
+  overflow: clip;
+`;
+
+const SmallScreen = forwardRef((props, ref) => {
+  const onClick = props.onClick;
+  const id = props.id;
+  const frames = props.frames;
+  const isPicked = props.isPicked;
+  const [delay, setDelay] = useState(null);
+  ref = { ref };
+
+  return (
+    <div
+      id={id}
+      onMouseOver={() => {
+        setDelay(40);
+      }}
+      onMouseLeave={() => {
+        setDelay(null);
+      }}
+      style={{ top: "-5px", left: "0px", position: "relative" }}
+    >
+      <Screen
+        ref={ref}
+        onPixelClick={onClick}
+        screenSize={isPicked ? 43 : 43}
+        pausedFrameIndex={0}
+        frames={frames}
+        delay={delay}
+        id={"s333" + id}
+      />
+    </div>
+  );
+});
 
 const StyledBtn5 = styled.div`
   transition: 0.2s;
@@ -223,6 +320,9 @@ export default function AnimationLibrary(props) {
     removeInstance_,
     isContainingOscillators,
     renderAllFramesRGBScheme,
+    instances,
+    instancesOsc,
+    renderOscillatorInstance,
   } = useAnimations();
 
   const [opState, setOpState] = useState({
@@ -409,6 +509,8 @@ export default function AnimationLibrary(props) {
   const refRemove = useRef();
   const rrrr = useRef();
 
+  const [isLocal, setIsLocal] = useState(true);
+
   useEffect(() => {
     if (browserdOn) {
       function enableScrolling() {
@@ -551,6 +653,7 @@ export default function AnimationLibrary(props) {
           </div>
         </div>
       </StyledContainer>
+
       <StyledBox
         style={
           browserdOn
@@ -559,25 +662,59 @@ export default function AnimationLibrary(props) {
         }
       >
         <div className="order"></div>
-        {animationsServer.map((x, index) => (
-          <StyledFrames
-            key={"llll" + x["id"]}
-            scale={animationId == x["id"] ? 1.2 : 1}
-          >
-            <XX
-              style={x["isChecked"] ? { height: "90%" } : { height: "70%" }}
-              src={x["imgUrl"]}
-              key={"ll" + x["id"]}
-              id={x["id"]}
-              // onClick={() => {
-              //   fff(index);
-              // }}
-              onClick={() => {
-                selectAnimation(x["id"]);
-              }}
-            ></XX>
-          </StyledFrames>
-        ))}
+
+        {isLocal ? (
+          <>
+            {instances.map((e, index) => (
+              <StyledCircle
+                onClick={() => {
+                  selectAnimation(e["id"]);
+                }}
+              >
+                <SmallScreen
+                  onClick={() => {}}
+                  key={"screen" + index}
+                  frames={renderInstanceFrames(e.id)}
+                  id={"screenId" + index}
+                />
+              </StyledCircle>
+            ))}
+            {instancesOsc.map((e, index) => (
+              <StyledCircle
+                onClick={() => {
+                  selectAnimation(e["id"]);
+                }}
+              >
+                <SmallScreen
+                  onClick={() => {}}
+                  key={"screen" + index}
+                  frames={renderOscillatorInstance(e.id)}
+                  id={"screenId_" + index}
+                />
+              </StyledCircle>
+            ))}
+          </>
+        ) : (
+          animationsServer.map((x, index) => (
+            <StyledFrames
+              key={"llll" + x["id"]}
+              scale={animationId == x["id"] ? 1.2 : 1}
+            >
+              <XX
+                style={x["isChecked"] ? { height: "90%" } : { height: "70%" }}
+                src={x["imgUrl"]}
+                key={"ll" + x["id"]}
+                id={x["id"]}
+                // onClick={() => {
+                //   fff(index);
+                // }}
+                onClick={() => {
+                  selectAnimation(x["id"]);
+                }}
+              ></XX>
+            </StyledFrames>
+          ))
+        )}
         <div
           style={{
             position: "absolute",
@@ -587,6 +724,20 @@ export default function AnimationLibrary(props) {
           }}
         ></div>
       </StyledBox>
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          top: "90%",
+        }}
+      >
+        <StyledSwitch onClick={() => setIsLocal(true)} on={isLocal}>
+          SESSION
+        </StyledSwitch>
+        <StyledSwitch onClick={() => setIsLocal(false)} on={!isLocal}>
+          SAVED
+        </StyledSwitch>
+      </div>
     </StyledBoxx>
   );
 }
