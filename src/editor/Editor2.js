@@ -385,17 +385,21 @@ function Editor2(props) {
   };
 
   const extractToGif = useExtractToGif(email);
-  const handleMakeGif = useCallback(async () => {
-    let res = getWidthHeight(400);
-    let noisedProccesedFrames = addNoise(proccesedFrames, noiseConfig);
-    await extractToGif(
-      noisedProccesedFrames,
-      delay,
-      res[0],
-      res[1],
-      pixelConfig
-    );
-  }, [extractToGif, proccesedFrames, delay, pixelConfig]);
+  const handleMakeGif = useCallback(
+    async (frames) => {
+      let res = getWidthHeight(400);
+      let noisedProccesedFrames = addNoise(frames, noiseConfig);
+      console.log(frames.length);
+      await extractToGif(
+        noisedProccesedFrames,
+        delay,
+        res[0],
+        res[1],
+        pixelConfig
+      );
+    },
+    [extractToGif, delay, pixelConfig]
+  );
 
   useEffect(() => {
     var tt = sessionStorage.getItem("editData");

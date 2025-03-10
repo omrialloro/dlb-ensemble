@@ -3,7 +3,7 @@ import styled from "styled-components";
 import CircularSlider from "@fseehawer/react-circular-slider";
 import DimensionsForm from "./DimensionsForm";
 // import { Slider } from "./../components/Slider";
-import { minHeight } from "@mui/system";
+import { minHeight, positions } from "@mui/system";
 import MyButton from "../FancyButtons/FancyButtons";
 import AnimationLibrary from "./../../creator/components/animationLibrary/AnimationLibrary.js";
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
@@ -27,11 +27,46 @@ const StyledBox = styled.div`
   background-color: rgb(80, 80, 80);
 `;
 
-const StyledSizeController = styled.div`
+const StyledBrowse = styled.div`
+  /* display: flex; */
+  height: 40px;
+  width: 80px;
+  color: red;
+  font-weight: 1000;
+  padding: 10px;
+  margin: 3px;
+
+  background-color: rgb(80, 80, 80);
+`;
+const StyledLoadMusic = styled.div`
+  /* display: flex; */
+  height: 25px;
+  width: 80px;
+  color: rgb(250, 120, 90);
+  font-weight: 1000;
+  font-size: 10px;
+  padding: 5px;
+  padding-left: 10px;
+
+  margin: 3px;
+
+  background-color: rgb(80, 80, 80);
+`;
+
+const StyledTimeline = styled.div`
+  width: ${(props) => props.width}px;
+
+  /* width: 790px; */
+  height: 80px;
   display: flex;
-  height: 30px;
-  width: 290px;
-  background-color: rgb(20, 100, 120);
+  padding: 1px;
+
+  background: rgb(50, 110, 130);
+`;
+
+const StyledAnimationScroll = styled.div`
+  width: ${(props) => props.width}px;
+  overflow: "scroll";
 `;
 
 const StyledFilters = styled.div`
@@ -109,20 +144,6 @@ function FiltersBtn(props) {
     </div>
   );
 }
-
-const StyledBackToEditor = styled.div`
-  height: ${(props) => props.height}px;
-
-  /* height: 475px; */
-  width: 170px;
-  font-size: 42px;
-  font-weight: 800;
-  text-align: center;
-  padding-top: 100px;
-  padding-left: 10px;
-
-  background-color: rgb(20, 100, 100);
-`;
 
 const StyledTimer = styled.div`
   height: 60px;
@@ -328,9 +349,21 @@ const FancyScreen = (props) => {
   const canvasRef = useRef(null);
   const canvasPixelRef = useRef(null);
   const [dims, setDims] = useState({ width: 500, height: 500 });
+  const [www, setWww] = useState(79);
+
+  useEffect(() => {
+    setWww(Number(dims.width) + 290);
+    console.log(Number(dims.width) + 200);
+  }, [dims]);
+
+  useEffect(() => {
+    // setWww(dims.width + 200);
+    console.log(www);
+  }, [www]);
+
   const Boundaries = {
     mimWidth: 100,
-    maxWidth: 800,
+    maxWidth: 940,
     minHeight: 500,
     maxHeight: 650,
   };
@@ -565,11 +598,11 @@ const FancyScreen = (props) => {
         // renderInstanceFrames(element["id"])
       );
     });
-    return RGBFrames(outFrames);
+    return outFrames;
   }
 
   useEffect(() => {
-    const outFrames = prepareOutScreenData();
+    const outFrames = RGBFrames(prepareOutScreenData());
     if (outFrames.length > 0) {
       setEditedFrames(outFrames);
     }
@@ -946,7 +979,9 @@ const FancyScreen = (props) => {
               }}
               knobSize={20}
             />
-            <StyledGif onClick={clickGif}>Gif</StyledGif>
+            <StyledGif onClick={() => clickGif(prepareOutScreenData())}>
+              Gif
+            </StyledGif>
           </StyleTimeControl>
 
           <StyledBox onClick={togglePlay}>
@@ -954,7 +989,7 @@ const FancyScreen = (props) => {
               style={{ width: "90px" }}
               src={play ? "pause_icon.svg" : "play.svg"}
             />
-            <StyledTimer ref={timeRef}>fdfdf</StyledTimer>
+            <StyledTimer ref={timeRef}></StyledTimer>
           </StyledBox>
         </div>
         <canvas
@@ -962,87 +997,84 @@ const FancyScreen = (props) => {
           width={dims.width}
           height={dims.height}
         ></canvas>
-        <StyledBackToEditor
-          onClick={exitScreen}
-          height={Math.max(dims.height, minHeight)}
-        >
-          BACK TO EDITOR
-        </StyledBackToEditor>
       </div>
-      <div
-        style={{
-          width: "950px",
-          height: "80px",
-          display: "flex",
-          padding: "10px",
-          background: "rgb(50,110,130)",
-        }}
-      >
-        <MyButton
-          onClick={() => {
-            setBrowserOn(true);
-          }}
-        />
-        <div>
-          <DragDropContext onDragEnd={handleOnDragEnd}>
-            <Droppable droppableId="droppable" direction="horizontal">
-              {(provided) => {
-                return (
-                  <ScrollMenu>
-                    <div
-                      style={{
-                        width: "850px",
+      <StyledTimeline width={www}>
+        <div style={{ padding: "2px" }}>
+          <StyledBrowse
+            onClick={() => {
+              setBrowserOn(true);
+            }}
+          >
+            BROWSE
+          </StyledBrowse>
 
-                        overflow: "scroll",
-                      }}
-                      className="order"
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                    >
-                      {instancesEditor.map((k, index) => (
-                        <Draggable
-                          key={k["id"] + 1000}
-                          draggableId={k["id"]}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <SmallScreen
-                              provided={provided}
-                              id={k["id"]}
-                              frames={renderInstanceFrames(k["id"])}
-                              selectScreen={() => editInstance(k["id"])}
-                              handleDelete={() => removeInstanceEditor(k["id"])}
-                              handleDuplicate={() =>
-                                duplicateInstanceEditor(k["id"])
-                              }
-                            />
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  </ScrollMenu>
-                );
-              }}
-            </Droppable>
-          </DragDropContext>
-          {waveOn ? (
-            <WaveformTunner
-              ref={AudioRef}
-              lenSec={120}
-              offMusic={() => setWaveOn(false)}
-              playFunc={play}
-              durationSec={9.0}
-            />
-          ) : (
-            <LoadMusicBts
-              loadMusic={() => {
-                setWaveOn(true);
-              }}
-            ></LoadMusicBts>
-          )}
+          <StyledLoadMusic
+            onClick={() => {
+              setWaveOn(true);
+            }}
+          >
+            LOAD MUSIC
+          </StyledLoadMusic>
         </div>
-      </div>
+        <div>
+          <div style={{ display: "flex", marginTop: "10px" }}>
+            {waveOn ? (
+              <WaveformTunner
+                ref={AudioRef}
+                lenSec={120}
+                offMusic={() => setWaveOn(false)}
+                playFunc={play}
+                durationSec={9.0}
+                style={{ marginLeft: "3px" }}
+              />
+            ) : (
+              <div
+                style={{ width: "206px", background: "rgb(50, 110, 130)" }}
+              ></div>
+            )}
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+              <Droppable droppableId="droppable" direction="horizontal">
+                {(provided) => {
+                  return (
+                    <ScrollMenu>
+                      <StyledAnimationScroll
+                        width={www - 300}
+                        className="order"
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                      >
+                        {instancesEditor.map((k, index) => (
+                          <Draggable
+                            key={k["id"] + 1000}
+                            draggableId={k["id"]}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <SmallScreen
+                                provided={provided}
+                                id={k["id"]}
+                                frames={renderInstanceFrames(k["id"])}
+                                selectScreen={() => editInstance(k["id"])}
+                                handleDelete={() =>
+                                  removeInstanceEditor(k["id"])
+                                }
+                                handleDuplicate={() =>
+                                  duplicateInstanceEditor(k["id"])
+                                }
+                              />
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </StyledAnimationScroll>
+                    </ScrollMenu>
+                  );
+                }}
+              </Droppable>
+            </DragDropContext>
+          </div>
+        </div>
+      </StyledTimeline>
     </div>
   );
 };

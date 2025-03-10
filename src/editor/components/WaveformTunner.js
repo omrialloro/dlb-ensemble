@@ -52,17 +52,17 @@ function createWaveform(len_sec) {
 
   return A.map((x) => (
     <>
-      <Bar style={{ height: "25px" }} />
-      <Bar style={{ height: "32px" }} />
-      <Bar style={{ height: "40px" }} />
-      <Bar style={{ height: "32px" }} />
+      <Bar style={{ height: "15px" }} />
+      <Bar style={{ height: "20px" }} />
+      <Bar style={{ height: "30px" }} />
+      <Bar style={{ height: "20px" }} />
     </>
   ));
 }
 
 let music_urls = {
   track1:
-    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/doctor+you+box+v3.mp3",
+    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/Wallflower+ZX+(colour+version)+-+ZX+Spectrum+Intro.m4a",
   track2:
     "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
   track3:
@@ -81,7 +81,7 @@ let music_urls = {
 
 const Bar = styled.img`
   display: inline;
-  height: 40px;
+  height: 30px;
   width: 5px;
   position: relative;
   align-items: center;
@@ -102,9 +102,9 @@ const StyledBox = styled.div`
     box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
   }
 
-  height: 63px;
-  width: 900px;
-  border-radius: 12px;
+  height: 60px;
+  width: 130px;
+  border-radius: 8px;
   border: 1px solid #909090;
   padding: 12px;
   display: grid;
@@ -124,8 +124,7 @@ const StyledTimeScreen = styled.div`
   width: 50px;
   padding: 20px;
   margin: 2px;
-
-  margin-right: 4px;
+  margin-right: 2px;
 
   padding-left: 5px;
   border-radius: 5px;
@@ -140,7 +139,7 @@ const StyledManu = styled.div`
   height: 260px;
   width: 380px;
   position: absolute;
-  top: 200px;
+  top: 100px;
   left: 400px;
   border-radius: 5px;
   padding: 10px;
@@ -321,10 +320,7 @@ export const WaveformTunner = forwardRef((props, ref) => {
   return (
     <div
       style={{
-        marginTop: "15px",
         display: "flex",
-        // position: "absolute",
-        left: "40px",
       }}
     >
       {manuOn ? (
@@ -335,9 +331,7 @@ export const WaveformTunner = forwardRef((props, ref) => {
 
       <div
         style={{
-          marginTop: "5px",
           display: "flex",
-          position: "absolute",
           left: "40px",
         }}
       >
