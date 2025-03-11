@@ -11,10 +11,7 @@ import { SmallScreen } from "./../../editor/views/smallScreen/SmallScreen";
 import { useAnimations } from "../../creator/components/animationData/AnimationContext.js";
 import { createGrayFrames } from "./../frameOps/FrameOps";
 import { getSchemes } from "../schemes/Schemes";
-import {
-  WaveformTunner,
-  LoadMusicBts,
-} from "./../../editor/components/WaveformTunner.js";
+import { WaveformTunner } from "./../../editor/components/WaveformTunner.js";
 
 import LoadMusicBtn from "./../../editor/components/LoadMusicBtn.js";
 
@@ -1011,6 +1008,7 @@ const FancyScreen = (props) => {
           <StyledLoadMusic
             onClick={() => {
               setWaveOn(true);
+              ref1.current();
             }}
           >
             LOAD MUSIC

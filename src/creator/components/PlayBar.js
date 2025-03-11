@@ -109,8 +109,8 @@ export const PlayBar = (props) => {
   const [val, setVal] = useState(pausedFrameIndex);
 
   React.useEffect(() => {
-    setVal(pausedFrameIndex);
-  }, [pausedFrameIndex]);
+    setVal(length);
+  }, [delay]);
 
   useInterval(() => {
     if (val >= length - 1) {

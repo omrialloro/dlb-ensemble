@@ -244,7 +244,8 @@ const Creator = forwardRef((props, ref) => {
   }
   function toggleIsPlay() {
     if (isPlay) {
-      setFrameIndex(Math.max(1, screenRef.current));
+      // setFrameIndex(Math.max(1, screenRef.current));
+      setFrameIndex(Math.max(1, currentFrames.length));
     }
     // if (renderedFrames.length > 1 && !isPlay) {
     if (currentFrames.length > 1 && !isPlay) {

@@ -35,6 +35,7 @@ const AudioPlayer = forwardRef((props, ref) => {
       audio.pause();
     }
   }
+
   ref2.current = HandleAudio;
 
   return (
@@ -294,10 +295,14 @@ export const WaveformTunner = forwardRef((props, ref) => {
   const offMusic = props.offMusic;
 
   const lenSec = props.lenSec;
-  const duration = props.duration;
+  // const duration = props.duration;
   const isPlay = props.isPlay;
-  const [startSecond, setStartSecond] = useState(0.0);
+  // const [startSecond, setStartSecond] = useState(0.0);
   const { ref1, ref2, ref3 } = ref.current;
+
+  ref1.current = () => {
+    setManuOn(true);
+  };
 
   const refLen = useRef();
   refLen.current = 30;
