@@ -298,8 +298,10 @@ const Creator = forwardRef((props, ref) => {
   }, [undoData]);
 
   const handleSaveAnimation = () => {
-    const prefix = window.prompt("enter animation name");
-    let name = prefix + String(Date.now());
+    // const prefix = window.prompt("enter animation name");
+    // let name = prefix + String(Date.now());
+    let name = String(Date.now());
+
     if (!isContainingOscillators()) {
       const frames_ = renderAllFramesToStates(currentFrames);
       let ThumbnailFrame = renderFrameToRGB(frames_[0], 0);
