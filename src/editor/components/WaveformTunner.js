@@ -63,7 +63,7 @@ function createWaveform(len_sec) {
 
 let music_urls = {
   track1:
-    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/Wallflower+ZX+(colour+version)+-+ZX+Spectrum+Intro.m4a",
+    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/Happy+Happy+Joy+Joy!+%EF%BD%9C+The+Ren+%26+Stimpy+Show.webm",
   track2:
     "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
   track3:
@@ -292,6 +292,7 @@ export const LoadMusicBts = (props) => {
 
 export const WaveformTunner = forwardRef((props, ref) => {
   const [manuOn, setManuOn] = useState(true);
+  const [url, setUrl] = useState("");
   const offMusic = props.offMusic;
 
   const lenSec = props.lenSec;
@@ -300,14 +301,49 @@ export const WaveformTunner = forwardRef((props, ref) => {
   // const [startSecond, setStartSecond] = useState(0.0);
   const { ref1, ref2, ref3 } = ref.current;
 
-  ref1.current = () => {
-    setManuOn(true);
-  };
-
   const refLen = useRef();
   refLen.current = 30;
 
   const rrr = useRef();
+
+  const [videoId, setVideoId] = useState("");
+  const [downloadLink, setDownloadLink] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    console.log(videoId);
+    fetchDownloadLink(videoId);
+    console.log(videoId);
+  }, [videoId]);
+
+  useEffect(() => {
+    setUrl(downloadLink);
+    console.log(downloadLink);
+  }, [downloadLink]);
+
+  const fetchDownloadLink = async (videoId) => {
+    setError(null);
+    setDownloadLink(null);
+
+    if (!videoId) {
+      setError("Please enter a video ID.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/downloadYoutubeMp3?id=${videoId}`
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch download link.");
+      }
+
+      setDownloadLink(data.data.link);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const containerRef = useScrollStopListener(() => {
     let timeSec = (containerRef.current.scrollLeft / 20).toFixed(1);
@@ -318,9 +354,44 @@ export const WaveformTunner = forwardRef((props, ref) => {
   });
 
   const aaa = useRef({ refLen, ref2 });
-  const [url, setUrl] = useState(
-    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg"
-  );
+
+  ref1.current = () => {
+    receiveUrlFromUser();
+
+    // setManuOn(true);
+  };
+
+  function extractYouTubeID(url) {
+    try {
+      const parsedUrl = new URL(url);
+
+      // For standard YouTube URLs with ?v=VIDEO_ID
+      if (parsedUrl.hostname.includes("youtube.com")) {
+        return new URLSearchParams(parsedUrl.search).get("v");
+      }
+
+      // For shortened URLs like https://youtu.be/VIDEO_ID
+      if (parsedUrl.hostname.includes("youtu.be")) {
+        return parsedUrl.pathname.substring(1);
+      }
+
+      return null; // If it's not a valid YouTube URL
+    } catch (error) {
+      return null; // Invalid URL format
+    }
+  }
+
+  function receiveUrlFromUser() {
+    const urlIn = window.prompt("enter music url");
+    console.log(urlIn);
+
+    setVideoId(extractYouTubeID(urlIn));
+    console.log(urlIn);
+  }
+
+  useEffect(() => {
+    receiveUrlFromUser();
+  }, []);
 
   return (
     <div
@@ -328,7 +399,8 @@ export const WaveformTunner = forwardRef((props, ref) => {
         display: "flex",
       }}
     >
-      {manuOn ? (
+      {/* {manuOn ? ( */}
+      {false ? (
         <MusicManu setUrl={setUrl} setManuOn={setManuOn}></MusicManu>
       ) : (
         <></>
