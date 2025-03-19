@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { serverUrl } from "../../settings";
 import { AuthContext } from "../../login/authContext";
 import { useFetch } from "./useFetch";
-import { useCallback } from "react";
 
 const gifPath = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/gifs/ooo";
 
@@ -53,9 +52,11 @@ function useExtractToGif() {
 }
 
 function useDeleteAnimationFromServer() {
-  const { token } = useContext(AuthContext);
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
   return async function (animationId) {
-    fetch(serverUrl + "/deleteStoredAnimation", {
+    fetch(serverUrl + "/markAsDeleted", {
       method: "POST", // or 'PUT'
       headers: {
         Authorization: `Bearer ${token}`,
@@ -159,6 +160,86 @@ function useLoadAnimation() {
   return loadAnimation;
 }
 
+const UploadMp3 = (props) => {
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
+  const setMusicUrl = props.setMusicUrl;
+  // const [musicUrl, setMusicUrl] = useState("");
+
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile && selectedFile.type === "audio/mpeg") {
+      console.log(selectedFile);
+      setFile(selectedFile);
+      // setMessage("");
+    }
+    //  else {
+    //   setMessage("Please select a valid MP3 file.");
+    // }
+  };
+  useEffect(() => {
+    console.log(file);
+  }, [file]);
+
+  const handleUpload = async () => {
+    if (!file) {
+      setMessage("No file selected.");
+      return;
+    }
+
+    setUploading(true);
+    setMessage("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    console.log(file);
+    console.log(formData["file"]);
+
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value); // This will log the key-value pairs of the FormData
+    }
+
+    try {
+      const response = await fetch(serverUrl + "/uploadFile", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMusicUrl(data.fileUrl);
+        setMessage(`File uploaded successfully! URL: ${data.fileUrl}`);
+      } else {
+        setMessage("Upload failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      setMessage("Upload failed. Please try again.");
+    }
+
+    setUploading(false);
+  };
+
+  return (
+    <div>
+      <input type="file" accept="audio/mpeg" onChange={handleFileChange} />
+      <button onClick={handleUpload} disabled={!file || uploading}>
+        {uploading ? "Uploading..." : "Upload MP3"}
+      </button>
+    </div>
+  );
+};
+
 export {
   useSaveAnimation,
   useExtractToGif,
@@ -166,4 +247,5 @@ export {
   useSaveStoredAnimations,
   useAnimationFromServer,
   useLoadAnimation,
+  UploadMp3,
 };

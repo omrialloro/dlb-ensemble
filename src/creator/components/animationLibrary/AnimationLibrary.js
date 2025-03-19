@@ -9,6 +9,7 @@ import styled, { keyframes } from "styled-components";
 import {
   useAnimationFromServer,
   useLoadAnimation,
+  useDeleteAnimationFromServer,
 } from "../../../sharedLib/Server/api";
 
 import { Screen } from "../Screen";
@@ -527,6 +528,12 @@ export default function AnimationLibrary(props) {
     }
   }, [browserdOn]);
 
+  const deleteAnimationFromServer = useDeleteAnimationFromServer();
+
+  function onDelete(id) {
+    deleteAnimationFromServer(id);
+  }
+
   return (
     <StyledBoxx ref={rrrr} isVisible={browserdOn}>
       <StyledBtn
@@ -574,6 +581,8 @@ export default function AnimationLibrary(props) {
               refDelete.current.style.transition = "0.1s";
               refDelete.current.style.backgroundColor = "#fd8446";
               refDelete.current.style.scale = 0.95;
+              console.log(animationId);
+              onDelete(animationId);
               setTimeout(() => {
                 refDelete.current.style.transition = "0.3s";
                 refDelete.current.style.backgroundColor = "#fa4400";

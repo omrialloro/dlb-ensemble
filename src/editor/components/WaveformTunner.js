@@ -3,6 +3,9 @@ import styled from "styled-components";
 
 const AudioPlayer = forwardRef((props, ref) => {
   const isPlay = props.isPlay;
+  useEffect(() => {
+    console.log("isPlay");
+  }, [isPlay]);
   const url = props.url;
 
   const audioRef = useRef(null);
@@ -14,6 +17,8 @@ const AudioPlayer = forwardRef((props, ref) => {
 
   const { refLen, ref2 } = ref.current;
   useEffect(() => {
+    console.log("isPlay");
+
     if (isPlay) {
       playAudio();
     } else {
@@ -23,7 +28,8 @@ const AudioPlayer = forwardRef((props, ref) => {
 
   const playAudio = () => {
     const audio = audioRef.current;
-    audio.currentTime = refLen.current; // Set the start time to 20 seconds
+    audio.currentTime = refLen.current;
+    console.log(refLen.current); // Set the start time to 20 seconds
     audio.play();
   };
 
@@ -218,31 +224,31 @@ const Xelement = (props) => {
   );
 };
 
-const MusicManu = (props) => {
-  const setUrl = props.setUrl;
-  const setManuOn = props.setManuOn;
+// const MusicManu = (props) => {
+//   const setUrl = props.setUrl;
+//   const setManuOn = props.setManuOn;
 
-  function onTrackClick(url) {
-    setUrl(url);
-  }
-  return (
-    <StyledManu>
-      <Xelement onClick={() => setManuOn(false)} position={"absolute"} />
-      <div style={{ overflow: "scroll" }}>
-        {Object.keys(music_urls).map((x) => (
-          <StyledManuEl
-            onClick={() => {
-              setManuOn(false);
-              onTrackClick(music_urls[x]);
-            }}
-          >
-            {x}
-          </StyledManuEl>
-        ))}
-      </div>
-    </StyledManu>
-  );
-};
+//   function onTrackClick(url) {
+//     setUrl(url);
+//   }
+//   return (
+//     <StyledManu>
+//       <Xelement onClick={() => setManuOn(false)} position={"absolute"} />
+//       <div style={{ overflow: "scroll" }}>
+//         {Object.keys(music_urls).map((x) => (
+//           <StyledManuEl
+//             onClick={() => {
+//               setManuOn(false);
+//               onTrackClick(music_urls[x]);
+//             }}
+//           >
+//             {x}
+//           </StyledManuEl>
+//         ))}
+//       </div>
+//     </StyledManu>
+//   );
+// };
 
 const createScrollStopListener = (element, callback, timeout) => {
   let removed = false;
@@ -292,12 +298,14 @@ export const LoadMusicBts = (props) => {
 
 export const WaveformTunner = forwardRef((props, ref) => {
   const [manuOn, setManuOn] = useState(true);
-  const [url, setUrl] = useState("");
+  // const [url, setUrl] = useState(props.musicUrl);
   const offMusic = props.offMusic;
-
+  const musicUrl = props.musicUrl;
   const lenSec = props.lenSec;
+
   // const duration = props.duration;
   const isPlay = props.isPlay;
+
   // const [startSecond, setStartSecond] = useState(0.0);
   const { ref1, ref2, ref3 } = ref.current;
 
@@ -306,44 +314,44 @@ export const WaveformTunner = forwardRef((props, ref) => {
 
   const rrr = useRef();
 
-  const [videoId, setVideoId] = useState("");
-  const [downloadLink, setDownloadLink] = useState(null);
-  const [error, setError] = useState(null);
+  // const [videoId, setVideoId] = useState("");
+  // const [downloadLink, setDownloadLink] = useState(null);
+  // const [error, setError] = useState(null);
 
-  useEffect(() => {
-    console.log(videoId);
-    fetchDownloadLink(videoId);
-    console.log(videoId);
-  }, [videoId]);
+  // useEffect(() => {
+  //   console.log(videoId);
+  //   fetchDownloadLink(videoId);
+  //   console.log(videoId);
+  // }, [videoId]);
 
-  useEffect(() => {
-    setUrl(downloadLink);
-    console.log(downloadLink);
-  }, [downloadLink]);
+  // useEffect(() => {
+  //   setUrl(downloadLink);
+  //   console.log(downloadLink);
+  // }, [downloadLink]);
 
-  const fetchDownloadLink = async (videoId) => {
-    setError(null);
-    setDownloadLink(null);
+  // const fetchDownloadLink = async (videoId) => {
+  //   setError(null);
+  //   setDownloadLink(null);
 
-    if (!videoId) {
-      setError("Please enter a video ID.");
-      return;
-    }
+  //   if (!videoId) {
+  //     setError("Please enter a video ID.");
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch(
-        `http://localhost:4000/downloadYoutubeMp3?id=${videoId}`
-      );
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to fetch download link.");
-      }
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:4000/downloadYoutubeMp3?id=${videoId}`
+  //     );
+  //     const data = await response.json();
+  //     if (!response.ok) {
+  //       throw new Error(data.message || "Failed to fetch download link.");
+  //     }
 
-      setDownloadLink(data.data.link);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  //     setDownloadLink(data.data.link);
+  //   } catch (err) {
+  //     setError(err.message);
+  //   }
+  // };
 
   const containerRef = useScrollStopListener(() => {
     let timeSec = (containerRef.current.scrollLeft / 20).toFixed(1);
@@ -355,43 +363,40 @@ export const WaveformTunner = forwardRef((props, ref) => {
 
   const aaa = useRef({ refLen, ref2 });
 
-  ref1.current = () => {
-    receiveUrlFromUser();
+  // ref1.current = () => {
+  //   receiveUrlFromUser();
+  // };
 
-    // setManuOn(true);
-  };
+  // function extractYouTubeID(url) {
+  //   try {
+  //     const parsedUrl = new URL(url);
 
-  function extractYouTubeID(url) {
-    try {
-      const parsedUrl = new URL(url);
+  //     // For standard YouTube URLs with ?v=VIDEO_ID
+  //     if (parsedUrl.hostname.includes("youtube.com")) {
+  //       return new URLSearchParams(parsedUrl.search).get("v");
+  //     }
 
-      // For standard YouTube URLs with ?v=VIDEO_ID
-      if (parsedUrl.hostname.includes("youtube.com")) {
-        return new URLSearchParams(parsedUrl.search).get("v");
-      }
+  //     // For shortened URLs like https://youtu.be/VIDEO_ID
+  //     if (parsedUrl.hostname.includes("youtu.be")) {
+  //       return parsedUrl.pathname.substring(1);
+  //     }
 
-      // For shortened URLs like https://youtu.be/VIDEO_ID
-      if (parsedUrl.hostname.includes("youtu.be")) {
-        return parsedUrl.pathname.substring(1);
-      }
+  //     return null; // If it's not a valid YouTube URL
+  //   } catch (error) {
+  //     return null; // Invalid URL format
+  //   }
+  // }
 
-      return null; // If it's not a valid YouTube URL
-    } catch (error) {
-      return null; // Invalid URL format
-    }
-  }
+  // function receiveUrlFromUser() {
+  //   const urlIn = window.prompt("enter music url");
+  //   console.log(extractYouTubeID(urlIn));
+  //   setVideoId(extractYouTubeID(urlIn));
+  //   console.log(urlIn);
+  // }
 
-  function receiveUrlFromUser() {
-    const urlIn = window.prompt("enter music url");
-    console.log(urlIn);
-
-    setVideoId(extractYouTubeID(urlIn));
-    console.log(urlIn);
-  }
-
-  useEffect(() => {
-    receiveUrlFromUser();
-  }, []);
+  // useEffect(() => {
+  //   receiveUrlFromUser();
+  // }, []);
 
   return (
     <div
@@ -400,11 +405,11 @@ export const WaveformTunner = forwardRef((props, ref) => {
       }}
     >
       {/* {manuOn ? ( */}
-      {false ? (
+      {/* {false ? (
         <MusicManu setUrl={setUrl} setManuOn={setManuOn}></MusicManu>
       ) : (
         <></>
-      )}
+      )} */}
 
       <div
         style={{
@@ -412,7 +417,7 @@ export const WaveformTunner = forwardRef((props, ref) => {
           left: "40px",
         }}
       >
-        <AudioPlayer ref={aaa} isPlay={isPlay} url={url} />
+        <AudioPlayer ref={aaa} isPlay={isPlay} url={musicUrl} offsetSec={0.0} />
         <StyledTimeScreen ref={rrr}>0.0</StyledTimeScreen>
 
         <StyledBox

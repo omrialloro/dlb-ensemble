@@ -15,6 +15,7 @@ import { WaveformTunner } from "./../../editor/components/WaveformTunner.js";
 import YouTubeDownloader from "./../Server/YouTubeDownloader.js";
 
 import LoadMusicBtn from "./../../editor/components/LoadMusicBtn.js";
+import { UploadMp3 } from "./../Server/api.js";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
@@ -371,6 +372,7 @@ const FancyScreen = (props) => {
   const ref3 = useRef();
 
   const [waveOn, setWaveOn] = useState(false);
+  const [chooseFileOn, setChooseFileOn] = useState(false);
 
   useEffect(() => {
     if (waveOn) {
@@ -768,6 +770,16 @@ const FancyScreen = (props) => {
     // setDATA(items);
   }
 
+  const [musicUrl, setMusicUrl] = useState("");
+
+  useEffect(() => {
+    console.log("FSSSDDSS");
+
+    if (musicUrl !== "") {
+      setWaveOn(true);
+    }
+  }, [musicUrl]);
+
   return (
     <div>
       {browserdOn ? (
@@ -1008,7 +1020,7 @@ const FancyScreen = (props) => {
 
           <StyledLoadMusic
             onClick={() => {
-              setWaveOn(true);
+              setChooseFileOn(true);
               ref1.current();
             }}
           >
@@ -1020,16 +1032,19 @@ const FancyScreen = (props) => {
             {waveOn ? (
               <WaveformTunner
                 ref={AudioRef}
+                musicUrl={musicUrl}
                 lenSec={120}
                 offMusic={() => setWaveOn(false)}
-                playFunc={play}
+                // playFunc={play}
                 durationSec={9.0}
                 style={{ marginLeft: "3px" }}
               />
+            ) : chooseFileOn ? (
+              <div style={{ width: "206px", background: "rgb(50, 110, 130)" }}>
+                <UploadMp3 setMusicUrl={setMusicUrl} />
+              </div>
             ) : (
-              <div
-                style={{ width: "206px", background: "rgb(50, 110, 130)" }}
-              ></div>
+              <></>
             )}
             <DragDropContext onDragEnd={handleOnDragEnd}>
               <Droppable droppableId="droppable" direction="horizontal">
@@ -1079,5 +1094,3 @@ const FancyScreen = (props) => {
 };
 
 export { FancyScreen };
-
-// which should i copy here for your_api_key  in X-RapidAPI-Key: YOUR_ACTUAL_KEY X-RapidAPI-Host: youtube-to-mp315.p.rapidapi.com

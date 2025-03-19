@@ -202,6 +202,7 @@ export default function useAnimationsData(props) {
 
   const removeInstance_ = useCallback(
     (instanceId) => {
+      console.log(instanceId);
       const inst = getInstanceById(instanceId);
       const animation_id = inst.animationId;
       const updateInstances = instances.filter(
