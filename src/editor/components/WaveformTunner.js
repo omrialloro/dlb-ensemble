@@ -301,6 +301,7 @@ export const WaveformTunner = forwardRef((props, ref) => {
   // const [url, setUrl] = useState(props.musicUrl);
   const offMusic = props.offMusic;
   const musicUrl = props.musicUrl;
+  console.log(musicUrl);
   const lenSec = props.lenSec;
 
   // const duration = props.duration;
