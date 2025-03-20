@@ -187,6 +187,47 @@ const UploadMp3 = (props) => {
   }, [file]);
 
   const handleUpload = async () => {
+    // if (!file) {
+    //   setMessage("No file selected.");
+    //   return;
+    // }
+
+    // setUploading(true);
+    // setMessage("");
+
+    // const formData = new FormData();
+    // formData.append("file", file);
+
+    // console.log(file);
+    // console.log(formData["file"]);
+
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(key, value); // This will log the key-value pairs of the FormData
+    // }
+
+    // try {
+    //   const response = await fetch(serverUrl + "/uploadFile", {
+    //     method: "POST",
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //     body: formData,
+    //   });
+
+    //   const data = await response.json();
+
+    //   if (response.ok) {
+    //     setMusicUrl(data.fileUrl);
+    //     setMessage(`File uploaded successfully! URL: ${data.fileUrl}`);
+    //   } else {
+    //     setMessage("Upload failed. Please try again.");
+    //   }
+    // } catch (error) {
+    //   console.error("Upload error:", error);
+    //   setMessage("Upload failed. Please try again.");
+    // }
+
+    // setUploading(false);
     if (!file) {
       setMessage("No file selected.");
       return;
@@ -198,20 +239,24 @@ const UploadMp3 = (props) => {
     const formData = new FormData();
     formData.append("file", file);
 
-    console.log(file);
-    console.log(formData["file"]);
+    // 🚀 Log file details
+    console.log("File Object:", file);
+    console.log("File Name:", file.name);
+    console.log("File Type:", file.type);
+    console.log("File Size:", file.size, "bytes");
 
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value); // This will log the key-value pairs of the FormData
+    // 🚀 Log FormData contents correctly
+    for (let entry of formData.entries()) {
+      console.log("FormData Key:", entry[0], "Value:", entry[1]);
     }
 
     try {
       const response = await fetch(serverUrl + "/uploadFile", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // ✅ Only set auth header
         },
-        body: formData,
+        body: formData, // ✅ Correctly sends file as FormData
       });
 
       const data = await response.json();
