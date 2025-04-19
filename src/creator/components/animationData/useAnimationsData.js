@@ -202,7 +202,6 @@ export default function useAnimationsData(props) {
 
   const removeInstance_ = useCallback(
     (instanceId) => {
-      console.log(instanceId);
       const inst = getInstanceById(instanceId);
       const animation_id = inst.animationId;
       const updateInstances = instances.filter(
@@ -379,24 +378,28 @@ export default function useAnimationsData(props) {
     },
     [renderFrame, colorScheme]
   );
+
   const animationsServer = useAnimationFromServer("row");
 
-  const storeAnimation = (frames, id) => {
-    const serverAnimationsIds = animationsServer.map((x) => x.id);
-    if (!serverAnimationsIds.includes(id)) {
-      let ThumbnailFrame = renderFrameToRGB(frames[0], 0);
-      let data = {
-        userID: undefined,
-        name: id,
-        data: frames,
-        ThumbnailFrame: ThumbnailFrame,
-        isDeleted: false,
-        formatType: "row",
-        saved: false,
-      };
-      saveAnimation(data);
-    }
-  };
+  const storeAnimation = useCallback(
+    (frames, id) => {
+      const serverAnimationsIds = animationsServer.map((x) => x.id);
+      if (!serverAnimationsIds.includes(id)) {
+        let ThumbnailFrame = renderFrameToRGB(frames[0], 0);
+        let data = {
+          userID: undefined,
+          name: id,
+          data: frames,
+          ThumbnailFrame: ThumbnailFrame,
+          isDeleted: false,
+          formatType: "row",
+          saved: false,
+        };
+        saveAnimation(data);
+      }
+    },
+    [animationsServer, renderFrameToRGB]
+  );
 
   const renderInstanceFrames = useCallback(
     (instanceId) => {
@@ -483,7 +486,7 @@ export default function useAnimationsData(props) {
         }));
       }
     },
-    [animations, renderAllFramesToStates]
+    [animations, renderAllFramesToStates, storeAnimation]
   );
 
   const renderOscillator = useCallback(

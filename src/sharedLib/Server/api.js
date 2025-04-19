@@ -140,6 +140,7 @@ function useAnimationFromServer(type) {
     }
     setAnimationsServer(animations_);
   }, [data]);
+
   return animationsServer;
 }
 function useLoadAnimation() {

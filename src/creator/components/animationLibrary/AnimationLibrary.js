@@ -581,7 +581,6 @@ export default function AnimationLibrary(props) {
               refDelete.current.style.transition = "0.1s";
               refDelete.current.style.backgroundColor = "#fd8446";
               refDelete.current.style.scale = 0.95;
-              console.log(animationId);
               onDelete(animationId);
               setTimeout(() => {
                 refDelete.current.style.transition = "0.3s";
