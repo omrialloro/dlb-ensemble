@@ -574,7 +574,12 @@ export default function useAnimationsData(props) {
     if (isStoredLoaded) {
       const instances_ = JSON.parse(sessionStorage.getItem("instances"));
       setInstances(instances_);
-      setCurrentFrames(JSON.parse(sessionStorage.getItem("currentFrames")));
+      const currentFrames_ = JSON.parse(
+        sessionStorage.getItem("currentFrames")
+      );
+      if (currentFrames_ !== null && currentFrames_.length > 0) {
+        setCurrentFrames(JSON.parse(sessionStorage.getItem("currentFrames")));
+      }
       setIsSessionLoaded(true);
     }
   }, [isStoredLoaded]);

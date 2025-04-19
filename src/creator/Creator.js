@@ -67,7 +67,6 @@ const Creator = forwardRef((props, ref) => {
     isSessionLoaded,
     // setSchemeKey,
   } = useAnimations();
-
   useEffect(() => {
     setColorScheme(colors);
     // setSchemeKey(coloringState.scheme);
@@ -112,11 +111,25 @@ const Creator = forwardRef((props, ref) => {
   const [isPlay, setIsPlay] = useState(false);
   const [isLoop, setIsLoop] = useState(false);
 
+  // const [frameState, setFrameState] = useState(
+  //   currentFrames.length > 0
+  //     ? currentFrames[currentFrames.length - 1]
+  //     : createDefaultFrameState(dim[0], dim[1], 0)
+  // );
+
   const [frameState, setFrameState] = useState(
-    currentFrames.length > 0
-      ? currentFrames[currentFrames.length - 1]
-      : createDefaultFrameState(dim[0], dim[1], 0)
+    chooseCurrentFrames(currentFrames)
   );
+
+  function chooseCurrentFrames(currentFrames) {
+    if (currentFrames === undefined || currentFrames === null) {
+      return createDefaultFrameState(dim[0], dim[1], 0);
+    } else if (currentFrames.length === 0) {
+      return createDefaultFrameState(dim[0], dim[1], 0);
+    } else {
+      return currentFrames[currentFrames.length - 1];
+    }
+  }
 
   const [currentFrame, setCurrentFrame] = useState(
     renderFrameToRGB(frameState, Math.max(0, frameIndex))
@@ -156,7 +169,6 @@ const Creator = forwardRef((props, ref) => {
   }
 
   const clearFrame = () => {
-    console.log("FFF");
     setFrameState(createDefaultFrameState(dim[0], dim[1], 0));
   };
 
@@ -443,7 +455,6 @@ const Creator = forwardRef((props, ref) => {
                   <PlayBar
                     delay={isPlay ? delay : null}
                     pausedFrameIndex={frameIndex}
-                    // length={renderedFrames.length}
                     length={currentFrames.length}
                     currentFrames
                     updateFrameIndex={setFrameIndex}
