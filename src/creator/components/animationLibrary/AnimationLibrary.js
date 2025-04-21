@@ -111,49 +111,61 @@ const StyledContainer = styled.div`
   transform: translatE(0%, 0%);
   position: absolute;
 `;
+// const StyledBox = styled.div`
+//   height: 60px;
+//   width: 320px;
+//   border-radius: 9px;
+//   padding: 6px;
+//   margin: 12px;
+//   display: grid;
+//   grid-template-columns: repeat(220, 1fr);
+
+//   /* grid-template-rows: repeat(10, 1fr); */
+//   grid-column-gap: 0;
+//   top: 68%;
+//   right: 4%;
+//   overflow-x: scroll;
+//   background: #8c8664;
+//   visibility: hidden;
+//   transform: translatE(5%, 10%);
+//   position: absolute;
+// `;
+
 const StyledBox = styled.div`
-  height: 60px;
+  height: 60px; /* or whatever height you want */
   width: 320px;
   border-radius: 9px;
   padding: 6px;
   margin: 12px;
   display: grid;
-  grid-template-columns: repeat(120, 1fr);
-  grid-template-rows: repeat(10, 1fr);
-  grid-column-gap: 0;
-  top: 68%;
-  right: 4%;
+  grid-template-columns: repeat(1211, 1fr);
+  overflow-y: auto; /* ✅ scroll vertically */
   overflow-x: scroll;
   background: #8c8664;
   visibility: hidden;
-  transform: translatE(5%, 10%);
+  transform: translate(5%, 10%);
   position: absolute;
+  top: 68%;
+  right: 4%;
 `;
 
 const StyledSwitch = styled.div`
-  height: 15px;
+  height: 20px;
   width: 150px;
   border-radius: 4px;
-  padding-left: 40px;
   margin-top: 10px;
   margin-left: 6px;
   margin-right: 6px;
-
-  display: grid;
-  grid-template-columns: repeat(120, 1fr);
-  grid-template-rows: repeat(10, 1fr);
-  grid-column-gap: 0;
+  padding: 3px;
   top: 90%;
   right: 4%;
-  overflow-x: scroll;
-  background: #8c8664;
   background: ${(props) =>
     props.on ? "rgb(250,124,120)" : "rgb(120,144,120)"};
 
   visibility: visible;
-  transform: translatE(5%, 10%);
   text-align: center;
   font-size: 12px;
+  text-align: center;
   /* position: absolute; */
 `;
 const StyledSwitchBtn = styled.div`

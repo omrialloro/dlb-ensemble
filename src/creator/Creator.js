@@ -67,6 +67,7 @@ const Creator = forwardRef((props, ref) => {
     isSessionLoaded,
     // setSchemeKey,
   } = useAnimations();
+
   useEffect(() => {
     setColorScheme(colors);
     // setSchemeKey(coloringState.scheme);
@@ -121,6 +122,10 @@ const Creator = forwardRef((props, ref) => {
     chooseCurrentFrames(currentFrames)
   );
 
+  useEffect(() => {
+    console.log(currentFrames);
+  }, [currentFrames]);
+
   function chooseCurrentFrames(currentFrames) {
     if (currentFrames === undefined || currentFrames === null) {
       return createDefaultFrameState(dim[0], dim[1], 0);
@@ -169,6 +174,7 @@ const Creator = forwardRef((props, ref) => {
   }
 
   const clearFrame = () => {
+    console.log("FFF");
     setFrameState(createDefaultFrameState(dim[0], dim[1], 0));
   };
 
@@ -455,8 +461,8 @@ const Creator = forwardRef((props, ref) => {
                   <PlayBar
                     delay={isPlay ? delay : null}
                     pausedFrameIndex={frameIndex}
+                    // length={renderedFrames.length}
                     length={currentFrames.length}
-                    currentFrames
                     updateFrameIndex={setFrameIndex}
                   />
                 </div>
