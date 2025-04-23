@@ -31,8 +31,8 @@ const StyledErrows = styled.div`
   align-items: center;
   height: 40px;
   width: 13vh;
-  margin-left: 5px;
-  margin-top: 12px;
+  margin-left: 20px;
+  margin-top: 3px;
   margin-bottom: 2px;
 
   cursor: pointer;
@@ -98,7 +98,7 @@ export function Errows(props) {
     }
   };
   return (
-    <div style={{ margin: "15px" }}>
+    <div style={{ marginBottom: "15px", marginTop: "2px" }}>
       <StyledErrows>
         <div className="errows_bottom" style={{ display: "flex" }}>
           <StyledErrowButtons

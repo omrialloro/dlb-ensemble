@@ -168,24 +168,6 @@ const StyledSwitch = styled.div`
   text-align: center;
   /* position: absolute; */
 `;
-const StyledSwitchBtn = styled.div`
-  height: 20px;
-  width: 150px;
-  border-radius: 9px;
-  padding: 6px;
-  margin: 12px;
-  display: grid;
-  grid-template-columns: repeat(120, 1fr);
-  grid-template-rows: repeat(10, 1fr);
-  grid-column-gap: 0;
-  top: 69%;
-  right: 4%;
-  overflow-x: scroll;
-  background: #8c8664;
-  visibility: hidden;
-  transform: translatE(5%, 10%);
-  position: absolute;
-`;
 
 const StyledBtn = styled.div`
   font-size: 15px;
@@ -386,6 +368,7 @@ export default function AnimationLibrary(props) {
   const loadAnimation = useLoadAnimation();
   const selectAnimation = useCallback(
     async (animation_id) => {
+      console.log(animation_id);
       setAnimationId(animation_id);
       if (animations.hasOwnProperty(animation_id)) {
         const frames_ = animations[animation_id];
@@ -394,6 +377,7 @@ export default function AnimationLibrary(props) {
       } else {
         const A = await loadAnimation(animation_id);
         const frames_ = A["data"];
+        console.log(frames_[0][0][0]);
         setRowFrames(frames_);
         setOpState({ ...opState, range: [0, frames_.length] });
       }
@@ -410,6 +394,9 @@ export default function AnimationLibrary(props) {
     setAnimationId(animation_id);
     addAnimation_(animation_id, rowFrames);
     if (flag === "creator") {
+      if (typeof rowFrames[0][0][0] === "string") {
+        return;
+      }
       addInstance_({
         id: instance_id,
         animationId: animation_id,

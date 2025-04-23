@@ -480,6 +480,8 @@ const Creator = forwardRef((props, ref) => {
 
                     <div className="creation_btns">
                       <Reset text={"UNDO"} onClick={Undo} />
+                      <Reset text={"RESET"} onClick={resetAnimation} />
+                      <Reset text={"CLEAR"} onClick={clearFrame} />
 
                       <Reset
                         text={"NEW"}
@@ -508,10 +510,10 @@ const Creator = forwardRef((props, ref) => {
                       />
                     </div>
                   </div>
-                  <div style={{ marginTop: "20px" }}>
+                  <div style={{ marginTop: "5px" }}>
                     <Tunner2 setValue={setFPS} radius={12} Text={"FPS"} />
                   </div>
-                  <div style={{ paddingTop: "1px" }}>
+                  <div style={{ margin: "0px", paddingTop: "1px" }}>
                     <Errows
                       pressErrow={pressErrow}
                       pressRotate={rotateFrame_}

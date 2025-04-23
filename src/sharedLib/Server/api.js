@@ -119,6 +119,7 @@ function useSaveStoredAnimations() {
 }
 
 function useAnimationFromServer(type) {
+  console.log(type);
   const { data, error, loading } = useFetch(
     `/animationsList?type=${type}`,
     true
