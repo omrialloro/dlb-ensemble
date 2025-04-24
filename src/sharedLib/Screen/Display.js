@@ -347,6 +347,34 @@ const FancyScreen = (props) => {
   const exitScreen = props.exitScreen;
   const canvasRef = useRef(null);
   const canvasPixelRef = useRef(null);
+  const testRef = useRef(0);
+  const hRef = useRef(0);
+  const wRef = useRef(0);
+  const opRef = useRef(0);
+  const rRef = useRef(0);
+
+  const n1Ref = useRef(0);
+  const n2Ref = useRef(0);
+  const n3Ref = useRef(0);
+  const fRef = useRef(0);
+
+  function createPixelConfig() {
+    return {
+      pw: wRef.current,
+      ph: hRef.current,
+      br: rRef.current,
+      op: opRef.current,
+    };
+  }
+  function createNoiseConfig() {
+    return {
+      noise1: n1Ref.current,
+      noise2: n2Ref.current,
+      noise3: n3Ref.current,
+      filter: fRef.current,
+    };
+  }
+
   const [dims, setDims] = useState({ width: 500, height: 500 });
   const [www, setWww] = useState(79);
 
@@ -403,16 +431,11 @@ const FancyScreen = (props) => {
     setScreenRatio(w / h);
   }
 
-  // const width = 300;
-  // const height = 420;
-
   const widthPxl = 140;
   const heightPxl = 140;
 
   const pixelSizeX = dims.width / size[0];
   const pixelSizeY = dims.height / size[1];
-
-  // const AA = framesRGB;
 
   const [FPS, setFPS] = useState(Math.round(1000 / delay));
 
@@ -443,47 +466,55 @@ const FancyScreen = (props) => {
     ctx.roundRect(
       point[0] + (pixelSizeX * (1 - pw)) / 2,
       point[1] + (pixelSizeY * (1 - pw)) / 2,
-      pixelSizeX * pw,
-      pixelSizeY * ph,
-      [br * 10, br * 7, br * 10, br * 10]
+      pixelSizeX * wRef.current,
+      pixelSizeY * hRef.current,
+
+      // pixelSizeX * pw,
+      // pixelSizeY * ph,
+      [
+        rRef.current * 10,
+        rRef.current * 7,
+        rRef.current * 10,
+        rRef.current * 10,
+      ]
     );
 
     ctx.fill();
   }
 
-  function drawPixelWithGradient(point, color, ctx, colorr, op) {
-    ctx.fillStyle = color;
+  // function drawPixelWithGradient(point, color, ctx, colorr, op) {
+  //   ctx.fillStyle = color;
 
-    const gradient = ctx.createRadialGradient(
-      point[0] + pixelSizeX / 2,
-      point[1] + pixelSizeX / 2,
-      pixelSizeX / 4,
-      point[0] + pixelSizeX / 2,
-      point[1] + pixelSizeX / 2,
-      pixelSizeX / 2
-    );
-    ctx.fillStyle = gradient;
-    gradient.addColorStop(
-      0,
-      `rgb(${colorr.r + 70},${colorr.g + 30},${colorr.g + 30},0.7)`
-    );
-    gradient.addColorStop(
-      1,
-      `rgb(${colorr.r - 60},${colorr.g - 60},${colorr.b - 60},0.5)`
-    );
+  //   const gradient = ctx.createRadialGradient(
+  //     point[0] + pixelSizeX / 2,
+  //     point[1] + pixelSizeX / 2,
+  //     pixelSizeX / 4,
+  //     point[0] + pixelSizeX / 2,
+  //     point[1] + pixelSizeX / 2,
+  //     pixelSizeX / 2
+  //   );
+  //   ctx.fillStyle = gradient;
+  //   gradient.addColorStop(
+  //     0,
+  //     `rgb(${colorr.r + 70},${colorr.g + 30},${colorr.g + 30},0.7)`
+  //   );
+  //   gradient.addColorStop(
+  //     1,
+  //     `rgb(${colorr.r - 60},${colorr.g - 60},${colorr.b - 60},0.5)`
+  //   );
 
-    ctx.beginPath();
+  //   ctx.beginPath();
 
-    ctx.roundRect(
-      point[0] + (pixelSizeX * (1 - pw)) / 2,
-      point[1] + (pixelSizeY * (1 - pw)) / 2,
-      pixelSizeX * pw,
-      pixelSizeY * ph,
-      [br * 10, br * 7, br * 10, br * 10]
-    );
+  //   ctx.roundRect(
+  //     point[0] + (pixelSizeX * (1 - pw)) / 2,
+  //     point[1] + (pixelSizeY * (1 - pw)) / 2,
+  //     pixelSizeX * pw,
+  //     pixelSizeY * ph,
+  //     [br * 10, br * 7, br * 10, br * 10]
+  //   );
 
-    ctx.fill();
-  }
+  //   ctx.fill();
+  // }
 
   const [pw, setPw] = useState(1);
   const [ph, setPh] = useState(1);
@@ -492,99 +523,255 @@ const FancyScreen = (props) => {
 
   const [filter, setFilter] = useState(0);
 
-  useEffect(() => {
-    const canvasPixel = canvasPixelRef.current;
-    const ctxPxl = canvasPixel.getContext("2d");
+  function runPixel(ctxPxl) {
+    // const canvasPixel = canvasPixelRef.current;
+    // const ctxPxl = canvasPixel.getContext("2d");
     ctxPxl.fillStyle = "black";
     ctxPxl.fillRect(0, 0, widthPxl, heightPxl);
-    ctxPxl.fillStyle = `rgba(235,235,205,${op})`;
+    ctxPxl.fillStyle = `rgba(235,235,205,${opRef.current})`;
 
     ctxPxl.beginPath();
 
     ctxPxl.roundRect(
-      (widthPxl * (1 - pw)) / 2,
-      (heightPxl * (1 - ph)) / 2,
-      widthPxl * pw,
-      widthPxl * ph,
-      [br * 100, br * 100, br * 100, br * 100]
+      (widthPxl * (1 - wRef.current)) / 2,
+      (heightPxl * (1 - hRef.current)) / 2,
+      widthPxl * wRef.current,
+      widthPxl * hRef.current,
+      [
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+      ]
     );
     ctxPxl.fill();
 
     ctxPxl.beginPath();
 
     ctxPxl.roundRect(
-      widthPxl + (widthPxl * (1 - pw)) / 2,
-      heightPxl + (heightPxl * (1 - ph)) / 2,
-      widthPxl * pw,
-      heightPxl * ph,
-      [br * 100, br * 100, br * 100, br * 100]
+      widthPxl + (widthPxl * (1 - wRef.current)) / 2,
+      heightPxl + (heightPxl * (1 - hRef.current)) / 2,
+      widthPxl * wRef.current,
+      heightPxl * hRef.current,
+      [
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+      ]
     );
     ctxPxl.fill();
 
     ctxPxl.beginPath();
     ctxPxl.roundRect(
-      (widthPxl * (1 - pw)) / 2 - widthPxl,
-      (heightPxl * (1 - ph)) / 2 - heightPxl,
-      widthPxl * pw,
-      heightPxl * ph,
-      [br * 100, br * 100, br * 100, br * 100]
+      (widthPxl * (1 - wRef.current)) / 2 - widthPxl,
+      (heightPxl * (1 - hRef.current)) / 2 - heightPxl,
+      widthPxl * wRef.current,
+      heightPxl * hRef.current,
+      [
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+      ]
     );
     ctxPxl.fill();
 
     ctxPxl.beginPath();
     ctxPxl.roundRect(
-      (widthPxl * (1 - pw)) / 2,
-      heightPxl + (heightPxl * (1 - ph)) / 2,
-      widthPxl * pw,
-      heightPxl * ph,
-      [br * 100, br * 100, br * 100, br * 100]
+      (widthPxl * (1 - wRef.current)) / 2,
+      heightPxl + (heightPxl * (1 - hRef.current)) / 2,
+      widthPxl * wRef.current,
+      heightPxl * hRef.current,
+      [
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+      ]
     );
     ctxPxl.fill();
     ctxPxl.beginPath();
     ctxPxl.roundRect(
-      (widthPxl * (1 - pw)) / 2,
-      (heightPxl * (1 - ph)) / 2 - heightPxl,
-      widthPxl * pw,
-      heightPxl * ph,
-      [br * 100, br * 100, br * 100, br * 100]
+      (widthPxl * (1 - wRef.current)) / 2,
+      (heightPxl * (1 - hRef.current)) / 2 - heightPxl,
+      widthPxl * wRef.current,
+      heightPxl * hRef.current,
+      [
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+      ]
     );
     ctxPxl.fill();
 
     ctxPxl.beginPath();
     ctxPxl.roundRect(
-      widthPxl + (widthPxl * (1 - pw)) / 2,
-      (heightPxl * (1 - ph)) / 2,
-      widthPxl * pw,
-      heightPxl * ph,
-      [br * 100, br * 100, br * 100, br * 100]
+      widthPxl + (widthPxl * (1 - wRef.current)) / 2,
+      (heightPxl * (1 - hRef.current)) / 2,
+      widthPxl * wRef.current,
+      heightPxl * hRef.current,
+      [
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+      ]
     );
     ctxPxl.fill();
 
     ctxPxl.beginPath();
     ctxPxl.roundRect(
-      (widthPxl * (1 - pw)) / 2 - widthPxl,
-      (heightPxl * (1 - ph)) / 2,
-      widthPxl * pw,
-      heightPxl * ph,
-      [br * 100, br * 100, br * 100, br * 100]
+      (widthPxl * (1 - wRef.current)) / 2 - widthPxl,
+      (heightPxl * (1 - hRef.current)) / 2,
+      widthPxl * wRef.current,
+      heightPxl * hRef.current,
+      [
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+        rRef.current * 100,
+      ]
     );
     ctxPxl.fill();
 
-    setPixelConfig({ pw: pw, ph: ph, br: br, op: op });
-  }, [pw, ph, br, op]);
+    // setPixelConfig({
+    //   pw: wRef.current,
+    //   ph: hRef.current,
+    //   br: rRef.current,
+    //   op: opRef.current,
+    // });
+  }
+
+  // useEffect(() => {
+  //   const canvasPixel = canvasPixelRef.current;
+  //   const ctxPxl = canvasPixel.getContext("2d");
+  //   ctxPxl.fillStyle = "black";
+  //   ctxPxl.fillRect(0, 0, widthPxl, heightPxl);
+  //   ctxPxl.fillStyle = `rgba(235,235,205,${op})`;
+
+  //   ctxPxl.beginPath();
+
+  //   ctxPxl.roundRect(
+  //     (widthPxl * (1 - wRef.current)) / 2,
+  //     (heightPxl * (1 - hRef.current)) / 2,
+  //     widthPxl * wRef.current,
+  //     widthPxl * hRef.current,
+  //     [
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //     ]
+  //   );
+  //   ctxPxl.fill();
+
+  //   ctxPxl.beginPath();
+
+  //   ctxPxl.roundRect(
+  //     widthPxl + (widthPxl * (1 - wRef.current)) / 2,
+  //     heightPxl + (heightPxl * (1 - hRef.current)) / 2,
+  //     widthPxl * wRef.current,
+  //     heightPxl * hRef.current,
+  //     [
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //     ]
+  //   );
+  //   ctxPxl.fill();
+
+  //   ctxPxl.beginPath();
+  //   ctxPxl.roundRect(
+  //     (widthPxl * (1 - wRef.current)) / 2 - widthPxl,
+  //     (heightPxl * (1 - hRef.current)) / 2 - heightPxl,
+  //     widthPxl * wRef.current,
+  //     heightPxl * hRef.current,
+  //     [
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //     ]
+  //   );
+  //   ctxPxl.fill();
+
+  //   ctxPxl.beginPath();
+  //   ctxPxl.roundRect(
+  //     (widthPxl * (1 - wRef.current)) / 2,
+  //     heightPxl + (heightPxl * (1 - hRef.current)) / 2,
+  //     widthPxl * wRef.current,
+  //     heightPxl * hRef.current,
+  //     [
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //     ]
+  //   );
+  //   ctxPxl.fill();
+  //   ctxPxl.beginPath();
+  //   ctxPxl.roundRect(
+  //     (widthPxl * (1 - wRef.current)) / 2,
+  //     (heightPxl * (1 - hRef.current)) / 2 - heightPxl,
+  //     widthPxl * wRef.current,
+  //     heightPxl * hRef.current,
+  //     [
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //     ]
+  //   );
+  //   ctxPxl.fill();
+
+  //   ctxPxl.beginPath();
+  //   ctxPxl.roundRect(
+  //     widthPxl + (widthPxl * (1 - wRef.current)) / 2,
+  //     (heightPxl * (1 - hRef.current)) / 2,
+  //     widthPxl * wRef.current,
+  //     heightPxl * hRef.current,
+  //     [
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //     ]
+  //   );
+  //   ctxPxl.fill();
+
+  //   ctxPxl.beginPath();
+  //   ctxPxl.roundRect(
+  //     (widthPxl * (1 - wRef.current)) / 2 - widthPxl,
+  //     (heightPxl * (1 - hRef.current)) / 2,
+  //     widthPxl * wRef.current,
+  //     heightPxl * hRef.current,
+  //     [
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //       rRef.current * 100,
+  //     ]
+  //   );
+  //   ctxPxl.fill();
+
+  //   setPixelConfig({ pw: pw, ph: ph, br: br, op: op });
+  // }, [pw, ph, br, op]);
 
   const [noiseLevel1, setNoiseLevel1] = useState(1);
   const [noiseLevel2, setNoiseLevel2] = useState(1);
   const [noiseLevel3, setNoiseLevel3] = useState(1);
 
-  useEffect(() => {
-    setNoiseConfig({
-      noise1: noiseLevel1,
-      noise2: noiseLevel2,
-      noise3: noiseLevel3,
-      filter: filter,
-    });
-  }, [noiseLevel1, noiseLevel2, noiseLevel3, filter]);
+  // useEffect(() => {
+  //   setNoiseConfig({
+  //     noise1: noiseLevel1,
+  //     noise2: noiseLevel2,
+  //     noise3: noiseLevel3,
+  //     filter: filter,
+  //   });
+  // }, [noiseLevel1, noiseLevel2, noiseLevel3, filter]);
 
   function prepareOutScreenData() {
     let outFrames = [];
@@ -653,6 +840,8 @@ const FancyScreen = (props) => {
     const canvas = canvasRef.current;
 
     const ctx = canvas.getContext("2d");
+    const canvasPixel = canvasPixelRef.current;
+    const ctxPxl = canvasPixel.getContext("2d");
 
     ctx.fillStyle = "black";
 
@@ -660,6 +849,7 @@ const FancyScreen = (props) => {
     let frame_index = 0;
 
     const animate = () => {
+      runPixel(ctxPxl);
       index = index + 1;
       frame_index = Math.round(index / step);
       timeRef.current.innerHTML =
@@ -690,13 +880,16 @@ const FancyScreen = (props) => {
 
       let A = editedFrames[frame_index];
 
-      const beta = getBeta(noiseLevel2);
+      // const beta = getBeta(noiseLevel2);
+      const beta = getBeta(n2Ref.current);
+
       let ooo = 15 + 5 * Math.random();
 
       for (let i = 0; i < size[0]; i++) {
         let alpha = 0;
         if (i == index % size[0] || i + 16 == index % size[0]) {
-          alpha = getAlpha(noiseLevel1);
+          // alpha = getAlpha(noiseLevel1);
+          alpha = getAlpha(n1Ref.current);
         }
 
         for (let j = 0; j < size[1]; j++) {
@@ -705,16 +898,19 @@ const FancyScreen = (props) => {
           let color = A[i][j];
 
           let pixel_noise = 0;
-          if (Math.random() < noiseLevel3) {
+          // if (Math.random() < noiseLevel3) {
+          //   pixel_noise = 250 * (0.7 - Math.random());
+          // }
+          if (Math.random() < n3Ref.current) {
             pixel_noise = 250 * (0.7 - Math.random());
           }
 
           let ccc = 0;
-          if (filter == 1) {
+          if (fRef.current == 1) {
             let aaa = size[0] / 2 - i;
             let bbb = size[1] / 2 - j;
             ccc = (aaa ** 4 + bbb ** 4) / ooo ** 2.5;
-          } else if (filter == 2) {
+          } else if (fRef.current == 2) {
             let aaa = size[0] / 2 - i;
             let bbb = size[1] / 2 - j;
             ccc = (aaa ** 3 + bbb ** 3) / ooo ** 1.5;
@@ -723,7 +919,7 @@ const FancyScreen = (props) => {
           const color_nn = noise2(color, beta);
           const color_n = noise1(color_nn, alpha + pixel_noise - ccc);
 
-          color = `rgba(${color_n.r},${color_n.g},${color_n.b},${op})`;
+          color = `rgba(${color_n.r},${color_n.g},${color_n.b},${opRef.current})`;
 
           drawPixel([x, y], color, ctx);
         }
@@ -761,6 +957,9 @@ const FancyScreen = (props) => {
     setSelectedId(id);
     setBrowserOn(true);
   }
+  const changeTest = (value) => {
+    testRef.current = value;
+  };
 
   function handleOnDragEnd(result) {
     const items = Array.from(instancesEditor);
@@ -813,9 +1012,11 @@ const FancyScreen = (props) => {
                 color3={`rgb(30, 80, 110)`}
                 defaultVal={defaultW}
                 onChange={(value) => {
-                  setPw(value / 160);
-                  setPixelConfig({ ...pixelConfig, pw: value / 160 });
-                  setDefaultW(value);
+                  wRef.current = value / 160;
+
+                  // setPw(value / 160);
+                  // setPixelConfig({ ...pixelConfig, pw: value / 160 });
+                  // setDefaultW(value);
                 }}
               />
               <Tunner
@@ -826,9 +1027,10 @@ const FancyScreen = (props) => {
                 color3={`rgb(30, 80, 110)`}
                 defaultVal={defaultH}
                 onChange={(value) => {
-                  setPh(value / 160);
-                  setPixelConfig({ ...pixelConfig, ph: value / 160 });
-                  setDefaultH(value);
+                  hRef.current = value / 160;
+                  // setPh(value / 160);
+                  // setPixelConfig({ ...pixelConfig, ph: value / 160 });
+                  // setDefaultH(value);
                 }}
               />
             </div>
@@ -841,9 +1043,11 @@ const FancyScreen = (props) => {
                 maxVal={100}
                 defaultVal={defaultC}
                 onChange={(value) => {
-                  setBr(value / 100);
-                  setPixelConfig({ ...pixelConfig, br: value / 100 });
-                  setDefaultC(value);
+                  rRef.current = value / 100;
+
+                  // setBr(value / 100);
+                  // setPixelConfig({ ...pixelConfig, br: value / 100 });
+                  // setDefaultC(value);
                 }}
               />
               <Tunner
@@ -854,9 +1058,10 @@ const FancyScreen = (props) => {
                 maxVal={100}
                 defaultVal={defaultO}
                 onChange={(value) => {
-                  setOp(value / 100);
-                  setPixelConfig({ ...pixelConfig, op: value / 100 });
-                  setDefaultO(value);
+                  opRef.current = value / 100;
+                  // setOp(value / 100);
+                  // setPixelConfig({ ...pixelConfig, op: value / 100 });
+                  // setDefaultO(value);
                 }}
               />
               <DefaultBtn onClick={defaultPixelController} />
@@ -885,8 +1090,9 @@ const FancyScreen = (props) => {
               color3={`rgb(10, 50, 10)`}
               defaultVal={noiseVal1}
               onChange={(value) => {
-                setNoiseLevel1(value / 100);
-                setNoiseVal1(value);
+                n1Ref.current = value / 100;
+                // setNoiseLevel1(value / 100);
+                // setNoiseVal1(value);
               }}
             />
             <Tunner
@@ -897,9 +1103,10 @@ const FancyScreen = (props) => {
               maxVal={100}
               defaultVal={noiseVal2}
               onChange={(value) => {
-                // setN1(value);
-                setNoiseLevel2(value / 100);
-                setNoiseVal2(value);
+                n2Ref.current = value / 100;
+
+                // setNoiseLevel2(value / 100);
+                // setNoiseVal2(value);
               }}
             />
             <Tunner
@@ -910,8 +1117,10 @@ const FancyScreen = (props) => {
               maxVal={100}
               defaultVal={noiseVal3}
               onChange={(value) => {
-                setNoiseLevel3(value / 100000);
-                setNoiseVal3(value);
+                n3Ref.current = value / 100000;
+
+                // setNoiseLevel3(value / 100000);
+                // setNoiseVal3(value);
               }}
             />
             <DefaultBtn onClick={defaultNoiseController} />
@@ -923,7 +1132,8 @@ const FancyScreen = (props) => {
             <FiltersBtn
               background={"rgba(30, 80, 100, 1)"}
               title={"natural"}
-              onClick={() => setFilter(0)}
+              // onClick={() => setFilter(0)}
+              onClick={() => (fRef.current = 0)}
             />
 
             {/* <StyledFiltersBtn
@@ -946,7 +1156,8 @@ const FancyScreen = (props) => {
                 rgba(22, 70, 77, 1) 100%
                 )`}
               title={"radial"}
-              onClick={() => setFilter(1)}
+              // onClick={() => setFilter(1)}
+              onClick={() => (fRef.current = 1)}
             />
 
             <FiltersBtn
@@ -956,7 +1167,8 @@ const FancyScreen = (props) => {
                     rgba(43, 94, 151, 1)
                     )`}
               title={"semi-radial"}
-              onClick={() => setFilter(2)}
+              // onClick={() => setFilter(2)}
+              onClick={() => (fRef.current = 2)}
             />
           </StyledFilters>
           <StyledSpace
@@ -989,7 +1201,15 @@ const FancyScreen = (props) => {
               }}
               knobSize={20}
             />
-            <StyledGif onClick={() => clickGif(prepareOutScreenData())}>
+            <StyledGif
+              onClick={() =>
+                clickGif(
+                  prepareOutScreenData(),
+                  createPixelConfig(),
+                  createNoiseConfig()
+                )
+              }
+            >
               Gif
             </StyledGif>
           </StyleTimeControl>

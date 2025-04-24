@@ -384,12 +384,27 @@ function Editor2(props) {
     DATA: DATA,
   };
 
+  // const extractToGif = useExtractToGif(email);
+  // const handleMakeGif = useCallback(
+  //   async (frames) => {
+  //     let res = getWidthHeight(400);
+  //     let noisedProccesedFrames = addNoise(frames, noiseConfig);
+  //     await extractToGif(
+  //       noisedProccesedFrames,
+  //       delay,
+  //       res[0],
+  //       res[1],
+  //       pixelConfig
+  //     );
+  //   },
+  //   [extractToGif, delay, pixelConfig]
+  // );
   const extractToGif = useExtractToGif(email);
   const handleMakeGif = useCallback(
-    async (frames) => {
+    async (frames, pixelConfig, noiseConfig) => {
       let res = getWidthHeight(400);
+      console.log(noiseConfig);
       let noisedProccesedFrames = addNoise(frames, noiseConfig);
-      console.log(frames.length);
       await extractToGif(
         noisedProccesedFrames,
         delay,
@@ -398,7 +413,7 @@ function Editor2(props) {
         pixelConfig
       );
     },
-    [extractToGif, delay, pixelConfig]
+    [extractToGif, delay]
   );
 
   useEffect(() => {
@@ -433,9 +448,9 @@ function Editor2(props) {
             size={[36, 36]}
             setScreenRatio={setScreenRatio}
             pixelConfig={pixelConfig}
-            setPixelConfig={setPixelConfig}
+            // setPixelConfig={setPixelConfig}
             frames={proccesedFrames}
-            setNoiseConfig={setNoiseConfig}
+            // setNoiseConfig={setNoiseConfig}
             delay={delay}
             clickGif={handleMakeGif}
             setDelay={setDelay}
