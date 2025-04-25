@@ -401,7 +401,7 @@ function Editor2(props) {
   // );
   const extractToGif = useExtractToGif(email);
   const handleMakeGif = useCallback(
-    async (frames, pixelConfig, noiseConfig) => {
+    async (frames, delay, pixelConfig, noiseConfig) => {
       let res = getWidthHeight(400);
       console.log(noiseConfig);
       let noisedProccesedFrames = addNoise(frames, noiseConfig);

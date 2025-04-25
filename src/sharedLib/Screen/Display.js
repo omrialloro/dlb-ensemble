@@ -358,6 +358,10 @@ const FancyScreen = (props) => {
   const n3Ref = useRef(0);
   const fRef = useRef(0);
 
+  const delayRef = useRef(0);
+  const fpsRef = useRef(0);
+  const stepRef = useRef(0);
+
   function createPixelConfig() {
     return {
       pw: wRef.current,
@@ -851,7 +855,7 @@ const FancyScreen = (props) => {
     const animate = () => {
       runPixel(ctxPxl);
       index = index + 1;
-      frame_index = Math.round(index / step);
+      frame_index = Math.round(index / stepRef.current);
       timeRef.current.innerHTML =
         (index / 60).toFixed(1) + " /" + duration.toFixed(1);
 
@@ -1194,9 +1198,12 @@ const FancyScreen = (props) => {
               dataIndex={FPS}
               onChange={(value) => {
                 if (value > 0) {
-                  setStep(60 / value);
-                  setDelay(1000 / value);
-                  setFPS(value);
+                  // setStep(60 / value);
+                  // setDelay(1000 / value);
+                  // setFPS(value);
+                  fpsRef.current = value;
+                  stepRef.current = 60 / value;
+                  delayRef.current = 1000 / value;
                 }
               }}
               knobSize={20}
@@ -1205,6 +1212,7 @@ const FancyScreen = (props) => {
               onClick={() =>
                 clickGif(
                   prepareOutScreenData(),
+                  delayRef.current,
                   createPixelConfig(),
                   createNoiseConfig()
                 )

@@ -377,9 +377,12 @@ export default function AnimationLibrary(props) {
       } else {
         const A = await loadAnimation(animation_id);
         const frames_ = A["data"];
-        console.log(frames_[0][0][0]);
+        console.log(frames_);
         setRowFrames(frames_);
+        console.log("????????");
+
         setOpState({ ...opState, range: [0, frames_.length] });
+        console.log("!!!!!!!!!!!!");
       }
     },
     [animations]
