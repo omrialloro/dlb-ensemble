@@ -368,7 +368,6 @@ export default function AnimationLibrary(props) {
   const loadAnimation = useLoadAnimation();
   const selectAnimation = useCallback(
     async (animation_id) => {
-      console.log(animation_id);
       setAnimationId(animation_id);
       if (animations.hasOwnProperty(animation_id)) {
         const frames_ = animations[animation_id];
@@ -377,12 +376,8 @@ export default function AnimationLibrary(props) {
       } else {
         const A = await loadAnimation(animation_id);
         const frames_ = A["data"];
-        console.log(frames_);
         setRowFrames(frames_);
-        console.log("????????");
-
         setOpState({ ...opState, range: [0, frames_.length] });
-        console.log("!!!!!!!!!!!!");
       }
     },
     [animations]
