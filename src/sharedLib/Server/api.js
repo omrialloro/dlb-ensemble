@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { serverUrl } from "../../settings";
 import { AuthContext } from "../../login/authContext";
 import { useFetch } from "./useFetch";
+import styled from "styled-components";
 
 const gifPath = "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/gifs/ooo";
 
@@ -163,6 +164,20 @@ function useLoadAnimation() {
 }
 
 const UploadMp3 = (props) => {
+  const StyledLoadMusic = styled.div`
+    /* display: flex; */
+    height: 25px;
+    width: 80px;
+    color: rgb(250, 120, 90);
+    font-weight: 1000;
+    font-size: 10px;
+    padding: 5px;
+    padding-left: 10px;
+
+    margin: 3px;
+
+    background-color: rgb(80, 80, 80);
+  `;
   const {
     auth: { token },
   } = useContext(AuthContext);
@@ -185,51 +200,10 @@ const UploadMp3 = (props) => {
     // }
   };
   useEffect(() => {
-    console.log(file);
+    handleUpload();
   }, [file]);
 
   const handleUpload = async () => {
-    // if (!file) {
-    //   setMessage("No file selected.");
-    //   return;
-    // }
-
-    // setUploading(true);
-    // setMessage("");
-
-    // const formData = new FormData();
-    // formData.append("file", file);
-
-    // console.log(file);
-    // console.log(formData["file"]);
-
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(key, value); // This will log the key-value pairs of the FormData
-    // }
-
-    // try {
-    //   const response = await fetch(serverUrl + "/uploadFile", {
-    //     method: "POST",
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     body: formData,
-    //   });
-
-    //   const data = await response.json();
-
-    //   if (response.ok) {
-    //     setMusicUrl(data.fileUrl);
-    //     setMessage(`File uploaded successfully! URL: ${data.fileUrl}`);
-    //   } else {
-    //     setMessage("Upload failed. Please try again.");
-    //   }
-    // } catch (error) {
-    //   console.error("Upload error:", error);
-    //   setMessage("Upload failed. Please try again.");
-    // }
-
-    // setUploading(false);
     if (!file) {
       setMessage("No file selected.");
       return;
@@ -241,13 +215,6 @@ const UploadMp3 = (props) => {
     const formData = new FormData();
     formData.append("file", file);
 
-    // 🚀 Log file details
-    console.log("File Object:", file);
-    console.log("File Name:", file.name);
-    console.log("File Type:", file.type);
-    console.log("File Size:", file.size, "bytes");
-
-    // 🚀 Log FormData contents correctly
     for (let entry of formData.entries()) {
       console.log("FormData Key:", entry[0], "Value:", entry[1]);
     }
@@ -276,13 +243,37 @@ const UploadMp3 = (props) => {
 
     setUploading(false);
   };
+  const fileInputRef = useRef(null);
+
+  const handleClick = () => {
+    fileInputRef.current.click();
+  };
 
   return (
+    // <div>
+    //   <input type="file" accept="audio/mpeg" onChange={handleFileChange} />
+    //   <button onClick={handleUpload} disabled={!file || uploading}>
+    //     {uploading ? "Uploading..." : "Upload MP3"}
+    //   </button>
+    // </div>
+
+    //   <StyledLoadMusic
+    //   onClick={() => {
+    //     setChooseFileOn(true);
+    //     ref1.current();
+    //   }}
+    // >
+    //   LOAD MUSIC
+    // </StyledLoadMusic>
     <div>
-      <input type="file" accept="audio/mpeg" onChange={handleFileChange} />
-      <button onClick={handleUpload} disabled={!file || uploading}>
-        {uploading ? "Uploading..." : "Upload MP3"}
-      </button>
+      <StyledLoadMusic onClick={handleClick}>Upload Audio</StyledLoadMusic>
+      <input
+        type="file"
+        accept="audio/mpeg"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
     </div>
   );
 };

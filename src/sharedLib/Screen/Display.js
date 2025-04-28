@@ -404,7 +404,7 @@ const FancyScreen = (props) => {
   const ref3 = useRef();
 
   const [waveOn, setWaveOn] = useState(false);
-  const [chooseFileOn, setChooseFileOn] = useState(false);
+  const [chooseFileOn, setChooseFileOn] = useState(true);
 
   useEffect(() => {
     if (waveOn) {
@@ -455,8 +455,12 @@ const FancyScreen = (props) => {
   // const fps = 30;
 
   const [step, setStep] = useState(60 / FPS);
+  const [duration, setDuration] = useState((editedFrames.length * step) / 60);
+  useEffect(() => {
+    setDuration((editedFrames.length * step) / 60);
+  }, [step, editedFrames]);
 
-  const duration = (editedFrames.length * step) / 60;
+  // const duration = (editedFrames.length * step) / 60;
 
   function drawPixel(point, color, ctx) {
     ctx.fillStyle = color;
@@ -940,8 +944,6 @@ const FancyScreen = (props) => {
   const [musicUrl, setMusicUrl] = useState("");
 
   useEffect(() => {
-    console.log("FSSSDDSS");
-
     if (musicUrl !== "") {
       setWaveOn(true);
     }
@@ -1103,20 +1105,6 @@ const FancyScreen = (props) => {
               // onClick={() => setFilter(0)}
               onClick={() => (fRef.current = 0)}
             />
-
-            {/* <StyledFiltersBtn
-              style={{ background: "rgba(30, 80, 100, 1)" }}
-              onClick={() => {
-                setFilter(0);
-                setDefaultW(160);
-                setDefaultH(160);
-                setDefaultC(0);
-                setDefaultO(100);
-              }}
-            >
-              Natural
-            </StyledFiltersBtn> */}
-
             <FiltersBtn
               background={`radial-gradient(
                 circle,
@@ -1162,9 +1150,9 @@ const FancyScreen = (props) => {
               dataIndex={FPS}
               onChange={(value) => {
                 if (value > 0) {
-                  // setStep(60 / value);
-                  // setDelay(1000 / value);
-                  // setFPS(value);
+                  setStep(60 / value);
+                  setDelay(1000 / value);
+                  setFPS(value);
                   fpsRef.current = value;
                   stepRef.current = 60 / value;
                   delayRef.current = 1000 / value;
@@ -1209,15 +1197,7 @@ const FancyScreen = (props) => {
           >
             BROWSE
           </StyledBrowse>
-
-          <StyledLoadMusic
-            onClick={() => {
-              setChooseFileOn(true);
-              ref1.current();
-            }}
-          >
-            LOAD MUSIC
-          </StyledLoadMusic>
+          <UploadMp3 setMusicUrl={setMusicUrl} />
         </div>
         <div>
           <div style={{ display: "flex", marginTop: "10px" }}>
@@ -1225,16 +1205,12 @@ const FancyScreen = (props) => {
               <WaveformTunner
                 ref={AudioRef}
                 musicUrl={musicUrl}
-                lenSec={120}
+                lenSec={duration}
                 offMusic={() => setWaveOn(false)}
                 // playFunc={play}
                 durationSec={9.0}
                 style={{ marginLeft: "3px" }}
               />
-            ) : chooseFileOn ? (
-              <div style={{ width: "206px", background: "rgb(50, 110, 130)" }}>
-                <UploadMp3 setMusicUrl={setMusicUrl} />
-              </div>
             ) : (
               <></>
             )}

@@ -3,6 +3,9 @@ import styled from "styled-components";
 
 const AudioPlayer = forwardRef((props, ref) => {
   const isPlay = props.isPlay;
+
+  const setMusicDur = props.setMusicDur;
+  // const [musicDur, setMusicDur] = useState(0);
   useEffect(() => {
     console.log("isPlay");
   }, [isPlay]);
@@ -13,6 +16,9 @@ const AudioPlayer = forwardRef((props, ref) => {
 
   useEffect(() => {
     audioRef.current.load();
+    setTimeout(() => {
+      setMusicDur(audioRef.current.duration);
+    }, 1000);
   }, [url]);
 
   const { refLen, ref2 } = ref.current;
@@ -54,7 +60,8 @@ const AudioPlayer = forwardRef((props, ref) => {
 });
 
 function createWaveform(len_sec) {
-  let num_samples = Math.round(len_sec + 330 / 20);
+  console.log("len_sec", len_sec);
+  let num_samples = 6 + Math.round(len_sec);
   const A = Array.from(Array(num_samples).keys());
 
   return A.map((x) => (
@@ -66,25 +73,6 @@ function createWaveform(len_sec) {
     </>
   ));
 }
-
-let music_urls = {
-  track1:
-    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/Happy+Happy+Joy+Joy!+%EF%BD%9C+The+Ren+%26+Stimpy+Show.webm",
-  track2:
-    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
-  track3:
-    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/doctor+you+box+v3.mp3",
-  track4:
-    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
-  track5:
-    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/doctor+you+box+v3.mp3",
-  track6:
-    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
-  track7:
-    "https://music-for-animatin.s3.eu-central-1.amazonaws.com/doctor+you+box+v3.mp3",
-  track8:
-    "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
-};
 
 const Bar = styled.img`
   display: inline;
@@ -113,7 +101,6 @@ const StyledBox = styled.div`
   width: 130px;
   border-radius: 8px;
   border: 1px solid #909090;
-  padding: 12px;
   display: grid;
   grid-template-columns: repeat(5000, 1fr);
   grid-template-rows: repeat(1, 1fr);
@@ -224,32 +211,6 @@ const Xelement = (props) => {
   );
 };
 
-// const MusicManu = (props) => {
-//   const setUrl = props.setUrl;
-//   const setManuOn = props.setManuOn;
-
-//   function onTrackClick(url) {
-//     setUrl(url);
-//   }
-//   return (
-//     <StyledManu>
-//       <Xelement onClick={() => setManuOn(false)} position={"absolute"} />
-//       <div style={{ overflow: "scroll" }}>
-//         {Object.keys(music_urls).map((x) => (
-//           <StyledManuEl
-//             onClick={() => {
-//               setManuOn(false);
-//               onTrackClick(music_urls[x]);
-//             }}
-//           >
-//             {x}
-//           </StyledManuEl>
-//         ))}
-//       </div>
-//     </StyledManu>
-//   );
-// };
-
 const createScrollStopListener = (element, callback, timeout) => {
   let removed = false;
   let handle = null;
@@ -299,60 +260,26 @@ export const LoadMusicBts = (props) => {
 export const WaveformTunner = forwardRef((props, ref) => {
   const [manuOn, setManuOn] = useState(true);
   // const [url, setUrl] = useState(props.musicUrl);
+  const [musictDur, setMusicDur] = useState(0);
   const offMusic = props.offMusic;
   const musicUrl = props.musicUrl;
-  console.log(musicUrl);
   const lenSec = props.lenSec;
+  const [lenDiff, setLenDiff] = useState(0);
 
-  // const duration = props.duration;
   const isPlay = props.isPlay;
+  useEffect(() => {
+    console.log("musictDur", musictDur);
+    console.log("lenSec", lenSec);
 
-  // const [startSecond, setStartSecond] = useState(0.0);
+    setLenDiff(Math.max(0, musictDur - lenSec));
+  }, [musictDur, lenSec]);
+
   const { ref1, ref2, ref3 } = ref.current;
 
   const refLen = useRef();
   refLen.current = 30;
 
   const rrr = useRef();
-
-  // const [videoId, setVideoId] = useState("");
-  // const [downloadLink, setDownloadLink] = useState(null);
-  // const [error, setError] = useState(null);
-
-  // useEffect(() => {
-  //   console.log(videoId);
-  //   fetchDownloadLink(videoId);
-  //   console.log(videoId);
-  // }, [videoId]);
-
-  // useEffect(() => {
-  //   setUrl(downloadLink);
-  //   console.log(downloadLink);
-  // }, [downloadLink]);
-
-  // const fetchDownloadLink = async (videoId) => {
-  //   setError(null);
-  //   setDownloadLink(null);
-
-  //   if (!videoId) {
-  //     setError("Please enter a video ID.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:4000/downloadYoutubeMp3?id=${videoId}`
-  //     );
-  //     const data = await response.json();
-  //     if (!response.ok) {
-  //       throw new Error(data.message || "Failed to fetch download link.");
-  //     }
-
-  //     setDownloadLink(data.data.link);
-  //   } catch (err) {
-  //     setError(err.message);
-  //   }
-  // };
 
   const containerRef = useScrollStopListener(() => {
     let timeSec = (containerRef.current.scrollLeft / 20).toFixed(1);
@@ -364,70 +291,35 @@ export const WaveformTunner = forwardRef((props, ref) => {
 
   const aaa = useRef({ refLen, ref2 });
 
-  // ref1.current = () => {
-  //   receiveUrlFromUser();
-  // };
-
-  // function extractYouTubeID(url) {
-  //   try {
-  //     const parsedUrl = new URL(url);
-
-  //     // For standard YouTube URLs with ?v=VIDEO_ID
-  //     if (parsedUrl.hostname.includes("youtube.com")) {
-  //       return new URLSearchParams(parsedUrl.search).get("v");
-  //     }
-
-  //     // For shortened URLs like https://youtu.be/VIDEO_ID
-  //     if (parsedUrl.hostname.includes("youtu.be")) {
-  //       return parsedUrl.pathname.substring(1);
-  //     }
-
-  //     return null; // If it's not a valid YouTube URL
-  //   } catch (error) {
-  //     return null; // Invalid URL format
-  //   }
-  // }
-
-  // function receiveUrlFromUser() {
-  //   const urlIn = window.prompt("enter music url");
-  //   console.log(extractYouTubeID(urlIn));
-  //   setVideoId(extractYouTubeID(urlIn));
-  //   console.log(urlIn);
-  // }
-
-  // useEffect(() => {
-  //   receiveUrlFromUser();
-  // }, []);
-
   return (
     <div
       style={{
         display: "flex",
       }}
     >
-      {/* {manuOn ? ( */}
-      {/* {false ? (
-        <MusicManu setUrl={setUrl} setManuOn={setManuOn}></MusicManu>
-      ) : (
-        <></>
-      )} */}
-
       <div
         style={{
           display: "flex",
           left: "40px",
         }}
       >
-        <AudioPlayer ref={aaa} isPlay={isPlay} url={musicUrl} offsetSec={0.0} />
+        <AudioPlayer
+          ref={aaa}
+          isPlay={isPlay}
+          url={musicUrl}
+          offsetSec={0.0}
+          setMusicDur={setMusicDur}
+        />
         <StyledTimeScreen ref={rrr}>0.0</StyledTimeScreen>
 
         <StyledBox
+          key={lenDiff}
           ref={containerRef}
           onDoubleClick={() => {
             setManuOn(true);
           }}
         >
-          {createWaveform(lenSec)}
+          {createWaveform(lenDiff)}
         </StyledBox>
         <Xelement position={"relative"} onClick={offMusic} />
       </div>
