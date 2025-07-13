@@ -500,7 +500,9 @@ const FancyScreen = (props) => {
   function runPixel(ctxPxl) {
     // const canvasPixel = canvasPixelRef.current;
     // const ctxPxl = canvasPixel.getContext("2d");
-    ctxPxl.fillStyle = "black";
+    // ctxPxl.fillStyle = "black";
+    ctxPxl.fillStyle = "rgb(60, 60, 60)";
+
     ctxPxl.fillRect(0, 0, widthPxl, heightPxl);
     ctxPxl.fillStyle = `rgba(235,235,205,${opRef.current})`;
 
@@ -609,129 +611,7 @@ const FancyScreen = (props) => {
       ]
     );
     ctxPxl.fill();
-
-    // setPixelConfig({
-    //   pw: wRef.current,
-    //   ph: hRef.current,
-    //   br: rRef.current,
-    //   op: opRef.current,
-    // });
   }
-
-  //   const canvasPixel = canvasPixelRef.current;
-  //   const ctxPxl = canvasPixel.getContext("2d");
-  //   ctxPxl.fillStyle = "black";
-  //   ctxPxl.fillRect(0, 0, widthPxl, heightPxl);
-  //   ctxPxl.fillStyle = `rgba(235,235,205,${op})`;
-
-  //   ctxPxl.beginPath();
-
-  //   ctxPxl.roundRect(
-  //     (widthPxl * (1 - wRef.current)) / 2,
-  //     (heightPxl * (1 - hRef.current)) / 2,
-  //     widthPxl * wRef.current,
-  //     widthPxl * hRef.current,
-  //     [
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //     ]
-  //   );
-  //   ctxPxl.fill();
-
-  //   ctxPxl.beginPath();
-
-  //   ctxPxl.roundRect(
-  //     widthPxl + (widthPxl * (1 - wRef.current)) / 2,
-  //     heightPxl + (heightPxl * (1 - hRef.current)) / 2,
-  //     widthPxl * wRef.current,
-  //     heightPxl * hRef.current,
-  //     [
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //     ]
-  //   );
-  //   ctxPxl.fill();
-
-  //   ctxPxl.beginPath();
-  //   ctxPxl.roundRect(
-  //     (widthPxl * (1 - wRef.current)) / 2 - widthPxl,
-  //     (heightPxl * (1 - hRef.current)) / 2 - heightPxl,
-  //     widthPxl * wRef.current,
-  //     heightPxl * hRef.current,
-  //     [
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //     ]
-  //   );
-  //   ctxPxl.fill();
-
-  //   ctxPxl.beginPath();
-  //   ctxPxl.roundRect(
-  //     (widthPxl * (1 - wRef.current)) / 2,
-  //     heightPxl + (heightPxl * (1 - hRef.current)) / 2,
-  //     widthPxl * wRef.current,
-  //     heightPxl * hRef.current,
-  //     [
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //     ]
-  //   );
-  //   ctxPxl.fill();
-  //   ctxPxl.beginPath();
-  //   ctxPxl.roundRect(
-  //     (widthPxl * (1 - wRef.current)) / 2,
-  //     (heightPxl * (1 - hRef.current)) / 2 - heightPxl,
-  //     widthPxl * wRef.current,
-  //     heightPxl * hRef.current,
-  //     [
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //     ]
-  //   );
-  //   ctxPxl.fill();
-
-  //   ctxPxl.beginPath();
-  //   ctxPxl.roundRect(
-  //     widthPxl + (widthPxl * (1 - wRef.current)) / 2,
-  //     (heightPxl * (1 - hRef.current)) / 2,
-  //     widthPxl * wRef.current,
-  //     heightPxl * hRef.current,
-  //     [
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //     ]
-  //   );
-  //   ctxPxl.fill();
-
-  //   ctxPxl.beginPath();
-  //   ctxPxl.roundRect(
-  //     (widthPxl * (1 - wRef.current)) / 2 - widthPxl,
-  //     (heightPxl * (1 - hRef.current)) / 2,
-  //     widthPxl * wRef.current,
-  //     heightPxl * hRef.current,
-  //     [
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //       rRef.current * 100,
-  //     ]
-  //   );
-  //   ctxPxl.fill();
-
-  //   setPixelConfig({ pw: pw, ph: ph, br: br, op: op });
-  // }, [pw, ph, br, op]);
 
   const [noiseLevel1, setNoiseLevel1] = useState(1);
   const [noiseLevel2, setNoiseLevel2] = useState(1);
@@ -815,7 +695,9 @@ const FancyScreen = (props) => {
     const canvasPixel = canvasPixelRef.current;
     const ctxPxl = canvasPixel.getContext("2d");
 
-    ctx.fillStyle = "black";
+    // ctx.fillStyle = "black";
+
+    ctx.fillStyle = "rgb(60, 60, 60)";
 
     let index = 0;
     let frame_index = 0;
@@ -845,9 +727,11 @@ const FancyScreen = (props) => {
         index = 0;
         frame_index = 0;
       }
-      ctx.fillStyle = `rgb(${40 * Math.random()},${40 * Math.random()},${
-        10 * Math.random()
-      })`;
+      // ctx.fillStyle = `rgb(${40 * Math.random()},${40 * Math.random()},${
+      //   10 * Math.random()
+      // })`;
+      ctx.fillStyle = "rgb(60, 60, 60)";
+
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       let A = editedFrames[frame_index];
