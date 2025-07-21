@@ -61,6 +61,32 @@ export const Header = (props) => {
         <StyledLi>
           <Link
             style={
+              selected == "editor"
+                ? {
+                    fontSize: "23px",
+                    color: "#996600",
+                    paddingRight: "20px",
+                    paddingLeft: "20px",
+                    backgroundColor: "#ff4000",
+                    fontWeight: "bold",
+                  }
+                : {
+                    fontSize: "23px",
+                    color: "#996600",
+                    paddingRight: "20px",
+                    paddingLeft: "20px",
+                    backgroundColor: null,
+                    fontWeight: "bold",
+                  }
+            }
+            to="/live"
+          >
+            LIVE
+          </Link>
+        </StyledLi>
+        <StyledLi>
+          <Link
+            style={
               selected == "creator"
                 ? {
                     fontSize: "23px",

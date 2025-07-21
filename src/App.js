@@ -1,78 +1,87 @@
 import "./App.css";
 import React, { useContext, useState, useRef } from "react";
-import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Login } from "./login/Login";
-// import Editorr from "./editor/Editorr";
 import Editor2 from "./editor/Editor2";
-import { getSchemes, Scheme } from "./sharedLib/schemes/Schemes";
-
 import Creator from "./creator/Creator";
-
-import { AuthContext } from "./login/authContext";
 import { Header } from "./Header";
+import { AuthContext } from "./login/authContext";
 import { AnimationsProvider } from "./creator/components/animationData/AnimationContext";
+import { getSchemes } from "./sharedLib/schemes/Schemes";
+import { FullDisplay } from "./sharedLib/Screen/FullDisplay";
+import Live from "./live/Live";
 
 function App() {
   const creatorRef = useRef();
-  console.log();
-
-  const [save, setSave] = useState(0);
-  const [saveEditor, setSaveEditor] = useState(0);
-
-  // const [browse, setBrowse] = useState(0);
-  const [gif, setGif] = useState(0);
-  const [gifEditor, setGifEditor] = useState(0);
-
   const { isAuthenticated } = useContext(AuthContext);
-  console.log("isAuthenticated", isAuthenticated);
-  const reset = () => {
-    setSave(0);
-    // setBrowse(0);
-    setGif(0);
-  };
+  const [gif, setGif] = useState(0);
   const [selected, setSelected] = useState("creator");
 
-  // const clickBrowse = () => {
-  //   if (selected == "creator") {
-  //     setBrowse(browse + 1);
-  //   } else if (selected == "editor") {
-  //     console.log(selected);
-  //   }
-  // };
   const clickSave = () => {
     creatorRef.current();
-    // setSave(save + 1);
   };
   const clickGif = () => {
-    if (selected == "creator") {
-      setGif(gif + 1);
-    } else if (selected == "editor") {
-      setGif(gif + 1);
-
-      // setGifEditor(gifEditor + 1);
-    }
+    setGif(gif + 1);
   };
 
-  // const isAuthenticated = true;
-  // let selected = "editor";
-  // let selected = "creator";
+  return (
+    <BrowserRouter>
+      {isAuthenticated && window.location.pathname !== "/live" && (
+        <AnimationsProvider
+          schemeKey={"omri"}
+          colorScheme={[...getSchemes()["omri"]]}
+        >
+          <div style={{ display: "flex" }}>
+            <Header save={clickSave} gif={clickGif} selected={selected} />
+            <Routes>
+              <Route
+                path="/editor"
+                element={
+                  <Editor2
+                    setSelected={setSelected}
+                    gif={gif}
+                    resetGif={() => setGif(0)}
+                  />
+                }
+              />
+              <Route
+                path="/creator"
+                element={
+                  <Creator
+                    ref={creatorRef}
+                    gif={gif}
+                    resetGif={() => setGif(0)}
+                    setSelected={setSelected}
+                  />
+                }
+              />
 
-  if (!isAuthenticated)
-    return (
-      <BrowserRouter>
-        <Header
-          // browse={clickBrowse}
-          save={clickSave}
-          gif={clickGif}
-          selected={selected}
-        />{" "}
-        {/* <div className="logo-creater">
-          <h1>
-            <img src="logo_block.png" />
-          </h1>
-        </div> */}
+              <Route
+                path="/live"
+                element={
+                  <Live
+                    ref={creatorRef}
+                    gif={gif}
+                    resetGif={() => setGif(0)}
+                    setSelected={setSelected}
+                  />
+                }
+              />
+
+              <Route path="/view" element={<FullDisplay />} />
+              <Route path="/live" element={<Live />} />
+
+              <Route path="*" element={<Navigate to="/creator" />} />
+            </Routes>
+          </div>
+        </AnimationsProvider>
+      )}
+
+      {!isAuthenticated && (
         <Routes>
-          <Route path="/*" element={<Navigate to="/login" />} />
+          <Route path="/view" element={<FullDisplay />} />
+          <Route path="/live" element={<Live />} />
+
           <Route
             path="/login"
             element={<Login setSelected={setSelected} isRegister={false} />}
@@ -81,60 +90,23 @@ function App() {
             path="/register"
             element={<Login setSelected={setSelected} isRegister={true} />}
           />
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
-      </BrowserRouter>
-    );
+      )}
 
-  return (
-    <AnimationsProvider
-      schemeKey={"omri"}
-      colorScheme={[...getSchemes()["omri"]]}
-    >
-      <>
-        <BrowserRouter>
-          <div style={{ display: "flex" }}>
-            <Header
-              // browse={clickBrowse}
-              save={clickSave}
-              gif={clickGif}
-              selected={selected}
-            />
-            <Routes>
-              <Route path="/*" element={<Navigate to="/creator" />} />
-              <Route
-                path="/editor"
-                element={
-                  <Editor2
-                    setSelected={setSelected}
-                    gif={gif}
-                    // browse={browse}
-                    resetGif={() => setGif(0)}
-                  />
-                }
-              />
-              <Route
-                onClick={reset}
-                path="/creator"
-                element={
-                  <Creator
-                    ref={creatorRef}
-                    // browse={browse}
-                    // save={save}
-                    gif={gif}
-                    resetGif={() => setGif(0)}
-                    // resetBrowse={() => setBrowse(0)}
-                    setSelected={setSelected}
-                  />
-                }
-              />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </>
-    </AnimationsProvider>
+      {/* ✅ catch the /live case AFTER everything is initialized */}
+      {isAuthenticated && window.location.pathname === "/live" && (
+        <Routes>
+          <Route path="/live" element={<Live />} />
+        </Routes>
+      )}
+      {isAuthenticated && window.location.pathname === "/view" && (
+        <Routes>
+          <Route path="/view" element={<FullDisplay />} />
+        </Routes>
+      )}
+    </BrowserRouter>
   );
-  // );
-  // }
 }
 
 export default App;

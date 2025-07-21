@@ -31,6 +31,7 @@ import { useSaveAnimation, useExtractToGif } from "../sharedLib/Server/api";
 import { AuthContext } from "../login/authContext";
 import { serverUrl } from "../settings";
 import { WaveformTunner, LoadMusicBts } from "./components/WaveformTunner.js";
+import { Button } from "react-bootstrap";
 
 let schemes_array = Object.values(getSchemes());
 

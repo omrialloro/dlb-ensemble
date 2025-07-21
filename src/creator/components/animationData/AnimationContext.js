@@ -18,6 +18,7 @@ export function AnimationsProvider({ children, ...props }) {
 // Custom hook to use the AnimationsContext
 export function useAnimations() {
   const context = useContext(AnimationsContext);
+
   if (!context) {
     throw new Error("useAnimations must be used within an AnimationsProvider");
   }
