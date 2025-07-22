@@ -4,6 +4,7 @@ import { hexToRgb, rgbToH } from "../Utils/RGB";
 
 import { getSchemes } from "../schemes/Schemes";
 import { vjChannel } from "../Utils/broadcast";
+import { reflectFrame, rotateFrame } from "../Utils/frameOps";
 
 const scheme_array = Object.values(getSchemes());
 
@@ -61,6 +62,8 @@ const FullDisplay = (props) => {
   const indexRef = useRef(0);
 
   const bgColorRef = useRef("rgb(160, 60, 60)");
+  const nRotateRef = useRef();
+  const reflectRef = useRef();
 
   const numScreensRef = useRef([5, 8]);
 
@@ -103,6 +106,12 @@ const FullDisplay = (props) => {
           break;
         case "bgColor":
           bgColorRef.current = data.bgColor;
+          break;
+        case "rotation":
+          nRotateRef.current = data.nRotate;
+          break;
+        case "reflection":
+          reflectRef.current = data.reflection;
           break;
         default:
       }
@@ -221,10 +230,16 @@ const FullDisplay = (props) => {
       }
 
       let A = framesRef.current[frame_index];
+      for (let i = 0; i < nRotateRef.current; i++) {
+        A = rotateFrame(A);
+      }
+      if (reflectRef.current) {
+        reflectFrame(A);
+        console.log("No reflection");
+      }
+
       let screenWidth = dims.width / numScreensRef.current[0];
       let screenHeight = dims.height / numScreensRef.current[1];
-      console.log("numScreensRef.current[0]", screenWidth);
-      console.log("numScreensRef.current[0]", screenHeight);
 
       drawImage(A);
       for (let i = 0; i < numScreensRef.current[0]; i++) {

@@ -28,6 +28,30 @@ const StyledFrames = styled.div`
   overflow: scroll;
   align-items: center;
 `;
+
+const StyledButton = styled.div`
+  height: 40px;
+  width: 260px;
+  background-color: rgb(200, 100, 20);
+  display: flex;
+  position: relative;
+  font-size: 20px;
+  font-weight: 800;
+  color: rgb(225, 205, 195);
+  padding: 10px;
+  text-align: center;
+  justify-content: center;
+  margin: 10px;
+`;
+
+const StyledButtonContainer = styled.div`
+  height: 60px;
+  width: 290px;
+  background-color: rgb(50, 100, 120);
+  display: flex;
+  position: relative;
+`;
+
 const StyledBox = styled.div`
   height: 60px; /* or whatever height you want */
   width: 320px;
@@ -82,6 +106,8 @@ export default function Live() {
   const [noise2, setN2] = useState(0);
   const [noise3, setN3] = useState(0.5);
   const [filter, setFilter] = useState(0);
+  const [rotationCount, setRotationCount] = useState(0);
+  const [reflectionToggle, setReflectionToggle] = useState(0);
 
   const colorsArray = [
     "rgb(160, 60, 60)",
@@ -93,6 +119,25 @@ export default function Live() {
 
   const [numScreens, setNumHScreens] = useState([5, 8]);
   const canvasPixelRef = React.useRef();
+
+  function updateOps(op) {
+    console.log("updateOps", op);
+    switch (op) {
+      case "reflect":
+        send("reflection", { reflection: !reflectionToggle });
+        setReflectionToggle(!reflectionToggle);
+        break;
+      case "rotate":
+        send("rotation", { nRotate: (rotationCount + 1) % 4 });
+        setRotationCount((rotationCount + 1) % 4);
+        break;
+      case "reverse":
+        send("reverse", {});
+        break;
+      default:
+        console.warn("Unknown operation:", op);
+    }
+  }
 
   function updateDuplication(x) {
     const newNumScreens = [...numScreens];
@@ -178,7 +223,7 @@ export default function Live() {
         }}
         bgColors={colorsArray}
       />
-      <FrameOpsController colors={scheme_array[0]} />
+      <FrameOpsController updateOps={updateOps} colors={scheme_array[0]} />
       <ScreenDuplication
         duplication={numScreens}
         updateDuplication={updateDuplication}
@@ -191,9 +236,9 @@ export default function Live() {
         }}
       />
 
-      <button onClick={openViewer} style={{ marginBottom: 12 }}>
-        Open Viewer
-      </button>
+      <StyledButtonContainer>
+        <StyledButton onClick={openViewer}>Open Viewer</StyledButton>
+      </StyledButtonContainer>
 
       <StyledBox>
         {animationsServer.map((x, index) => (

@@ -28,36 +28,31 @@ const StyledText = styled.div`
 `;
 
 export default function FrameOpsController(props) {
-  const { updateOp, colors } = props;
-  console.log("FrameOpsController colors", colors);
-  console.log("FrameOpsController colors", colors);
-  console.log("FrameOpsController colors", colors);
-  console.log("FrameOpsController colors", colors);
-  console.log("FrameOpsController colors", colors);
-  console.log("FrameOpsController colors", colors);
-  console.log("FrameOpsController colors", colors);
+  const { updateOps, colors } = props;
 
   return (
     <StyledContainer>
       <StyledText>Transformations</StyledText>
       <StyledBtnContainer>
         <Reflect
-          onClick={() => {
-            updateOp("reflect");
+          clickReflect={() => {
+            console.log("Reflect clicked");
+            updateOps("reflect");
           }}
         />
       </StyledBtnContainer>
       <StyledBtnContainer>
         <Rotate
-          onClick={() => {
-            updateOp("rotate");
+          rotate={() => {
+            console.log("Rotate clicked");
+            updateOps("rotate");
           }}
         />
       </StyledBtnContainer>
       <StyledBtnContainer>
         <Reverse
           onClick={() => {
-            updateOp("reverse");
+            updateOps("reverse");
           }}
         />
       </StyledBtnContainer>

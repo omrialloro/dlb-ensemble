@@ -80,7 +80,7 @@ function App() {
       {!isAuthenticated && (
         <Routes>
           <Route path="/view" element={<FullDisplay />} />
-          <Route path="/live" element={<Live />} />
+          {/* <Route path="/live" element={<Live />} /> */}
 
           <Route
             path="/login"

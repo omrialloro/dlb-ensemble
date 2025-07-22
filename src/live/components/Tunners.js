@@ -271,7 +271,8 @@ export function PixelDesigner(props) {
             color3={`rgb(30, 80, 110)`}
             defaultVal={width}
             onChange={(value) => {
-              console.log("width", value / 160);
+              wRef.current = value / 160;
+
               updateWidth(value / 160);
             }}
           />
@@ -284,6 +285,7 @@ export function PixelDesigner(props) {
             defaultVal={height}
             onChange={(value) => {
               updateHeight(value / 160);
+              hRef.current = value / 160;
             }}
           />
         </div>
@@ -296,6 +298,7 @@ export function PixelDesigner(props) {
             maxVal={100}
             defaultVal={curve}
             onChange={(value) => {
+              rRef.current = value / 100;
               updateCurve(value / 100);
             }}
           />
@@ -307,6 +310,7 @@ export function PixelDesigner(props) {
             maxVal={100}
             defaultVal={opacity}
             onChange={(value) => {
+              opRef.current = value / 100;
               updateOpacity(value / 100);
             }}
           />
