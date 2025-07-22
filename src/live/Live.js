@@ -81,31 +81,8 @@ const XX = styled.img`
   left: 12%;
 `;
 
-const NumScreenBtn = styled.button`
-  height: 30px;
-  width: 60px;
-  color: black;
-  background: red;
-  align-items: center;
-`;
-const Space = styled.button`
-  height: 30px;
-  width: 60px;
-  color: black;
-  align-items: center;
-`;
-
 export default function Live() {
   const [speed, setSpeed] = useState(60);
-  const [opacity, setOpacity] = useState(0.9);
-  const [noise1, setN1] = useState(0);
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
-  const [radius, setRadius] = useState(0);
-
-  const [noise2, setN2] = useState(0);
-  const [noise3, setN3] = useState(0.5);
-  const [filter, setFilter] = useState(0);
   const [rotationCount, setRotationCount] = useState(0);
   const [reflectionToggle, setReflectionToggle] = useState(0);
 
@@ -118,7 +95,6 @@ export default function Live() {
   const animationsServer = useAnimationFromServer("rendered");
 
   const [numScreens, setNumHScreens] = useState([5, 8]);
-  const canvasPixelRef = React.useRef();
 
   function updateOps(op) {
     console.log("updateOps", op);
@@ -175,9 +151,14 @@ export default function Live() {
   }
 
   const openViewer = () => {
-    window.open("/view", "vj-viewer", "width=820,height=640");
+    // window.open("/view", "vj-viewer", "width=820,height=640");
+
+    window.open(
+      "http://dlb-web.s3-website.eu-central-1.amazonaws.com/view",
+      "vj-viewer",
+      "width=820,height=640"
+    );
   };
-  const canvasPixel = canvasPixelRef.current;
 
   function updateWidth(width) {
     console.log("updateWidth", width);

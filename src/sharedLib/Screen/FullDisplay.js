@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { createConstFrame } from "../Utils/generators";
-import { hexToRgb, rgbToH } from "../Utils/RGB";
+import { hexToRgb } from "../Utils/RGB";
 
 import { getSchemes } from "../schemes/Schemes";
 import { vjChannel } from "../Utils/broadcast";
