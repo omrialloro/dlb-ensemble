@@ -26,7 +26,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      {isAuthenticated && window.location.pathname !== "/live" && (
+      {isAuthenticated && window.location.pathname !== "/view" && (
         <AnimationsProvider
           schemeKey={"omri"}
           colorScheme={[...getSchemes()["omri"]]}
@@ -68,7 +68,7 @@ function App() {
                 }
               />
 
-              <Route path="/view" element={<FullDisplay />} />
+              {/* <Route path="/view" element={<FullDisplay />} /> */}
               <Route path="/live" element={<Live />} />
 
               <Route path="*" element={<Navigate to="/creator" />} />
