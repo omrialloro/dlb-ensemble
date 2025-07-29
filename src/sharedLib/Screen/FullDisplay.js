@@ -116,7 +116,6 @@ const FullDisplay = (props) => {
           break;
         case "scheme":
           statesRef.current = scheme_array[data.nScheme];
-          console.log("Scheme updated", statesRef.current);
           break;
         default:
       }
@@ -237,7 +236,6 @@ const FullDisplay = (props) => {
       }
 
       let frame_index = Math.floor(t);
-      console.log("frame_index", frame_index);
       indexRef.current = (indexRef.current + 1) % 36;
 
       let A = framesRef.current[frame_index];
@@ -246,7 +244,6 @@ const FullDisplay = (props) => {
       }
       if (reflectRef.current) {
         reflectFrame(A);
-        console.log("No reflection");
       }
 
       let screenWidth = dims.width / numScreensRef.current[0];
