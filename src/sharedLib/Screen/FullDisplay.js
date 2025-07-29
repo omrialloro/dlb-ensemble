@@ -8,22 +8,10 @@ import { reflectFrame, rotateFrame } from "../Utils/frameOps";
 
 const scheme_array = Object.values(getSchemes());
 
-const states = scheme_array[0];
+// const states = scheme_array[0];
 
 function createConstFrames() {
   return [createConstFrame(0), createConstFrame(0)];
-}
-function hexToRgbFrame(frame) {
-  let cb = (c) => c;
-  if (frame[0][0] < 6) {
-    cb = (c) => states[c];
-  }
-  return frame.map((row) =>
-    row.map((color) => {
-      const rgb = hexToRgb(cb(color));
-      return { r: rgb[0], g: rgb[1], b: rgb[2] };
-    })
-  );
 }
 
 function hexToRgbFrame_(frame, states) {
