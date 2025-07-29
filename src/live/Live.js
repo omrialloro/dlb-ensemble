@@ -84,6 +84,8 @@ const XX = styled.img`
 export default function Live() {
   const [speed, setSpeed] = useState(60);
   const [rotationCount, setRotationCount] = useState(0);
+  const [schemeCount, setSchemeCount] = useState(0);
+
   const [reflectionToggle, setReflectionToggle] = useState(0);
 
   const colorsArray = [
@@ -97,6 +99,7 @@ export default function Live() {
   const [numScreens, setNumHScreens] = useState([5, 8]);
 
   function updateOps(op) {
+    const numSchemes = scheme_array.length;
     console.log("updateOps", op);
     switch (op) {
       case "reflect":
@@ -107,8 +110,9 @@ export default function Live() {
         send("rotation", { nRotate: (rotationCount + 1) % 4 });
         setRotationCount((rotationCount + 1) % 4);
         break;
-      case "reverse":
-        send("reverse", {});
+      case "scheme":
+        send("scheme", { nScheme: (schemeCount + 1) % numSchemes });
+        setSchemeCount((schemeCount + 1) % numSchemes);
         break;
       default:
         console.warn("Unknown operation:", op);
@@ -151,13 +155,7 @@ export default function Live() {
   }
 
   const openViewer = () => {
-    // window.open("/view", "vj-viewer", "width=820,height=640");
-
-    window.open(
-      "http://dlb-web.s3-website.eu-central-1.amazonaws.com/view",
-      "vj-viewer",
-      "width=820,height=640"
-    );
+    window.open("/view", "vj-viewer", "width=820,height=640");
   };
 
   function updateWidth(width) {

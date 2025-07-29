@@ -11,10 +11,7 @@ const scheme_array = Object.values(getSchemes());
 const states = scheme_array[0];
 
 function createConstFrames() {
-  return [
-    createConstFrame({ r: 30, g: 30, b: 30 }),
-    createConstFrame({ r: 30, g: 30, b: 30 }),
-  ];
+  return [createConstFrame(0), createConstFrame(0)];
 }
 function hexToRgbFrame(frame) {
   let cb = (c) => c;
@@ -29,8 +26,21 @@ function hexToRgbFrame(frame) {
   );
 }
 
+function hexToRgbFrame_(frame, states) {
+  let cb = (c) => c;
+  if (frame[0][0] < 6) {
+    cb = (c) => states[c];
+  }
+  return frame.map((row) =>
+    row.map((color) => {
+      const rgb = hexToRgb(cb(color));
+      return { r: rgb[0], g: rgb[1], b: rgb[2] };
+    })
+  );
+}
+
 function hexToRgbFrames(frames) {
-  return frames.map((frame) => hexToRgbFrame(frame));
+  return frames.map((frame) => frame);
 }
 
 const FullDisplay = (props) => {
@@ -64,6 +74,7 @@ const FullDisplay = (props) => {
   const bgColorRef = useRef("rgb(160, 60, 60)");
   const nRotateRef = useRef();
   const reflectRef = useRef();
+  const statesRef = useRef(scheme_array[0]);
 
   const numScreensRef = useRef([5, 8]);
 
@@ -74,7 +85,9 @@ const FullDisplay = (props) => {
           speedRef.current = data.speed; // no re-render
           break;
         case "frames":
+          // framesRef.current = data.frames;
           framesRef.current = hexToRgbFrames(data.frames); // no re-render
+          // no re-render
           indexRef.current = 0; // reset index
           break;
         case "height":
@@ -112,6 +125,10 @@ const FullDisplay = (props) => {
           break;
         case "reflection":
           reflectRef.current = data.reflection;
+          break;
+        case "scheme":
+          statesRef.current = scheme_array[data.nScheme];
+          console.log("Scheme updated", statesRef.current);
           break;
         default:
       }
@@ -173,6 +190,7 @@ const FullDisplay = (props) => {
     offscreen.height = 800;
 
     function drawImage(A) {
+      A = hexToRgbFrame_(A, statesRef.current);
       ctxOs.fillStyle = bgColorRef.current;
 
       ctxOs.fillRect(0, 0, canvas.width, canvas.height);
@@ -216,18 +234,23 @@ const FullDisplay = (props) => {
 
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "rgb(160, 60, 60)";
-    let frame_index = 0;
+    // let frame_index = 0;
+    let t = 0;
 
     const animate = () => {
-      indexRef.current = indexRef.current + 1;
-      const step = 60 / speedRef.current;
+      t += 2 * (speedRef.current / 60 - 0.5);
       // frame_index = Math.round(indexRef.current / stepRef.current);
-      frame_index = Math.round(indexRef.current / step);
-
-      if (frame_index > framesRef.current.length - 1) {
-        indexRef.current = 0;
-        frame_index = 0;
+      // frame_index = Math.round(indexRef.current / step);
+      if (t > framesRef.current.length - 1) {
+        t = 0;
       }
+      if (t < 0) {
+        t = framesRef.current.length - 1;
+      }
+
+      let frame_index = Math.floor(t);
+      console.log("frame_index", frame_index);
+      indexRef.current = (indexRef.current + 1) % 36;
 
       let A = framesRef.current[frame_index];
       for (let i = 0; i < nRotateRef.current; i++) {

@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import React, { useEffect, useState, useRef } from "react";
-import { Reflect, Rotate, Reverse } from "./OperatorsBtns";
+import { Reflect, Rotate } from "./OperatorsBtns";
 import ColorSchemeBtn from "./ColorSchemeBtn";
 
 const StyledContainer = styled.div`
@@ -49,15 +48,12 @@ export default function FrameOpsController(props) {
           }}
         />
       </StyledBtnContainer>
+
       <StyledBtnContainer>
-        <Reverse
-          onClick={() => {
-            updateOps("reverse");
-          }}
+        <ColorSchemeBtn
+          clickScheme={() => updateOps("scheme")}
+          colors={colors}
         />
-      </StyledBtnContainer>
-      <StyledBtnContainer>
-        <ColorSchemeBtn colors={colors} />
       </StyledBtnContainer>
     </StyledContainer>
   );
