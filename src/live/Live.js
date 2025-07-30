@@ -159,7 +159,10 @@ export default function Live() {
   // };
 
   const openViewer = () => {
-    const viewerWindow = window.open(window.location.origin, "_blank");
+    const viewerWindow = window.open(
+      window.location.origin + "/index.html",
+      "_blank"
+    );
     console.log("Viewer window opened:1000");
     console.log("Viewer window opened:1000");
     console.log("Viewer window opened:1000");
