@@ -174,7 +174,7 @@ export default function Live() {
       if (viewerWindow) {
         viewerWindow.postMessage({ type: "navigate", path: "/view" }, "*");
       }
-    }, 1000);
+    }, 100);
 
     // Stop after 2 seconds (fallback if window never loads)
     setTimeout(() => clearInterval(interval), 2000);
