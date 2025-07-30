@@ -160,18 +160,18 @@ export default function Live() {
 
   const openViewer = () => {
     const viewerWindow = window.open(window.location.origin, "_blank");
-    console.log("Viewer window opened:");
-    console.log("Viewer window opened:");
-    console.log("Viewer window opened:");
-    console.log("Viewer window opened:");
-    console.log("Viewer window opened:");
+    console.log("Viewer window opened:1000");
+    console.log("Viewer window opened:1000");
+    console.log("Viewer window opened:1000");
+    console.log("Viewer window opened:1000");
+    console.log("Viewer window opened:1000");
 
     // Wait a moment to make sure viewer loads, then send redirect message
     const interval = setInterval(() => {
       if (viewerWindow) {
         viewerWindow.postMessage({ type: "navigate", path: "/view" }, "*");
       }
-    }, 100);
+    }, 1000);
 
     // Stop after 2 seconds (fallback if window never loads)
     setTimeout(() => clearInterval(interval), 2000);
