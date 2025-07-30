@@ -154,10 +154,23 @@ export default function Live() {
     setFrames(animations[animationId]);
   }
 
-  const openViewer = () => {
-    window.open("/view", "vj-viewer", "width=820,height=640");
-  };
+  // const openViewer = () => {
+  //   window.open("/view", "vj-viewer", "width=820,height=640");
+  // };
 
+  const openViewer = () => {
+    const viewerWindow = window.open(window.location.origin, "_blank");
+
+    // Wait a moment to make sure viewer loads, then send redirect message
+    const interval = setInterval(() => {
+      if (viewerWindow) {
+        viewerWindow.postMessage({ type: "navigate", path: "/view" }, "*");
+      }
+    }, 100);
+
+    // Stop after 2 seconds (fallback if window never loads)
+    setTimeout(() => clearInterval(interval), 2000);
+  };
   function updateWidth(width) {
     console.log("updateWidth", width);
     send("width", { width: width });

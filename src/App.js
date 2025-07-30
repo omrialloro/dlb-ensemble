@@ -113,7 +113,7 @@
 
 // export default App;
 import "./App.css";
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Login } from "./login/Login";
 import Editor2 from "./editor/Editor2";
@@ -126,6 +126,18 @@ import { FullDisplay } from "./sharedLib/Screen/FullDisplay";
 import Live from "./live/Live";
 
 function App() {
+  useEffect(() => {
+    const handler = (event) => {
+      if (event.data?.type === "navigate" && event.data.path === "/view") {
+        window.history.pushState({}, "", "/view");
+        window.dispatchEvent(new PopStateEvent("popstate")); // Trigger React Router
+      }
+    };
+
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
+
   const creatorRef = useRef();
   const { isAuthenticated } = useContext(AuthContext);
   const [gif, setGif] = useState(0);
