@@ -163,11 +163,11 @@ export default function Live() {
       window.location.origin + "/index.html",
       "_blank"
     );
-    console.log("Viewer window opened:1000");
-    console.log("Viewer window opened:1000");
-    console.log("Viewer window opened:1000");
-    console.log("Viewer window opened:1000");
-    console.log("Viewer window opened:1000");
+    console.log("Viewer window opened:index");
+    console.log("Viewer window opened:index");
+    console.log("Viewer window opened:index");
+    console.log("Viewer window opened:index");
+    console.log("Viewer window opened:index");
 
     // Wait a moment to make sure viewer loads, then send redirect message
     const interval = setInterval(() => {
