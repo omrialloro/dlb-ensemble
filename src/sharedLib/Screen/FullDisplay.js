@@ -92,12 +92,17 @@ const FullDisplay = (props) => {
           break;
         case "noise1":
           n1Ref.current = data.noise1;
+          console.log("Noise1 set to", n1Ref.current);
           break;
         case "noise2":
           n2Ref.current = data.noise2;
+          console.log("Noise2 set to", n1Ref.current);
+
           break;
         case "noise3":
-          n3Ref.current = data.noise3;
+          n3Ref.current = 120 * data.noise3;
+          console.log("Noise3 set to", n1Ref.current);
+
           break;
         case "filter":
           fRef.current = data.filter;
