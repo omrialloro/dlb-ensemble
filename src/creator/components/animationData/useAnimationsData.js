@@ -14,11 +14,29 @@ import {
   useAnimationFromServer,
   useLoadAnimation,
 } from "../../../sharedLib/Server/api";
+import { use } from "react";
 
 const DEFAULTS_FRAME_SETTINGS = {
   COL: 36,
   ROW: 36,
 };
+
+class AnimationInstance {
+  constructor(
+    start = 0,
+    stop = 0,
+    reflect = false,
+    rotate = 0,
+    scheme = -1,
+    animationId = null
+  ) {
+    this.start = start;
+    this.stop = stop;
+    this.reflect = reflect;
+    this.rotate = rotate;
+    this.animationId = animationId;
+  }
+}
 
 const rotatePixel = ([i, j]) => [j, DEFAULTS_FRAME_SETTINGS.COL - 1 - i];
 const reflectPixel = ([i, j]) => [i, DEFAULTS_FRAME_SETTINGS.COL - 1 - j];
@@ -90,9 +108,119 @@ export default function useAnimationsData(props) {
   const [animations, setAnimations] = useState({});
   const [instances, setInstances] = useState([]);
   const [instancesEditor, setInstancesEditor] = useState([]);
+  const [instanceSequences, setInstanceSequences] = useState([]);
 
   const [instancesOsc, setInstancesOsc] = useState([]);
   const [colorScheme, setColorScheme] = useState(props.colorScheme);
+
+  const pushAnimationBySequenceId = (seq_id, animation_instance) => {
+    setInstanceSequences((prev) => {
+      const index = prev.findIndex((x) => x.id === seq_id);
+
+      if (index !== -1) {
+        const updated = [...prev];
+        updated[index] = {
+          ...updated[index],
+          data: [...updated[index].data, animation_instance],
+        };
+        return updated;
+      } else {
+        return [...prev, { id: seq_id, data: [animation_instance] }];
+      }
+    });
+  };
+
+  useEffect(() => {
+    console.log(instanceSequences);
+  }, [instanceSequences]);
+
+  const updateSequence = (seq_id, animationIndex, updated_instance) => {
+    setInstanceSequences((prev) => {
+      const index = prev.findIndex((x) => x.id === seq_id);
+      if (index === -1) return prev; // ID not found, no update
+
+      const updated = [...prev];
+      const sequence = updated[index];
+
+      if (
+        !sequence.data ||
+        animationIndex < 0 ||
+        animationIndex >= sequence.data.length
+      ) {
+        return prev; // Invalid index, no update
+      }
+
+      // Update the specific instance
+      const newData = [...sequence.data];
+      newData[animationIndex] = updated_instance;
+
+      updated[index] = {
+        ...sequence,
+        data: newData,
+      };
+
+      return updated;
+    });
+  };
+
+  const removeInstanceFromSequence = (seq_id, animationIndex) => {
+    setInstanceSequences((prev) => {
+      const index = prev.findIndex((x) => x.id === seq_id);
+      if (index === -1) return prev; // ID not found
+
+      const sequence = prev[index];
+      if (
+        !sequence.data ||
+        animationIndex < 0 ||
+        animationIndex >= sequence.data.length
+      ) {
+        return prev; // Invalid index
+      }
+
+      // Remove the instance at animationIndex
+      const newData = [...sequence.data];
+      newData.splice(animationIndex, 1);
+
+      const updated = [...prev];
+      updated[index] = { ...sequence, data: newData };
+
+      return updated;
+    });
+  };
+
+  const switchInstancesInSequence = (
+    seq_id,
+    animationIndex1,
+    animationIndex2
+  ) => {
+    setInstanceSequences((prev) => {
+      const index = prev.findIndex((x) => x.id === seq_id);
+      if (index === -1) return prev; // ID not found
+
+      const sequence = prev[index];
+      if (
+        !sequence.data ||
+        animationIndex1 < 0 ||
+        animationIndex2 < 0 ||
+        animationIndex1 >= sequence.data.length ||
+        animationIndex2 >= sequence.data.length
+      ) {
+        return prev; // Invalid indices
+      }
+
+      // Swap the instances at animationIndex1 and animationIndex2
+      const newData = [...sequence.data];
+      [newData[animationIndex1], newData[animationIndex2]] = [
+        newData[animationIndex2],
+        newData[animationIndex1],
+      ];
+
+      const updated = [...prev];
+      updated[index] = { ...sequence, data: newData };
+
+      return updated;
+    });
+  };
 
   function isContainingOscillators() {
     let all_colors = getAllColors(currentFrames);
@@ -440,6 +568,44 @@ export default function useAnimationsData(props) {
     ]
   );
 
+  const PrepareFramesNoRender = (el) => {
+    console.log(el);
+    console.log(el);
+    console.log(el);
+    console.log(el);
+    console.log(el);
+    console.log(el);
+
+    const animationId = el.animationId;
+    const opState = el.opState;
+    const frames = animations[animationId];
+    const range = opState.range;
+
+    const animationLen = frames.length;
+    const len = range[1] - range[0];
+    const preparedFrames = Array(len);
+    for (let i = 0; i < len; i++) {
+      const T_index = transformFrameIndex(opState, animationLen, i);
+      preparedFrames[i] = transformFrame(frames[T_index], opState);
+    }
+    return preparedFrames;
+  };
+  function prepareFramesForLive(seq_id) {
+    let outFrames = [];
+    let sequence = [];
+
+    const index = instanceSequences.findIndex((x) => x.id === seq_id);
+    if (index !== -1) {
+      sequence = instanceSequences[index].data;
+    }
+
+    sequence.forEach((element) => {
+      outFrames = outFrames.concat(PrepareFramesNoRender(element));
+    });
+    console.log(outFrames);
+    return outFrames;
+  }
+
   const renderFrameToStates = useCallback(
     (frame, frameIndex) => {
       return renderFrame(frame, frameIndex, -1);
@@ -626,6 +792,10 @@ export default function useAnimationsData(props) {
     isSessionLoaded,
     instancesOsc,
     setInstancesEditor,
+    pushAnimationBySequenceId,
+    removeInstanceFromSequence,
+    prepareFramesForLive,
+    instanceSequences,
     instancesEditor,
     currentFrames,
     animations,

@@ -1,10 +1,7 @@
 // Controller.jsx
 import React, { useEffect, useState } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
-import {
-  useAnimationFromServer,
-  useLoadAnimation,
-} from "../sharedLib/Server/api";
+import { useAnimationFromServer } from "../sharedLib/Server/api";
 
 import styled from "styled-components";
 import { PixelDesigner, NoiseDesigner } from "./components/Tunners";
@@ -13,21 +10,15 @@ import FrameOpsController from "./components/FrameOpsController";
 import { getSchemes } from "../sharedLib/schemes/Schemes";
 import ScreenDuplication from "./components/ScreenDuplication";
 import SpeedTunner from "./components/SpeedTunner";
+import AnimationStrip from "./components/AnimationStrip";
+import { useAnimations } from "./../creator/components/animationData/AnimationContext";
+
+import AnimationLibrary from "./../creator/components/animationLibrary/AnimationLibrary.js";
 
 const scheme_array = Object.values(getSchemes());
 
 const send = (type, payload = {}) =>
   vjChannel.postMessage({ type, ...payload });
-
-const StyledFrames = styled.div`
-  transform: scale(${(props) => props.scale});
-  transition: 0.2s;
-  width: 50px;
-  height: 50px;
-  position: relative;
-  overflow: scroll;
-  align-items: center;
-`;
 
 const StyledButton = styled.div`
   height: 40px;
@@ -87,6 +78,24 @@ export default function Live() {
   const [schemeCount, setSchemeCount] = useState(0);
 
   const [reflectionToggle, setReflectionToggle] = useState(0);
+  const { instanceSequences, prepareFramesForLive } = useAnimations();
+
+  function getUrlBysequenceId(sequenceId) {
+    const index = instanceSequences.findIndex((x) => x.id === sequenceId);
+    if (index !== -1) {
+      const sequence = instanceSequences[index].data;
+      if (sequence && sequence.length > 0) {
+        const urls = sequence.map(
+          (x) =>
+            "https://dlb-thumbnails.s3.eu-central-1.amazonaws.com/" +
+            x.animationId +
+            ".png"
+        );
+        return urls;
+      }
+    }
+    return [];
+  }
 
   const colorsArray = [
     "rgb(160, 60, 60)",
@@ -98,9 +107,10 @@ export default function Live() {
 
   const [numScreens, setNumHScreens] = useState([5, 8]);
 
+  const [browserdOn, setBrowserOn] = useState(false);
+
   function updateOps(op) {
     const numSchemes = scheme_array.length;
-    console.log("updateOps", op);
     switch (op) {
       case "reflect":
         send("reflection", { reflection: !reflectionToggle });
@@ -115,7 +125,6 @@ export default function Live() {
         setSchemeCount((schemeCount + 1) % numSchemes);
         break;
       default:
-        console.warn("Unknown operation:", op);
     }
   }
 
@@ -134,24 +143,22 @@ export default function Live() {
   }
 
   const [frames, setFrames] = useState([]);
-  useEffect(() => {
-    send("frames", { frames: frames });
-  }, [frames]);
 
   useEffect(() => {
     send("frames", { frames: frames });
   }, [frames]);
 
-  const loadAnimation = useLoadAnimation();
+  useEffect(() => {
+    let x = prepareFramesForLive(11);
+    console.log("Preparing frames for live", x);
+  }, [instanceSequences]);
 
-  const [animations, setAnimations] = useState({});
-
-  async function getAnimation(animationId) {
-    if (!animations.hasOwnProperty(animationId)) {
-      const A = await loadAnimation(animationId);
-      setAnimations({ ...animations, [animationId]: A["data"] });
+  function PlayChannel(channelId) {
+    const fframes = prepareFramesForLive(channelId);
+    console.log(fframes);
+    if (fframes.length > 0) {
+      send("frames", { frames: fframes });
     }
-    setFrames(animations[animationId]);
   }
 
   // const openViewer = () => {
@@ -175,7 +182,6 @@ export default function Live() {
     setTimeout(() => clearInterval(interval), 2000);
   };
   function updateWidth(width) {
-    console.log("updateWidth", width);
     send("width", { width: width });
   }
   function updateHeight(height) {
@@ -198,58 +204,80 @@ export default function Live() {
     send("noise3", { noise3: noise3 });
   }
 
+  const sequenceIds = [11, 22, 33, 44, 55];
+  const [sequenceId, setSequenceId] = useState(sequenceIds[0]);
+
   return (
-    <div style={{ padding: 16, width: 280, fontFamily: "sans-serif" }}>
-      <h3>VJ Controller</h3>
-      <PixelDesigner
-        updateWidth={updateWidth}
-        updateHeight={updateHeight}
-        updateCurve={updateCurve}
-        updateOpacity={updateOpacity}
-      />
-      <NoiseDesigner
-        updateNoiseVal1={updateNoiseVal1}
-        updateNoiseVal2={updateNoiseVal2}
-        updateNoiseVal3={updateNoiseVal3}
-      />
-      <Backgrounds
-        setBgColors={(index) => {
-          send("bgColor", { bgColor: colorsArray[index] });
-        }}
-        bgColors={colorsArray}
-      />
-      <FrameOpsController updateOps={updateOps} colors={scheme_array[0]} />
-      <ScreenDuplication
-        duplication={numScreens}
-        updateDuplication={updateDuplication}
-      />
-      <SpeedTunner
-        speed={speed}
-        setSpeed={(v) => {
-          setSpeed(v);
-          send("speed", { speed: v });
-        }}
-      />
+    <div style={{ display: "flex", padding: 17 }}>
+      <div style={{ width: 290, fontFamily: "sans-serif" }}>
+        {browserdOn ? (
+          <AnimationLibrary
+            flag={"live"}
+            sequenceId={sequenceId}
+            username={"email"}
+            browserdOn={browserdOn}
+            setBrowserOn={setBrowserOn}
+            instanceId={-1}
+            animationId={-1}
+          />
+        ) : null}
+        <h3>VJ Controller</h3>
 
-      <StyledButtonContainer>
-        <StyledButton onClick={openViewer}>Open Viewer</StyledButton>
-      </StyledButtonContainer>
+        <PixelDesigner
+          updateWidth={updateWidth}
+          updateHeight={updateHeight}
+          updateCurve={updateCurve}
+          updateOpacity={updateOpacity}
+        />
 
-      <StyledBox>
-        {animationsServer.map((x, index) => (
-          <StyledFrames>
-            <XX
-              style={x["isChecked"] ? { height: "90%" } : { height: "70%" }}
-              src={x["imgUrl"]}
-              key={"ll" + x["id"]}
-              id={x["id"]}
-              onClick={async () => {
-                getAnimation(x["id"]);
+        <NoiseDesigner
+          updateNoiseVal1={updateNoiseVal1}
+          updateNoiseVal2={updateNoiseVal2}
+          updateNoiseVal3={updateNoiseVal3}
+        />
+        <Backgrounds
+          setBgColors={(index) => {
+            send("bgColor", { bgColor: colorsArray[index] });
+          }}
+          bgColors={colorsArray}
+        />
+        <FrameOpsController updateOps={updateOps} colors={scheme_array[0]} />
+        <ScreenDuplication
+          duplication={numScreens}
+          updateDuplication={updateDuplication}
+        />
+        <SpeedTunner
+          speed={speed}
+          setSpeed={(v) => {
+            setSpeed(v);
+            send("speed", { speed: v });
+          }}
+        />
+
+        <StyledButtonContainer>
+          <StyledButton onClick={openViewer}>Open Viewer</StyledButton>
+        </StyledButtonContainer>
+      </div>
+      <div>
+        <div
+          style={{ height: 250, width: 240, backgroundColor: "black" }}
+        ></div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          {sequenceIds.map((id) => (
+            <AnimationStrip
+              onAddClick={() => {
+                setSequenceId(id);
+                setBrowserOn(true);
               }}
-            ></XX>
-          </StyledFrames>
-        ))}
-      </StyledBox>
+              onPlayClick={() => {
+                console.log("FDF");
+                PlayChannel(id);
+              }}
+              channelId={id}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

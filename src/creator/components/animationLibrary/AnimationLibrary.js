@@ -300,7 +300,8 @@ function prepareAnimation(frames, opState) {
 export default function AnimationLibrary(props) {
   const oooo = useRef();
   const rr = useRef();
-  const { setBrowserOn, browserdOn, instanceId, flag } = props;
+  const { setBrowserOn, browserdOn, instanceId, flag, sequenceId } = props;
+  console.log(sequenceId);
   const {
     addInstance_,
     addInstanceEditor,
@@ -315,6 +316,7 @@ export default function AnimationLibrary(props) {
     removeInstance_,
     isContainingOscillators,
     renderAllFramesRGBScheme,
+    pushAnimationBySequenceId,
     instances,
     instancesOsc,
     renderOscillatorInstance,
@@ -402,6 +404,12 @@ export default function AnimationLibrary(props) {
       });
     } else if (flag === "editor") {
       addInstanceEditor({
+        id: instance_id,
+        animationId: animation_id,
+        opState: { ...opState },
+      });
+    } else if (flag === "live") {
+      pushAnimationBySequenceId(sequenceId, {
         id: instance_id,
         animationId: animation_id,
         opState: { ...opState },

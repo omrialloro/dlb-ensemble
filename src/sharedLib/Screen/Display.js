@@ -634,7 +634,6 @@ const FancyScreen = (props) => {
           element["id"],
           schemes_array[element["opState"]["scheme"]]
         )
-        // renderInstanceFrames(element["id"])
       );
     });
     return outFrames;
