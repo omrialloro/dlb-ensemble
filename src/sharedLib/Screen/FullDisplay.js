@@ -282,8 +282,37 @@ const FullDisplay = (props) => {
   }, []);
 
   return (
-    <div>
-      <canvas ref={canvasRef} width={dims.width} height={dims.height}></canvas>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        background: "black",
+        zIndex: 0,
+      }}
+    >
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          background: "black",
+          display: "flex",
+          justifyContent: "center", // center horizontally
+          alignItems: "center", // center vertically
+          zIndex: 9999,
+        }}
+      >
+        <canvas
+          ref={canvasRef}
+          width={dims.width}
+          height={dims.height}
+        ></canvas>
+      </div>
     </div>
   );
 };
