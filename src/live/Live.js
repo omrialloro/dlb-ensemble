@@ -135,7 +135,7 @@ export default function Live() {
         break;
       case "scheme":
         send("scheme", { nScheme: (schemeCount + 1) % numSchemes });
-        updateParams({ statess: scheme_array[(schemeCount + 1) % numSchemes] });
+        updateParams({ states: scheme_array[(schemeCount + 1) % numSchemes] });
 
         setSchemeCount((schemeCount + 1) % numSchemes);
         break;
@@ -167,12 +167,10 @@ export default function Live() {
 
   useEffect(() => {
     let x = prepareFramesForLive(11);
-    console.log("Preparing frames for live", x);
   }, [instanceSequences]);
 
   function PlayChannel(channelId) {
     const fframes = prepareFramesForLive(channelId);
-    console.log(fframes);
     if (fframes.length > 0) {
       send("frames", { frames: fframes });
       updateParams({ frames: fframes });

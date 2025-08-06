@@ -44,7 +44,7 @@ const LiveDisplay = forwardRef((props, ref) => {
 
   const hRef = useRef(1);
   const wRef = useRef(1);
-  const opRef = useRef(0.9);
+  const opRef = useRef(0.2);
   const rRef = useRef(0);
 
   const n1Ref = useRef(1);
@@ -137,6 +137,7 @@ const LiveDisplay = forwardRef((props, ref) => {
 
     function drawImage(A) {
       A = hexToRgbFrame_(A, statesRef.current);
+      console.log("Drawing image with A", A);
       ctxOs.fillStyle = bgColorRef.current;
 
       ctxOs.fillRect(0, 0, canvas.width, canvas.height);
