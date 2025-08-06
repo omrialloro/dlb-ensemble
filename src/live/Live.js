@@ -1,5 +1,5 @@
 // Controller.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
 import { useAnimationFromServer } from "../sharedLib/Server/api";
 
@@ -8,12 +8,22 @@ import { PixelDesigner, NoiseDesigner } from "./components/Tunners";
 import Backgrounds from "./components/Backgrounds";
 import FrameOpsController from "./components/FrameOpsController";
 import { getSchemes } from "../sharedLib/schemes/Schemes";
+import { LiveDisplay } from "../sharedLib/Screen/LiveDisplay";
+
 import ScreenDuplication from "./components/ScreenDuplication";
 import SpeedTunner from "./components/SpeedTunner";
 import AnimationStrip from "./components/AnimationStrip";
+
 import { useAnimations } from "./../creator/components/animationData/AnimationContext";
 
 import AnimationLibrary from "./../creator/components/animationLibrary/AnimationLibrary.js";
+import { createConstFrame } from "../sharedLib/Utils/generators";
+
+// const states = scheme_array[0];
+
+function createConstFrames() {
+  return [createConstFrame(0), createConstFrame(0)];
+}
 
 const scheme_array = Object.values(getSchemes());
 
@@ -114,14 +124,19 @@ export default function Live() {
     switch (op) {
       case "reflect":
         send("reflection", { reflection: !reflectionToggle });
+        updateParams({ reflect: !reflectionToggle });
+
         setReflectionToggle(!reflectionToggle);
         break;
       case "rotate":
         send("rotation", { nRotate: (rotationCount + 1) % 4 });
+        updateParams({ nRotate: (rotationCount + 1) % 4 });
         setRotationCount((rotationCount + 1) % 4);
         break;
       case "scheme":
         send("scheme", { nScheme: (schemeCount + 1) % numSchemes });
+        updateParams({ states: scheme_array[(schemeCount + 1) % numSchemes] });
+
         setSchemeCount((schemeCount + 1) % numSchemes);
         break;
       default:
@@ -140,12 +155,14 @@ export default function Live() {
     setNumHScreens(newNumScreens);
 
     send("numScreens", { numScreens: newNumScreens });
+    updateParams({ numScreens: newNumScreens });
   }
 
-  const [frames, setFrames] = useState([]);
+  const [frames, setFrames] = useState(createConstFrames());
 
   useEffect(() => {
     send("frames", { frames: frames });
+    updateParams({ frames: frames });
   }, [frames]);
 
   useEffect(() => {
@@ -158,6 +175,7 @@ export default function Live() {
     console.log(fframes);
     if (fframes.length > 0) {
       send("frames", { frames: fframes });
+      updateParams({ frames: fframes });
     }
   }
 
@@ -182,27 +200,69 @@ export default function Live() {
     setTimeout(() => clearInterval(interval), 2000);
   };
   function updateWidth(width) {
+    updateParams({ w: width });
+
     send("width", { width: width });
   }
   function updateHeight(height) {
+    updateParams({ h: height });
+
     send("height", { height: height });
   }
   function updateCurve(radius) {
+    updateParams({ r: radius });
+
     send("radius", { radius: radius });
   }
   function updateOpacity(opacity) {
+    updateParams({ op: opacity });
+
     send("opacity", { opacity: opacity });
   }
 
   function updateNoiseVal1(noise1) {
+    updateParams({ n1: noise1 });
+
     send("noise1", { noise1: noise1 });
   }
   function updateNoiseVal2(noise2) {
+    updateParams({ n2: noise2 });
+
     send("noise2", { noise2: noise2 });
   }
   function updateNoiseVal3(noise3) {
+    updateParams({ n3: noise3 });
+
     send("noise3", { noise3: noise3 });
   }
+
+  const displayRef = useRef(null);
+
+  function updateParams(params) {
+    console.log("Updating params in LiveDisplay", params);
+    if (!displayRef.current) return;
+
+    for (const [key, value] of Object.entries(params)) {
+      const refKey = key + "Ref";
+      console.log("Updating displayRef", refKey, value);
+      if (displayRef.current[refKey]) {
+        displayRef.current[refKey].current = value;
+      }
+    }
+  }
+
+  useEffect(() => {
+    updateParams({
+      frames: frames,
+      w: 0.8,
+      h: 0.6,
+      r: 0.1,
+      n1: 0.5,
+      n2: 0.4,
+      n3: 0.4,
+      op: 0.9,
+    });
+  }, []);
 
   const sequenceIds = [11, 22, 33, 44, 55];
   const [sequenceId, setSequenceId] = useState(sequenceIds[0]);
@@ -237,6 +297,8 @@ export default function Live() {
         />
         <Backgrounds
           setBgColors={(index) => {
+            updateParams({ bgColor: colorsArray[index] });
+
             send("bgColor", { bgColor: colorsArray[index] });
           }}
           bgColors={colorsArray}
@@ -250,6 +312,8 @@ export default function Live() {
           speed={speed}
           setSpeed={(v) => {
             setSpeed(v);
+            updateParams({ speed: v });
+
             send("speed", { speed: v });
           }}
         />
@@ -259,9 +323,10 @@ export default function Live() {
         </StyledButtonContainer>
       </div>
       <div>
-        <div
+        <LiveDisplay ref={displayRef} width={240} height={250}></LiveDisplay>
+        {/* <div
           style={{ height: 250, width: 240, backgroundColor: "black" }}
-        ></div>
+        ></div> */}
         <div style={{ display: "flex", flexDirection: "row" }}>
           {sequenceIds.map((id) => (
             <AnimationStrip
