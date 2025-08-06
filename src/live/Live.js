@@ -135,7 +135,7 @@ export default function Live() {
         break;
       case "scheme":
         send("scheme", { nScheme: (schemeCount + 1) % numSchemes });
-        updateParams({ states: scheme_array[(schemeCount + 1) % numSchemes] });
+        updateParams({ statess: scheme_array[(schemeCount + 1) % numSchemes] });
 
         setSchemeCount((schemeCount + 1) % numSchemes);
         break;

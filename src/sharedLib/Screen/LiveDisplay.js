@@ -187,7 +187,6 @@ const LiveDisplay = forwardRef((props, ref) => {
       t += 2 * (speedRef.current / 60 - 0.5);
       // frame_index = Math.round(indexRef.current / stepRef.current);
       // frame_index = Math.round(indexRef.current / step);
-      console.log(framesRef.current);
       if (t > framesRef.current.length - 1) {
         t = 0;
       }
