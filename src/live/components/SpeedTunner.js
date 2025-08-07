@@ -36,7 +36,7 @@ export default function SpeedTunner(props) {
         onChange={(e) => {
           const val = parseFloat(e.target.value);
           setSpeed(val);
-          speedRef.current.innerText = `FPS ${val}`;
+          speedRef.current.innerText = `FPS ${Math.round(-60 + 2 * val)}`;
         }}
       />
       <StyledText ref={speedRef}>FPS {speed}</StyledText>

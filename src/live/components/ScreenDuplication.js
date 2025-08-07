@@ -11,46 +11,59 @@ const StyledContainer = styled.div`
 `;
 
 const BigBtn = styled.div`
-  height: 72px;
+  height: 70px;
   width: 58px;
+  border-radius: 4px;
   background-color: rgb(220, 80, 70);
   display: flex;
 
   font-size: 30px;
   position: relative;
-  padding: 10px;
+  padding: 11px;
 
   text-align: center;
   justify-content: center; /* horizontal */
-  margin: 2px;
+  margin: 3px;
 `;
 
 const SmallBtn = styled.div`
   height: 33px;
   width: 55px;
-  background-color: rgb(250, 110, 70);
+  background-color: rgb(220, 100, 70);
   display: flex;
+  border-radius: 3px;
+  line-height: 10px;
 
-  margin: 4px;
+  margin: 3px;
   padding: 10px;
 
   text-align: center;
+  font-size: 15px;
+  font-weight: 900;
   justify-content: center; /* horizontal */
 
   position: relative;
 `;
 const Counter = styled.div`
-  height: 34px;
+  height: 33px;
   width: 66px;
   display: flex;
   position: relative;
   text-align: center;
   justify-content: center;
-  margin-top: 3px;
-  margin-bottom: 2px;
+  margin: 3px;
+  margin-top: 4px;
+  margin-bottom: 5px;
   padding: 10px;
+  border-radius: 3px;
+  line-height: 14px;
 
-  background-color: rgb(200, 200, 190);
+  margin: 3px;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 900;
+
+  background-color: rgb(190, 180, 160);
   justify-content: center; /* horizontal */
 `;
 export default function ScreenDuplication(props) {

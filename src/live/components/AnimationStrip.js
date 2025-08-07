@@ -5,14 +5,14 @@ import { Play } from "./../../sharedLib/components/Play";
 import { useAnimations } from "../../creator/components/animationData/AnimationContext";
 
 const StyledContainer = styled.div`
-  height: 280px;
-  width: 45px;
+  height: 266px;
+  width: 46px;
   background-color: rgb(220, 90, 100);
   display: flex;
   position: relative;
   flex-direction: column; /* 💥 Add this */
-  border: 2px solid rgb(50, 20, 120);
-  margin: 1px;
+  border: 1px solid rgb(50, 20, 90);
+  margin-top: -2px;
 `;
 const StyledFrames = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ const BottomSquare = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 40px;
+  width: 44px;
   height: 40px;
   text-align: center;
   justify-content: center;
@@ -38,6 +38,7 @@ const BottomSquare = styled.div`
   font-size: 20px;
   background-color: black; // or any color you want
   color: white;
+  border: 1px solid rgb(190, 120, 140);
 `;
 
 export default function AnimationStrip(props) {

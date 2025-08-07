@@ -31,22 +31,23 @@ const send = (type, payload = {}) =>
   vjChannel.postMessage({ type, ...payload });
 
 const StyledButton = styled.div`
-  height: 40px;
-  width: 260px;
+  height: 30px;
+  width: 270px;
   background-color: rgb(200, 100, 20);
   display: flex;
   position: relative;
   font-size: 20px;
   font-weight: 800;
   color: rgb(225, 205, 195);
-  padding: 10px;
+  padding: 5px;
   text-align: center;
   justify-content: center;
-  margin: 10px;
+  margin: 5px;
+  margin-left: 10px;
 `;
 
 const StyledButtonContainer = styled.div`
-  height: 60px;
+  height: 42px;
   width: 290px;
   background-color: rgb(50, 100, 120);
   display: flex;
@@ -302,10 +303,7 @@ export default function Live() {
           bgColors={colorsArray}
         />
         <FrameOpsController updateOps={updateOps} colors={scheme_array[0]} />
-        <ScreenDuplication
-          duplication={numScreens}
-          updateDuplication={updateDuplication}
-        />
+
         <SpeedTunner
           speed={speed}
           setSpeed={(v) => {
@@ -315,16 +313,20 @@ export default function Live() {
             send("speed", { speed: v });
           }}
         />
+        <ScreenDuplication
+          duplication={numScreens}
+          updateDuplication={updateDuplication}
+        />
 
         <StyledButtonContainer>
           <StyledButton onClick={openViewer}>Open Viewer</StyledButton>
         </StyledButtonContainer>
       </div>
       <div>
-        <LiveDisplay ref={displayRef} width={240} height={250}></LiveDisplay>
-        {/* <div
-          style={{ height: 250, width: 240, backgroundColor: "black" }}
-        ></div> */}
+        <div style={{ marginTop: "14px" }}>
+          <LiveDisplay ref={displayRef} width={230} height={230}></LiveDisplay>
+        </div>
+
         <div style={{ display: "flex", flexDirection: "row" }}>
           {sequenceIds.map((id) => (
             <AnimationStrip
