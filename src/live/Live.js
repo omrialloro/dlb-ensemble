@@ -1,27 +1,6 @@
 import Controller from "./Controller";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
-
-// function sendToFullScreen(params) {
-//   switch (op) {
-//     case "reflect":
-//       send("reflection", { reflection: !reflectionToggle });
-//       setReflectionToggle(!reflectionToggle);
-//       break;
-//     case "rotate":
-//       send("rotation", { nRotate: (rotationCount + 1) % 4 });
-//       updateParams({ nRotate: (rotationCount + 1) % 4 });
-//       setRotationCount((rotationCount + 1) % 4);
-//       break;
-//     case "scheme":
-//       send("scheme", { nScheme: (schemeCount + 1) % numSchemes });
-//       updateParams({ states: scheme_array[(schemeCount + 1) % numSchemes] });
-
-//       setSchemeCount((schemeCount + 1) % numSchemes);
-//       break;
-//     default:
-//   }
-// }
 
 export default function Live() {
   const FullScreenRef = useRef();
@@ -40,15 +19,23 @@ export default function Live() {
     }, 100);
 
     // Stop after 2 seconds (fallback if window never loads)
-    setTimeout(() => clearInterval(interval), 2000);
+    let x = activeChannel;
+    setActiveChannel(-1);
+
+    setTimeout(() => {
+      setActiveChannel(x);
+      console.log("Active channel reset to:", x);
+    }, 500);
   };
+
+  useEffect(() => {
+    console.log("Active channel changed:", activeChannel);
+  }, [activeChannel]);
+
   const send = (type, payload = {}) =>
     vjChannel.postMessage({ type, ...payload });
 
   function sendToFullScreen(params, channelId) {
-    console.log(params);
-
-    // if (!FullScreenRef.current) return;
     if (channelId !== activeChannel) return;
     console.log(params);
     console.log(channelId);
