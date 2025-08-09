@@ -35,7 +35,6 @@ export default function FrameOpsController(props) {
       <StyledBtnContainer>
         <Reflect
           clickReflect={() => {
-            console.log("Reflect clicked");
             updateOps("reflect");
           }}
         />
@@ -43,7 +42,6 @@ export default function FrameOpsController(props) {
       <StyledBtnContainer>
         <Rotate
           rotate={() => {
-            console.log("Rotate clicked");
             updateOps("rotate");
           }}
         />
@@ -51,7 +49,7 @@ export default function FrameOpsController(props) {
 
       <StyledBtnContainer>
         <ColorSchemeBtn
-          clickScheme={() => updateOps("scheme")}
+          clickScheme={() => updateOps("states")}
           colors={colors}
         />
       </StyledBtnContainer>

@@ -42,14 +42,14 @@ const LiveDisplay = forwardRef((props, ref) => {
   const animationId = useRef(null);
   const canvasRef = useRef(null);
 
-  const hRef = useRef(1);
-  const wRef = useRef(1);
-  const opRef = useRef(0.2);
-  const rRef = useRef(0);
+  const heightRef = useRef(1);
+  const widthRef = useRef(1);
+  const opacityRef = useRef(0.2);
+  const radiusRef = useRef(0);
 
-  const n1Ref = useRef(1);
-  const n2Ref = useRef(0);
-  const n3Ref = useRef(0.0);
+  const noise1Ref = useRef(1);
+  const noise2Ref = useRef(0);
+  const noise3Ref = useRef(0.0);
   const fRef = useRef(0);
 
   const speedRef = useRef(1);
@@ -57,7 +57,7 @@ const LiveDisplay = forwardRef((props, ref) => {
   const indexRef = useRef(0);
 
   const bgColorRef = useRef("rgb(160, 60, 60)");
-  const nRotateRef = useRef();
+  const rotateRef = useRef();
   const reflectRef = useRef();
   const statesRef = useRef(scheme_array[0]);
 
@@ -67,17 +67,17 @@ const LiveDisplay = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     speedRef,
     framesRef,
-    hRef,
-    wRef,
-    opRef,
-    rRef,
-    n1Ref,
-    n2Ref,
-    n3Ref,
+    heightRef,
+    widthRef,
+    opacityRef,
+    radiusRef,
+    noise1Ref,
+    noise2Ref,
+    noise3Ref,
     fRef,
     indexRef,
     bgColorRef,
-    nRotateRef,
+    rotateRef,
     reflectRef,
     statesRef,
     numScreensRef,
@@ -91,15 +91,15 @@ const LiveDisplay = forwardRef((props, ref) => {
     ctx.beginPath();
 
     ctx.roundRect(
-      point[0] + (pixelSizeX * (1 - wRef.current)) / 2,
-      point[1] + (pixelSizeY * (1 - hRef.current)) / 2,
-      pixelSizeX * wRef.current,
-      pixelSizeY * hRef.current,
+      point[0] + (pixelSizeX * (1 - widthRef.current)) / 2,
+      point[1] + (pixelSizeY * (1 - heightRef.current)) / 2,
+      pixelSizeX * widthRef.current,
+      pixelSizeY * heightRef.current,
       [
-        rRef.current * 10,
-        rRef.current * 7,
-        rRef.current * 10,
-        rRef.current * 10,
+        radiusRef.current * 10,
+        radiusRef.current * 7,
+        radiusRef.current * 10,
+        radiusRef.current * 10,
       ]
     );
 
@@ -140,14 +140,14 @@ const LiveDisplay = forwardRef((props, ref) => {
       ctxOs.fillStyle = bgColorRef.current;
 
       ctxOs.fillRect(0, 0, canvas.width, canvas.height);
-      const beta = getBeta(n2Ref.current);
+      const beta = getBeta(noise2Ref.current);
 
       let ooo = 15 + 5 * Math.random();
 
       for (let i = 0; i < size[0]; i++) {
         let alpha = 0;
         if (i == indexRef.current || i + 16 == indexRef.current) {
-          alpha = getAlpha(n1Ref.current);
+          alpha = getAlpha(noise1Ref.current);
         }
 
         for (let j = 0; j < size[1]; j++) {
@@ -155,7 +155,7 @@ const LiveDisplay = forwardRef((props, ref) => {
           const y = j * pixelSizeY;
           let color = A[i][j];
           let pixel_noise = 0;
-          if (Math.random() < n3Ref.current) {
+          if (Math.random() < noise3Ref.current) {
             pixel_noise = 250 * (0.7 - Math.random());
           }
 
@@ -172,7 +172,7 @@ const LiveDisplay = forwardRef((props, ref) => {
           const color_nn = noise2(color, beta);
           const color_n = noise1(color_nn, alpha + pixel_noise - ccc);
 
-          color = `rgba(${color_n.r},${color_n.g},${color_n.b},${opRef.current})`;
+          color = `rgba(${color_n.r},${color_n.g},${color_n.b},${opacityRef.current})`;
           drawPixel([x, y], color, ctxOs);
         }
       }
@@ -198,7 +198,7 @@ const LiveDisplay = forwardRef((props, ref) => {
       indexRef.current = (indexRef.current + 1) % 36;
 
       let A = framesRef.current[frame_index];
-      for (let i = 0; i < nRotateRef.current; i++) {
+      for (let i = 0; i < rotateRef.current; i++) {
         A = rotateFrame(A);
       }
       if (reflectRef.current) {

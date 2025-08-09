@@ -39,6 +39,9 @@ const StyledButton = styled.div`
   font-size: 20px;
   font-weight: 800;
   color: rgb(225, 205, 195);
+  background-color: ${(props) =>
+    props.isActive ? "rgb(250, 100, 60)" : "rgb(200, 100, 30)"};
+
   padding: 5px;
   text-align: center;
   justify-content: center;
@@ -53,38 +56,16 @@ const StyledButtonContainer = styled.div`
   display: flex;
   position: relative;
 `;
+const StyledScreenConture = styled.div`
+  margin-top: 14px;
+  width: 235px;
+  height: 235px;
 
-const StyledBox = styled.div`
-  height: 60px; /* or whatever height you want */
-  width: 320px;
-  border-radius: 9px;
-  padding: 6px;
-  margin: 12px;
-  display: grid;
-  grid-template-columns: repeat(1211, 1fr);
-  overflow-y: auto; /* ✅ scroll vertically */
-  overflow-x: scroll;
-  background: #8c8664;
-  transform: translate(5%, 10%);
-  position: absolute;
-  top: 68%;
-  right: 4%;
-`;
-const XX = styled.img`
-  display: inline;
-  height: 80%;
-  width: auto;
-  position: relative;
-  border-radius: 50%;
-  overflow: scroll;
-
-  align-items: center;
-  top: 12%;
-  left: 12%;
+  border: ${(props) => (props.isActive ? "2px solid red" : "none")};
 `;
 
 export default function Controller(props) {
-  const { id, sendToFullScreen, isActive } = props;
+  const { id, sendToFullScreen, isActive, setActiveChannel } = props;
   const [speed, setSpeed] = useState(60);
   const [rotationCount, setRotationCount] = useState(0);
   const [schemeCount, setSchemeCount] = useState(0);
@@ -100,16 +81,16 @@ export default function Controller(props) {
 
   const [params, setParams] = useState({
     frames: createConstFrames(),
-    w: 0.8,
-    h: 0.6,
-    r: 0.1,
-    n1: 0.5,
-    n2: 0.4,
-    n3: 0.4,
-    op: 0.9,
+    width: 0.8,
+    height: 0.6,
+    radius: 0.1,
+    noise1: 0.5,
+    noise2: 0.4,
+    noise3: 0.4,
+    opacity: 0.9,
     bgColor: colorsArray[0],
     reflect: false,
-    nRotate: 0,
+    rotate: 0,
     states: scheme_array[0],
     numScreens: [5, 8],
     speed: 60,
@@ -123,18 +104,19 @@ export default function Controller(props) {
     const numSchemes = scheme_array.length;
     switch (op) {
       case "reflect":
-        send("reflection", { reflection: !reflectionToggle });
+        // send("reflect", { reflection: !reflectionToggle });
         updateParams({ reflect: !reflectionToggle });
 
         setReflectionToggle(!reflectionToggle);
         break;
       case "rotate":
-        send("rotation", { nRotate: (rotationCount + 1) % 4 });
-        updateParams({ nRotate: (rotationCount + 1) % 4 });
+        // send("rotate", { rotate: (rotationCount + 1) % 4 });
+        updateParams({ rotate: (rotationCount + 1) % 4 });
         setRotationCount((rotationCount + 1) % 4);
         break;
-      case "scheme":
-        send("scheme", { nScheme: (schemeCount + 1) % numSchemes });
+      case "states":
+        // send("states", { states: (schemeCount + 1) % numSchemes });
+        console.log("Changing states to", (schemeCount + 1) % numSchemes);
         updateParams({ states: scheme_array[(schemeCount + 1) % numSchemes] });
 
         setSchemeCount((schemeCount + 1) % numSchemes);
@@ -154,14 +136,14 @@ export default function Controller(props) {
     newNumScreens[1] = Math.min(newNumScreens[1], 20);
     setNumHScreens(newNumScreens);
 
-    send("numScreens", { numScreens: newNumScreens });
+    // send("numScreens", { numScreens: newNumScreens });
     updateParams({ numScreens: newNumScreens });
   }
 
   const [frames, setFrames] = useState(createConstFrames());
 
   useEffect(() => {
-    send("frames", { frames: frames });
+    // send("frames", { frames: frames });
     updateParams({ frames: frames });
   }, [frames]);
 
@@ -172,7 +154,7 @@ export default function Controller(props) {
   function PlayChannel(channelId) {
     const fframes = prepareFramesForLive(channelId);
     if (fframes.length > 0) {
-      send("frames", { frames: fframes });
+      // send("frames", { frames: fframes });
       updateParams({ frames: fframes });
     }
   }
@@ -194,40 +176,40 @@ export default function Controller(props) {
     setTimeout(() => clearInterval(interval), 2000);
   };
   function updateWidth(width) {
-    updateParams({ w: width });
+    updateParams({ width: width });
 
-    send("width", { width: width });
+    // send("width", { width: width });
   }
   function updateHeight(height) {
-    updateParams({ h: height });
+    updateParams({ height: height });
 
-    send("height", { height: height });
+    // send("height", { height: height });
   }
   function updateCurve(radius) {
-    updateParams({ r: radius });
+    updateParams({ radius: radius });
 
-    send("radius", { radius: radius });
+    // send("radius", { radius: radius });
   }
   function updateOpacity(opacity) {
-    updateParams({ op: opacity });
+    updateParams({ opacity: opacity });
 
-    send("opacity", { opacity: opacity });
+    // send("opacity", { opacity: opacity });
   }
 
   function updateNoiseVal1(noise1) {
-    updateParams({ n1: noise1 });
+    updateParams({ noise1: noise1 });
 
-    send("noise1", { noise1: noise1 });
+    // send("noise1", { noise1: noise1 });
   }
   function updateNoiseVal2(noise2) {
-    updateParams({ n2: noise2 });
+    updateParams({ noise2: noise2 });
 
-    send("noise2", { noise2: noise2 });
+    // send("noise2", { noise2: noise2 });
   }
   function updateNoiseVal3(noise3) {
-    updateParams({ n3: noise3 });
+    updateParams({ noise3: noise3 });
 
-    send("noise3", { noise3: noise3 });
+    // send("noise3", { noise3: noise3 });
   }
 
   const displayRef = useRef(null);
@@ -248,13 +230,13 @@ export default function Controller(props) {
   useEffect(() => {
     updateParams({
       frames: frames,
-      w: 0.8,
-      h: 0.6,
-      r: 0.1,
-      n1: 0.5,
-      n2: 0.4,
-      n3: 0.4,
-      op: 0.9,
+      width: 0.8,
+      height: 0.6,
+      radius: 0.1,
+      noise1: 0.5,
+      noise2: 0.4,
+      noise3: 0.4,
+      opacity: 0.9,
     });
   }, []);
 
@@ -263,16 +245,16 @@ export default function Controller(props) {
     if (isActive) {
       sendToFullScreen({
         frames: params.frames,
-        w: params.w,
-        h: params.h,
-        r: params.r,
-        n1: params.n1,
-        n2: params.n2,
-        n3: params.n3,
-        op: params.op,
+        width: params.width,
+        height: params.height,
+        radius: params.radius,
+        noise1: params.noise1,
+        noise2: params.noise2,
+        noise3: params.noise3,
+        opacity: params.opacity,
         bgColor: params.bgColor,
         reflect: params.reflect,
-        nRotate: params.nRotate,
+        rotate: params.rotate,
         states: params.states,
         numScreens: params.numScreens,
         speed: params.speed,
@@ -315,7 +297,7 @@ export default function Controller(props) {
           setBgColors={(index) => {
             updateParams({ bgColor: colorsArray[index] });
 
-            send("bgColor", { bgColor: colorsArray[index] });
+            // send("bgColor", { bgColor: colorsArray[index] });
           }}
           bgColors={colorsArray}
         />
@@ -327,7 +309,7 @@ export default function Controller(props) {
             setSpeed(v);
             updateParams({ speed: v });
 
-            send("speed", { speed: v });
+            // send("speed", { speed: v });
           }}
         />
         <ScreenDuplication
@@ -336,13 +318,15 @@ export default function Controller(props) {
         />
 
         <StyledButtonContainer>
-          <StyledButton onClick={openViewer}>Open Viewer</StyledButton>
+          <StyledButton isActive={isActive} onClick={setActiveChannel}>
+            Activate
+          </StyledButton>
         </StyledButtonContainer>
       </div>
       <div>
-        <div style={{ marginTop: "14px" }}>
+        <StyledScreenConture isActive={isActive}>
           <LiveDisplay ref={displayRef} width={230} height={230}></LiveDisplay>
-        </div>
+        </StyledScreenConture>
 
         <div style={{ display: "flex", flexDirection: "row" }}>
           {sequenceIds.map((id) => (

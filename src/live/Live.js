@@ -1,22 +1,6 @@
 import Controller from "./Controller";
 import { useState, useRef } from "react";
-
-const openViewer = () => {
-  const viewerWindow = window.open(
-    window.location.origin + "/index.html",
-    "_blank"
-  );
-
-  // Wait a moment to make sure viewer loads, then send redirect message
-  const interval = setInterval(() => {
-    if (viewerWindow) {
-      viewerWindow.postMessage({ type: "navigate", path: "/view" }, "*");
-    }
-  }, 100);
-
-  // Stop after 2 seconds (fallback if window never loads)
-  setTimeout(() => clearInterval(interval), 2000);
-};
+import { vjChannel } from "../sharedLib/Utils/broadcast";
 
 // function sendToFullScreen(params) {
 //   switch (op) {
@@ -42,49 +26,60 @@ const openViewer = () => {
 export default function Live() {
   const FullScreenRef = useRef();
   const [activeChannel, setActiveChannel] = useState(1);
+  const openViewer = () => {
+    const viewerWindow = window.open(
+      window.location.origin + "/index.html",
+      "_blank"
+    );
 
-  function updateParams(params, channelId) {
+    // Wait a moment to make sure viewer loads, then send redirect message
+    const interval = setInterval(() => {
+      if (viewerWindow) {
+        viewerWindow.postMessage({ type: "navigate", path: "/view" }, "*");
+      }
+    }, 100);
+
+    // Stop after 2 seconds (fallback if window never loads)
+    setTimeout(() => clearInterval(interval), 2000);
+  };
+  const send = (type, payload = {}) =>
+    vjChannel.postMessage({ type, ...payload });
+
+  function sendToFullScreen(params, channelId) {
     console.log(params);
 
-    if (!FullScreenRef.current) return;
+    // if (!FullScreenRef.current) return;
     if (channelId !== activeChannel) return;
     console.log(params);
     console.log(channelId);
+
     for (const [key, value] of Object.entries(params)) {
-      const refKey = key + "Ref";
-      if (FullScreenRef.current[refKey]) {
-        FullScreenRef.current[refKey].current = value;
-      }
+      console.log("Sending to full screen:", key, value);
+      send(key, { [key]: value });
     }
   }
   return (
     <div>
       <div style={{ display: "flex", marginTop: "20px" }}>
-        <Controller
-          sendToFullScreen={(params) => updateParams(params, 1)}
-          id={1}
-          isActive={activeChannel === 1}
-        />
-        <div
-          style={{
-            width: "120px",
-            textAlign: "center",
-            justifyContent: "center",
-            fontSize: "20px",
-            marginTop: "40px",
-            backgroundColor: "black",
-          }}
-        >
+        <div>
+          <Controller
+            sendToFullScreen={(params) => sendToFullScreen(params, 1)}
+            id={1}
+            isActive={activeChannel === 1}
+            setActiveChannel={() => setActiveChannel(1)}
+          />
           <div
             style={{
-              width: "120px",
-              height: "50px",
+              width: "280px",
+              height: "60px",
 
               textAlign: "center",
               justifyContent: "center",
-              fontSize: "20px",
-              marginTop: "40px",
-              backgroundColor: "salmon",
+              fontSize: "25px",
+              margin: "30px",
+              padding: "15px",
+              border: "1px solid black",
+              backgroundColor: "rgb(220, 140, 20)",
             }}
             onClick={() => {
               openViewer();
@@ -93,6 +88,17 @@ export default function Live() {
             {" "}
             Full Screen
           </div>
+        </div>
+
+        <div
+          style={{
+            width: "120px",
+            textAlign: "center",
+            justifyContent: "center",
+            fontSize: "20px",
+            marginTop: "40px",
+          }}
+        >
           <div
             style={{
               height: "50px",
@@ -103,45 +109,13 @@ export default function Live() {
               fontSize: "20px",
               marginTop: "40px",
             }}
-          >
-            <div
-              style={{
-                height: "50px",
-                width: "60px",
-
-                textAlign: "center",
-                justifyContent: "center",
-                fontSize: "20px",
-                marginTop: "40px",
-                backgroundColor: "red",
-              }}
-              onClick={() => {
-                setActiveChannel(1);
-              }}
-            ></div>
-
-            <div
-              style={{
-                height: "50px",
-                display: "flex",
-                width: "60px",
-
-                textAlign: "center",
-                justifyContent: "center",
-                fontSize: "20px",
-                marginTop: "40px",
-                backgroundColor: "blue",
-              }}
-              onClick={() => {
-                setActiveChannel(2);
-              }}
-            ></div>
-          </div>
+          ></div>
         </div>
         <Controller
-          sendToFullScreen={(params) => updateParams(params, 1)}
+          sendToFullScreen={(params) => sendToFullScreen(params, 2)}
           id={2}
           isActive={activeChannel === 2}
+          setActiveChannel={() => setActiveChannel(2)}
         />
       </div>
     </div>

@@ -17,6 +17,9 @@ function createConstFrames() {
 function hexToRgbFrame_(frame, states) {
   let cb = (c) => c;
   if (frame[0][0] < 6) {
+    if (states === undefined) {
+      states = scheme_array[0];
+    }
     cb = (c) => states[c];
   }
   return frame.map((row) =>
@@ -45,14 +48,14 @@ const FullDisplay = (props) => {
   // const frames = props.frames;
   const canvasRef = useRef(null);
 
-  const hRef = useRef(1);
-  const wRef = useRef(1);
-  const opRef = useRef(0.9);
-  const rRef = useRef(0);
+  const heightRef = useRef(1);
+  const widthRef = useRef(1);
+  const opacityRef = useRef(0.9);
+  const radiusRef = useRef(0);
 
-  const n1Ref = useRef(1);
-  const n2Ref = useRef(0);
-  const n3Ref = useRef(0.0);
+  const noise1Ref = useRef(1);
+  const noise2Ref = useRef(0);
+  const noise3Ref = useRef(0.0);
   const fRef = useRef(0);
 
   const speedRef = useRef(1);
@@ -60,7 +63,7 @@ const FullDisplay = (props) => {
   const indexRef = useRef(0);
 
   const bgColorRef = useRef("rgb(160, 60, 60)");
-  const nRotateRef = useRef();
+  const rotateRef = useRef();
   const reflectRef = useRef();
   const statesRef = useRef(scheme_array[0]);
 
@@ -79,29 +82,29 @@ const FullDisplay = (props) => {
           indexRef.current = 0; // reset index
           break;
         case "height":
-          hRef.current = data.height;
+          heightRef.current = data.height;
           break;
         case "width":
-          wRef.current = data.width;
+          widthRef.current = data.width;
           break;
         case "opacity":
-          opRef.current = data.opacity;
+          opacityRef.current = data.opacity;
           break;
         case "radius":
-          rRef.current = data.radius;
+          radiusRef.current = data.radius;
           break;
         case "noise1":
-          n1Ref.current = data.noise1;
-          console.log("Noise1 set to", n1Ref.current);
+          noise1Ref.current = data.noise1;
+          console.log("Noise1 set to", noise1Ref.current);
           break;
         case "noise2":
-          n2Ref.current = data.noise2;
-          console.log("Noise2 set to", n1Ref.current);
+          noise2Ref.current = data.noise2;
+          console.log("Noise2 set to", noise1Ref.current);
 
           break;
         case "noise3":
-          n3Ref.current = 120 * data.noise3;
-          console.log("Noise3 set to", n1Ref.current);
+          noise3Ref.current = 120 * data.noise3;
+          console.log("Noise3 set to", noise1Ref.current);
 
           break;
         case "filter":
@@ -113,14 +116,14 @@ const FullDisplay = (props) => {
         case "bgColor":
           bgColorRef.current = data.bgColor;
           break;
-        case "rotation":
-          nRotateRef.current = data.nRotate;
+        case "rotate":
+          rotateRef.current = data.rotate;
           break;
-        case "reflection":
-          reflectRef.current = data.reflection;
+        case "reflect":
+          reflectRef.current = data.reflect;
           break;
-        case "scheme":
-          statesRef.current = scheme_array[data.nScheme];
+        case "states":
+          statesRef.current = data.states;
           break;
         default:
       }
@@ -137,15 +140,15 @@ const FullDisplay = (props) => {
     ctx.beginPath();
 
     ctx.roundRect(
-      point[0] + (pixelSizeX * (1 - wRef.current)) / 2,
-      point[1] + (pixelSizeY * (1 - hRef.current)) / 2,
-      pixelSizeX * wRef.current,
-      pixelSizeY * hRef.current,
+      point[0] + (pixelSizeX * (1 - widthRef.current)) / 2,
+      point[1] + (pixelSizeY * (1 - heightRef.current)) / 2,
+      pixelSizeX * widthRef.current,
+      pixelSizeY * heightRef.current,
       [
-        rRef.current * 10,
-        rRef.current * 7,
-        rRef.current * 10,
-        rRef.current * 10,
+        radiusRef.current * 10,
+        radiusRef.current * 7,
+        radiusRef.current * 10,
+        radiusRef.current * 10,
       ]
     );
 
@@ -186,14 +189,14 @@ const FullDisplay = (props) => {
       ctxOs.fillStyle = bgColorRef.current;
 
       ctxOs.fillRect(0, 0, canvas.width, canvas.height);
-      const beta = getBeta(n2Ref.current);
+      const beta = getBeta(noise2Ref.current);
 
       let ooo = 15 + 5 * Math.random();
 
       for (let i = 0; i < size[0]; i++) {
         let alpha = 0;
         if (i == indexRef.current || i + 16 == indexRef.current) {
-          alpha = getAlpha(n1Ref.current);
+          alpha = getAlpha(noise1Ref.current);
         }
 
         for (let j = 0; j < size[1]; j++) {
@@ -201,7 +204,7 @@ const FullDisplay = (props) => {
           const y = j * pixelSizeY;
           let color = A[i][j];
           let pixel_noise = 0;
-          if (Math.random() < n3Ref.current) {
+          if (Math.random() < noise3Ref.current) {
             pixel_noise = 250 * (0.7 - Math.random());
           }
 
@@ -218,7 +221,7 @@ const FullDisplay = (props) => {
           const color_nn = noise2(color, beta);
           const color_n = noise1(color_nn, alpha + pixel_noise - ccc);
 
-          color = `rgba(${color_n.r},${color_n.g},${color_n.b},${opRef.current})`;
+          color = `rgba(${color_n.r},${color_n.g},${color_n.b},${opacityRef.current})`;
           drawPixel([x, y], color, ctxOs);
         }
       }
@@ -244,7 +247,7 @@ const FullDisplay = (props) => {
       indexRef.current = (indexRef.current + 1) % 36;
 
       let A = framesRef.current[frame_index];
-      for (let i = 0; i < nRotateRef.current; i++) {
+      for (let i = 0; i < rotateRef.current; i++) {
         A = rotateFrame(A);
       }
       if (reflectRef.current) {
