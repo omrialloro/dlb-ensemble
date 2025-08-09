@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
 
 export default function Live() {
-  const FullScreenRef = useRef();
   const [activeChannel, setActiveChannel] = useState(1);
   const openViewer = () => {
     const viewerWindow = window.open(

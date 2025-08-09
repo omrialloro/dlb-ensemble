@@ -40,7 +40,7 @@ const StyledButton = styled.div`
   font-weight: 800;
   color: rgb(225, 205, 195);
   background-color: ${(props) =>
-    props.isActive ? "rgb(250, 100, 60)" : "rgb(200, 100, 30)"};
+    props.isActive ? "rgb(250, 100, 60)" : "rgb(200, 100, 0)"};
 
   padding: 5px;
   text-align: center;
@@ -264,6 +264,7 @@ export default function Controller(props) {
 
   const sequenceIds = [11 + id, 22 + id, 33 + id, 44 + id, 55 + id];
   const [sequenceId, setSequenceId] = useState(sequenceIds[0]);
+  const [playId, setPlayId] = useState(null);
 
   return (
     <div style={{ display: "flex", padding: 17 }}>
@@ -337,7 +338,9 @@ export default function Controller(props) {
               }}
               onPlayClick={() => {
                 PlayChannel(id);
+                setPlayId(id);
               }}
+              isPlay={playId === id}
               channelId={id}
             />
           ))}

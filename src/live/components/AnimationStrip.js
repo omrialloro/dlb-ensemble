@@ -73,7 +73,7 @@ export default function AnimationStrip(props) {
 
   return (
     <StyledContainer>
-      <Play onClick={onPlayClick} />
+      <Play isPlay={isPlay} onClick={onPlayClick} />
       <StyledFrames>
         {imgUrls.map((x, index) => (
           <>
