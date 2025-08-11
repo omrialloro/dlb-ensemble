@@ -265,6 +265,12 @@ export default function Controller(props) {
   const sequenceIds = [11 + id, 22 + id, 33 + id, 44 + id, 55 + id];
   const [sequenceId, setSequenceId] = useState(sequenceIds[0]);
   const [playId, setPlayId] = useState(null);
+  const [channelPlayIdHist, setChannelPlayIdHist] = useState(sequenceIds[0]);
+
+  useEffect(() => {
+    console.log("sequenceIds:", playId);
+    console.log("sequenceIdHist:", channelPlayIdHist);
+  }, [playId, channelPlayIdHist]);
 
   return (
     <div style={{ display: "flex", padding: 17 }}>
@@ -332,6 +338,14 @@ export default function Controller(props) {
         <div style={{ display: "flex", flexDirection: "row" }}>
           {sequenceIds.map((id) => (
             <AnimationStrip
+              onPressStart={() => {
+                console.log("Pressed start on channel", id);
+                setChannelPlayIdHist(playId);
+                PlayChannel(id);
+              }}
+              onPressEnd={() => {
+                PlayChannel(channelPlayIdHist);
+              }}
               onAddClick={() => {
                 setSequenceId(id);
                 setBrowserOn(true);

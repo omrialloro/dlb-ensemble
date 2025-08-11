@@ -6,8 +6,8 @@ const StyledPlay = styled.div`
 `;
 
 const StyledButton = styled.div`
-  height: 62px;
-  width: 62px;
+  height: 40px;
+  width: 40px;
   border-radius: 50%;
 `;
 const StyledImg = styled.img`
@@ -19,8 +19,6 @@ const StyledImg = styled.img`
 
 export function Play(props) {
   const isPlay = props.isPlay;
-  console.log("Play component isPlay:", isPlay);
-
   return (
     <StyledPlay onClick={props.onClick}>
       <div className="player_functions">

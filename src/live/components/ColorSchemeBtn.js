@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
 function ColorSchemeBtn({ colors, clickScheme }) {
-  console.log("ColorSchemeBtn colors", colors);
   const canvasRef = useRef(null);
 
   useEffect(() => {

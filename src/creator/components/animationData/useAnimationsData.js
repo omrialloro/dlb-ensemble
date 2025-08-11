@@ -130,10 +130,6 @@ export default function useAnimationsData(props) {
     });
   };
 
-  useEffect(() => {
-    console.log(instanceSequences);
-  }, [instanceSequences]);
-
   const updateSequence = (seq_id, animationIndex, updated_instance) => {
     setInstanceSequences((prev) => {
       const index = prev.findIndex((x) => x.id === seq_id);
@@ -569,13 +565,6 @@ export default function useAnimationsData(props) {
   );
 
   const PrepareFramesNoRender = (el) => {
-    console.log(el);
-    console.log(el);
-    console.log(el);
-    console.log(el);
-    console.log(el);
-    console.log(el);
-
     const animationId = el.animationId;
     const opState = el.opState;
     const frames = animations[animationId];
@@ -602,7 +591,6 @@ export default function useAnimationsData(props) {
     sequence.forEach((element) => {
       outFrames = outFrames.concat(PrepareFramesNoRender(element));
     });
-    console.log(outFrames);
     return outFrames;
   }
 

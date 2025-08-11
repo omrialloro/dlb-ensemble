@@ -40,7 +40,6 @@ export default function Live() {
     console.log(channelId);
 
     for (const [key, value] of Object.entries(params)) {
-      console.log("Sending to full screen:", key, value);
       send(key, { [key]: value });
     }
   }

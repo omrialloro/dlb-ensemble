@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Play } from "./../../sharedLib/components/Play";
+import { Pulse } from "./Pulse";
 
 import { useAnimations } from "../../creator/components/animationData/AnimationContext";
 
@@ -22,9 +23,10 @@ const StyledFrames = styled.div`
 `;
 const XX = styled.img`
   display: block;
-  height: 80%;
-  width: 80%;
-  border-radius: 50%;
+  margin-left: 4px;
+  height: 85%;
+  width: 85%;
+  border-radius: 10%;
 `;
 const BottomSquare = styled.div`
   position: absolute;
@@ -42,7 +44,14 @@ const BottomSquare = styled.div`
 `;
 
 export default function AnimationStrip(props) {
-  const { channelId, onAddClick, isPlay, onPlayClick } = props;
+  const {
+    channelId,
+    onAddClick,
+    isPlay,
+    onPlayClick,
+    onPressStart,
+    onPressEnd,
+  } = props;
   const { instanceSequences, removeInstanceFromSequence } = useAnimations();
   const [imgUrls, setImgUrls] = useState([]);
 
@@ -74,6 +83,18 @@ export default function AnimationStrip(props) {
   return (
     <StyledContainer>
       <Play isPlay={isPlay} onClick={onPlayClick} />
+
+      <Pulse
+        onPressStart={() => {
+          onPressStart(channelId);
+          console.log("Pressed start on channel", channelId);
+        }}
+        onPressEnd={() => {
+          onPressEnd(channelId);
+          console.log("Pressed end on channel", channelId);
+        }}
+      />
+
       <StyledFrames>
         {imgUrls.map((x, index) => (
           <>
