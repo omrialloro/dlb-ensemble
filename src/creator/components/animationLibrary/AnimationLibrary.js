@@ -378,12 +378,41 @@ export default function AnimationLibrary(props) {
       } else {
         const A = await loadAnimation(animation_id);
         const frames_ = A["data"];
+        let v = assertAnimationValid(frames_);
+        if (!v) {
+          console.error("Invalid animation frames:", animation_id);
+          console.error("Invalid animation frames:", animation_id);
+          console.error("Invalid animation frames:", animation_id);
+          console.error("Invalid animation frames:", animation_id);
+
+          return;
+        }
         setRowFrames(frames_);
         setOpState({ ...opState, range: [0, frames_.length] });
       }
     },
     [animations]
   );
+
+  function assertAnimationValid(frames) {
+    let x = frames[0][0][0];
+    console.log(x);
+
+    if (x < 6) {
+      console.log(x);
+      for (let i = 0; i < frames.length; i++) {
+        for (let j = 0; j < frames[i].length; j++) {
+          for (let k = 0; k < frames[i][j].length; k++) {
+            if (isString(frames[i][j][k])) {
+              console.error("Invalid frame color:", frames[i][j][k]);
+              return false;
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }
 
   function submit() {
     const instance_id = String(Date.now());

@@ -130,35 +130,6 @@ export default function useAnimationsData(props) {
     });
   };
 
-  const updateSequence = (seq_id, animationIndex, updated_instance) => {
-    setInstanceSequences((prev) => {
-      const index = prev.findIndex((x) => x.id === seq_id);
-      if (index === -1) return prev; // ID not found, no update
-
-      const updated = [...prev];
-      const sequence = updated[index];
-
-      if (
-        !sequence.data ||
-        animationIndex < 0 ||
-        animationIndex >= sequence.data.length
-      ) {
-        return prev; // Invalid index, no update
-      }
-
-      // Update the specific instance
-      const newData = [...sequence.data];
-      newData[animationIndex] = updated_instance;
-
-      updated[index] = {
-        ...sequence,
-        data: newData,
-      };
-
-      return updated;
-    });
-  };
-
   const removeInstanceFromSequence = (seq_id, animationIndex) => {
     setInstanceSequences((prev) => {
       const index = prev.findIndex((x) => x.id === seq_id);
