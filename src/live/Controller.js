@@ -74,9 +74,12 @@ export default function Controller(props) {
   const { instanceSequences, prepareFramesForLive } = useAnimations();
 
   const colorsArray = [
+    "rgb(20, 20, 20)",
+
     "rgb(160, 60, 60)",
     "rgb(120, 120, 0)",
     "rgb(20, 20, 120)",
+    "rgb(200, 190, 180)",
   ];
 
   const [params, setParams] = useState({

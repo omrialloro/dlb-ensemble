@@ -1,19 +1,25 @@
 import styled from "styled-components";
+import React, { useState } from "react";
 
 const StyledContainer = styled.div`
   height: 50px;
   width: 290px;
   background-color: rgb(20, 90, 100);
   display: flex;
+  flex-direction: column;
+
   position: relative;
 `;
 
 const StyledBgBtn = styled.div`
-  height: 40px;
+  height: 20px;
   width: ${(props) => props.width}px;
   background-color: ${(props) => props.color};
   display: flex;
-  margin: 5px;
+  margin: 7px;
+  border-radius: 3px;
+  border: ${(props) =>
+    props.isBorder ? "1px solid rgb(250, 180, 190)" : "none"};
   position: relative;
 `;
 
@@ -25,24 +31,29 @@ const StyledText = styled.div`
   align-items: center;
   font-size: 12px;
   font-weight: 800;
-  margin: 5px;
+  margin: px;
   position: relative;
 `;
 export default function Backgrounds(props) {
   const { setBgColors, bgColors } = props;
+  const [chosenIndex, setChosenIndex] = useState(0);
 
   return (
     <StyledContainer>
       <StyledText>BACKGOUNDS</StyledText>
-      {bgColors.map((color, index) => (
-        <StyledBgBtn
-          color={color}
-          width={180 / bgColors.length}
-          onClick={() => {
-            setBgColors(index);
-          }}
-        />
-      ))}
+      <div style={{ display: "flex", width: "100%" }}>
+        {bgColors.map((color, index) => (
+          <StyledBgBtn
+            isBorder={index == chosenIndex}
+            color={color}
+            width={240 / bgColors.length}
+            onClick={() => {
+              setBgColors(index);
+              setChosenIndex(index);
+            }}
+          />
+        ))}
+      </div>
     </StyledContainer>
   );
 }
