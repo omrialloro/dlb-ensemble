@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import React, { useEffect, useState, useRef } from "react";
-import { Reflect, Rotate, Reverse } from "./OperatorsBtns";
 
 const StyledContainer = styled.div`
   height: 80px;

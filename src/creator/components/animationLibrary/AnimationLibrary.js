@@ -96,6 +96,7 @@ const StyledBoxx = styled.div`
   animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 0.3s
     ease-in-out;
   transition: visibility 0.3s;
+  z-index: 1000;
 `;
 
 const StyledContainer = styled.div`
@@ -181,22 +182,31 @@ const StyledBtn = styled.div`
 `;
 
 const StyledBtn1 = styled.div`
-  background-color: #cfa700;
-
-  transition: 0.2s;
+  background-color: rgb(90, 130, 140);
+  background-color: ${(props) => props.color || "rgb(90, 130, 140)"};
+  transition: transform 0.2s ease; /* Smooth growth/shrink animation */
 
   width: 80px;
-  height: 50px;
-  margin-left: 10px;
+  height: 44px;
+  margin-left: 8px;
   border-radius: 6%;
+  font-size: 15px;
+  font-weight: 350;
+  margin-top: 4px;
+  padding: 10px;
+  margin-bottom: 4px;
 
-  margin-top: 2px;
-  padding: 12px;
-  margin-bottom: 5px;
+  /* Shrink a bit when clicked */
+  &:active {
+    transform: scale(0.9);
+    background-color: rgb(250, 214, 220);
+  }
 `;
 const StyledCircle = styled.div`
   transform: scale(${(props) => props.scale});
-  transition: 0.3s;
+  transform: scale(${(props) => props.scale});
+
+  transition: 0.5s;
 
   height: 40px;
   width: 40px;
@@ -301,7 +311,6 @@ export default function AnimationLibrary(props) {
   const oooo = useRef();
   const rr = useRef();
   const { setBrowserOn, browserdOn, instanceId, flag, sequenceId } = props;
-  console.log(sequenceId);
   const {
     addInstance_,
     addInstanceEditor,
@@ -544,7 +553,7 @@ export default function AnimationLibrary(props) {
   const refRemove = useRef();
   const rrrr = useRef();
 
-  const [isLocal, setIsLocal] = useState(true);
+  const [isLocal, setIsLocal] = useState(instances.length > 0);
 
   useEffect(() => {
     if (browserdOn) {
@@ -586,45 +595,35 @@ export default function AnimationLibrary(props) {
             // padding: "10px",
           }}
         >
-          <StyledBtn1 ref={rr} onClick={submit}>
-            SUBMIT NEW
+          <StyledBtn1 ref={rr} color={"rgb(90,157,160)"} onClick={submit}>
+            SUBMIT
           </StyledBtn1>
-          <StyledBtn5 ref={rrr} onClick={onUpdateInstance}>
-            APPLAY CHANGES
-          </StyledBtn5>
+          <StyledBtn1
+            ref={rrr}
+            color={"rgb(90,157,160)"}
+            onClick={onUpdateInstance}
+          >
+            UPDATE
+          </StyledBtn1>
 
-          <StyledBtn3
+          <StyledBtn1
+            color={"rgb(220,110,40)"}
             ref={refRemove}
             onClick={() => {
-              refRemove.current.style.transition = "0.1s";
-              refRemove.current.style.backgroundColor = "#fd8446";
-              refRemove.current.style.scale = 0.95;
-              setTimeout(() => {
-                refRemove.current.style.transition = "0.3s";
-                refRemove.current.style.backgroundColor = "#fa4400";
-                refRemove.current.style.scale = 1;
-              }, 170);
               removeInstance_(instanceId);
             }}
           >
             REMOVE
-          </StyledBtn3>
-          <StyledBtn3
+          </StyledBtn1>
+          <StyledBtn1
+            color={"rgb(220,110,40)"}
             ref={refDelete}
             onClick={() => {
-              refDelete.current.style.transition = "0.1s";
-              refDelete.current.style.backgroundColor = "#fd8446";
-              refDelete.current.style.scale = 0.95;
               onDelete(animationId);
-              setTimeout(() => {
-                refDelete.current.style.transition = "0.3s";
-                refDelete.current.style.backgroundColor = "#fa4400";
-                refDelete.current.style.scale = 1;
-              }, 170);
             }}
           >
             DELETE
-          </StyledBtn3>
+          </StyledBtn1>
         </div>
         <VerticalSlider
           min={0}

@@ -107,14 +107,14 @@ export function PixelDesigner(props) {
   const [width, setWidth] = useState(160);
   const [height, setHeight] = useState(160);
   const [curve, setCurve] = useState(0.5);
-  const [opacity, setOpacity] = useState(0.5);
+  const [opacity, setOpacity] = useState(100);
   const animationId = useRef(null);
   const canvasPixelRef = useRef(null);
 
-  const hRef = useRef(0);
-  const wRef = useRef(0);
-  const opRef = useRef(0);
-  const rRef = useRef(0);
+  const hRef = useRef(1);
+  const wRef = useRef(1);
+  const opRef = useRef(1);
+  const rRef = useRef(1);
 
   const widthPxl = 140;
   const heightPxl = 140;

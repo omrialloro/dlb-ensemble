@@ -87,11 +87,9 @@ export default function AnimationStrip(props) {
       <Pulse
         onPressStart={() => {
           onPressStart(channelId);
-          console.log("Pressed start on channel", channelId);
         }}
         onPressEnd={() => {
           onPressEnd(channelId);
-          console.log("Pressed end on channel", channelId);
         }}
       />
 
@@ -103,7 +101,6 @@ export default function AnimationStrip(props) {
               className="minus"
               onClick={() => {
                 removeInstanceFromSequence(channelId, index);
-                console.log("remove");
               }}
             >
               <img src="delete_frame.svg"></img>

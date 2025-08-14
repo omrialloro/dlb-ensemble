@@ -67,7 +67,7 @@ const FullDisplay = (props) => {
   const reflectRef = useRef();
   const statesRef = useRef(scheme_array[0]);
 
-  const numScreensRef = useRef([5, 8]);
+  const numScreensRef = useRef([1, 1]);
 
   useEffect(() => {
     const onMessage = ({ data }) => {

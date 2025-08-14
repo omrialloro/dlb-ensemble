@@ -65,7 +65,14 @@ const StyledScreenConture = styled.div`
 `;
 
 export default function Controller(props) {
-  const { id, sendToFullScreen, isActive, setActiveChannel } = props;
+  const {
+    id,
+    sendToFullScreen,
+    isActive,
+    setActiveChannel,
+    setSequenceId_,
+    setBrowserOn_,
+  } = props;
   const [speed, setSpeed] = useState(60);
   const [rotationCount, setRotationCount] = useState(0);
   const [schemeCount, setSchemeCount] = useState(0);
@@ -90,16 +97,16 @@ export default function Controller(props) {
     noise1: 0.5,
     noise2: 0.4,
     noise3: 0.4,
-    opacity: 0.9,
+    opacity: 0.5,
     bgColor: colorsArray[0],
     reflect: false,
     rotate: 0,
     states: scheme_array[0],
-    numScreens: [5, 8],
+    numScreens: [1, 1],
     speed: 60,
   });
 
-  const [numScreens, setNumHScreens] = useState([5, 8]);
+  const [numScreens, setNumHScreens] = useState([1, 1]);
 
   const [browserdOn, setBrowserOn] = useState(false);
 
@@ -162,22 +169,6 @@ export default function Controller(props) {
     }
   }
 
-  const openViewer = () => {
-    const viewerWindow = window.open(
-      window.location.origin + "/index.html",
-      "_blank"
-    );
-
-    // Wait a moment to make sure viewer loads, then send redirect message
-    const interval = setInterval(() => {
-      if (viewerWindow) {
-        viewerWindow.postMessage({ type: "navigate", path: "/view" }, "*");
-      }
-    }, 100);
-
-    // Stop after 2 seconds (fallback if window never loads)
-    setTimeout(() => clearInterval(interval), 2000);
-  };
   function updateWidth(width) {
     updateParams({ width: width });
 
@@ -239,13 +230,20 @@ export default function Controller(props) {
       noise1: 0.5,
       noise2: 0.4,
       noise3: 0.4,
-      opacity: 0.9,
+      opacity: 0.5,
     });
   }, []);
 
   useEffect(() => {
     // Initialize the displayRef with default values
     if (isActive) {
+      console.log("Active channel:", id);
+      console.log("Active channel:", id);
+      console.log("Active channel:", id);
+      console.log("Active channel:", id);
+      console.log("Active channel:", id);
+      console.log("Active channel:", id);
+
       sendToFullScreen({
         frames: params.frames,
         width: params.width,
@@ -265,30 +263,42 @@ export default function Controller(props) {
     }
   }, [isActive]);
 
+  useEffect(() => {
+    // Initialize the displayRef with default values
+    if (isActive) {
+      console.log("Active channel:", id);
+      console.log("Active channel:", id);
+      console.log("Active channel:", id);
+      console.log("Active channel:", params.opacity);
+      console.log("Active channel:", params.opacity);
+      console.log("Active channel:", params.opacity);
+
+      sendToFullScreen({
+        frames: params.frames,
+        width: params.width,
+        height: params.height,
+        radius: params.radius,
+        noise1: params.noise1,
+        noise2: params.noise2,
+        noise3: params.noise3,
+        opacity: params.opacity,
+        bgColor: params.bgColor,
+        reflect: params.reflect,
+        rotate: params.rotate,
+        states: params.states,
+        numScreens: params.numScreens,
+        speed: params.speed,
+      });
+    }
+  }, []);
+
   const sequenceIds = [11 + id, 22 + id, 33 + id, 44 + id, 55 + id];
-  const [sequenceId, setSequenceId] = useState(sequenceIds[0]);
   const [playId, setPlayId] = useState(null);
   const [channelPlayIdHist, setChannelPlayIdHist] = useState(sequenceIds[0]);
-
-  useEffect(() => {
-    console.log("sequenceIds:", playId);
-    console.log("sequenceIdHist:", channelPlayIdHist);
-  }, [playId, channelPlayIdHist]);
 
   return (
     <div style={{ display: "flex", padding: 17 }}>
       <div style={{ width: 290, fontFamily: "sans-serif" }}>
-        {browserdOn ? (
-          <AnimationLibrary
-            flag={"live"}
-            sequenceId={sequenceId}
-            username={"email"}
-            browserdOn={browserdOn}
-            setBrowserOn={setBrowserOn}
-            instanceId={-1}
-            animationId={-1}
-          />
-        ) : null}
         <h3>VJ Controller</h3>
 
         <PixelDesigner
@@ -306,8 +316,6 @@ export default function Controller(props) {
         <Backgrounds
           setBgColors={(index) => {
             updateParams({ bgColor: colorsArray[index] });
-
-            // send("bgColor", { bgColor: colorsArray[index] });
           }}
           bgColors={colorsArray}
         />
@@ -318,8 +326,6 @@ export default function Controller(props) {
           setSpeed={(v) => {
             setSpeed(v);
             updateParams({ speed: v });
-
-            // send("speed", { speed: v });
           }}
         />
         <ScreenDuplication
@@ -350,8 +356,9 @@ export default function Controller(props) {
                 PlayChannel(channelPlayIdHist);
               }}
               onAddClick={() => {
-                setSequenceId(id);
-                setBrowserOn(true);
+                // setSequenceId(id);
+                setSequenceId_(id);
+                setBrowserOn_(true);
               }}
               onPlayClick={() => {
                 PlayChannel(id);

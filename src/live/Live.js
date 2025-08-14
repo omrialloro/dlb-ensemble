@@ -1,9 +1,12 @@
 import Controller from "./Controller";
 import { useState, useRef, useEffect } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
+import AnimationLibrary from "../creator/components/animationLibrary/AnimationLibrary.js";
 
 export default function Live() {
   const [activeChannel, setActiveChannel] = useState(1);
+  const [browserOn_, setBrowserOn_] = useState(false);
+  const [sequenceId_, setSequenceId_] = useState(-1);
   const openViewer = () => {
     const viewerWindow = window.open(
       window.location.origin + "/index.html",
@@ -27,31 +30,43 @@ export default function Live() {
     }, 500);
   };
 
-  useEffect(() => {
-    console.log("Active channel changed:", activeChannel);
-  }, [activeChannel]);
-
   const send = (type, payload = {}) =>
     vjChannel.postMessage({ type, ...payload });
 
   function sendToFullScreen(params, channelId) {
     if (channelId !== activeChannel) return;
-    console.log(params);
-    console.log(channelId);
-
     for (const [key, value] of Object.entries(params)) {
       send(key, { [key]: value });
     }
   }
   return (
     <div>
-      <div style={{ display: "flex", marginTop: "20px" }}>
+      {browserOn_ ? (
+        <AnimationLibrary
+          flag={"live"}
+          sequenceId={sequenceId_}
+          username={"email"}
+          browserdOn={browserOn_}
+          setBrowserOn={setBrowserOn_}
+          instanceId={-1}
+          animationId={-1}
+        />
+      ) : null}
+      <div
+        style={{
+          display: "flex",
+          marginTop: "20px",
+          filter: browserOn_ ? "blur(3px)" : "none",
+        }}
+      >
         <div>
           <Controller
             sendToFullScreen={(params) => sendToFullScreen(params, 1)}
             id={1}
             isActive={activeChannel === 1}
             setActiveChannel={() => setActiveChannel(1)}
+            setSequenceId_={setSequenceId_}
+            setBrowserOn_={setBrowserOn_}
           />
           <div
             style={{
@@ -101,6 +116,8 @@ export default function Live() {
           id={2}
           isActive={activeChannel === 2}
           setActiveChannel={() => setActiveChannel(2)}
+          setSequenceId_={setSequenceId_}
+          setBrowserOn_={setBrowserOn_}
         />
       </div>
     </div>

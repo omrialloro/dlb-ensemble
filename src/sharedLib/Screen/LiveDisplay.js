@@ -61,7 +61,7 @@ const LiveDisplay = forwardRef((props, ref) => {
   const reflectRef = useRef();
   const statesRef = useRef(scheme_array[0]);
 
-  const numScreensRef = useRef([4, 4]);
+  const numScreensRef = useRef([1, 1]);
 
   // ✅ Expose refs to parent
   useImperativeHandle(ref, () => ({
