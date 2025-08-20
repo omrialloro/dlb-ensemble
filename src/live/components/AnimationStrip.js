@@ -29,7 +29,7 @@ const XX = styled.img`
   border-radius: 10%;
 `;
 const BottomSquare = styled.div`
-  position: absolute;
+  position: relative;
   bottom: 0;
   left: 0;
   width: 44px;
@@ -47,6 +47,7 @@ export default function AnimationStrip(props) {
   const {
     channelId,
     onAddClick,
+    setId,
     isPlay,
     onPlayClick,
     onPressStart,
@@ -109,7 +110,20 @@ export default function AnimationStrip(props) {
         ))}
       </StyledFrames>
 
-      <BottomSquare onClick={onAddClick}> +</BottomSquare>
+      <div style={{ position: "absolute", bottom: 0 }}>
+        <BottomSquare onClick={onAddClick}> +</BottomSquare>
+        <BottomSquare
+          onClick={() => {
+            let ids = instanceSequences.map((x) => x.id);
+            if (ids.includes(channelId)) {
+              setId(channelId);
+            }
+          }}
+        >
+          {" "}
+          -
+        </BottomSquare>
+      </div>
     </StyledContainer>
   );
 }

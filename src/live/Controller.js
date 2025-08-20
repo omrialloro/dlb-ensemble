@@ -1,5 +1,5 @@
 // Controller.jsx
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
 import { useAnimationFromServer } from "../sharedLib/Server/api";
 
@@ -18,6 +18,7 @@ import { useAnimations } from "./../creator/components/animationData/AnimationCo
 
 import AnimationLibrary from "./../creator/components/animationLibrary/AnimationLibrary.js";
 import { createConstFrame } from "../sharedLib/Utils/generators";
+import { coloring_shape } from "./../creator/components/shapes/ops";
 
 // const states = scheme_array[0];
 
@@ -49,6 +50,31 @@ const StyledButton = styled.div`
   margin-left: 10px;
 `;
 
+const StyledShape = styled.div`
+  width: ${(props) => props.size}vh;
+  width: 60px;
+  height: 30px;
+  border: 0px solid #000;
+  margin: 1px;
+  margin-top: 5px;
+
+  /* margin: 1px; */
+  /* background-color: ${(props) => props.bc}; */
+  background-color: rgb(202, 141, 57);
+
+  transition: 0.5s;
+  border-radius: 5px;
+
+  cursor: grabbing;
+`;
+
+const StyledShapeSelector = styled.div`
+  height: 42px;
+  width: 290px;
+  display: flex;
+  justify-content: center;
+`;
+
 const StyledButtonContainer = styled.div`
   height: 42px;
   width: 290px;
@@ -60,7 +86,6 @@ const StyledScreenConture = styled.div`
   margin-top: 14px;
   width: 235px;
   height: 235px;
-
   border: ${(props) => (props.isActive ? "2px solid red" : "none")};
 `;
 
@@ -73,12 +98,14 @@ export default function Controller(props) {
     setSequenceId_,
     setBrowserOn_,
   } = props;
-  const [speed, setSpeed] = useState(60);
+  const [speed, setSpeed] = useState(24);
   const [rotationCount, setRotationCount] = useState(0);
   const [schemeCount, setSchemeCount] = useState(0);
+  const [colorId, setColorId] = useState(-1);
 
   const [reflectionToggle, setReflectionToggle] = useState(0);
   const { instanceSequences, prepareFramesForLive } = useAnimations();
+  const [playId, setPlayId] = useState(-1);
 
   const colorsArray = [
     "rgb(20, 20, 20)",
@@ -91,6 +118,7 @@ export default function Controller(props) {
 
   const [params, setParams] = useState({
     frames: createConstFrames(),
+    channelId: -1,
     width: 0.8,
     height: 0.6,
     radius: 0.1,
@@ -103,32 +131,57 @@ export default function Controller(props) {
     rotate: 0,
     states: scheme_array[0],
     numScreens: [1, 1],
-    speed: 60,
+    speed: 44,
   });
 
   const [numScreens, setNumHScreens] = useState([1, 1]);
+  const [grid, setGrid] = useState(() => [[-1]]);
 
-  const [browserdOn, setBrowserOn] = useState(false);
+  // Inside Controller
+
+  useEffect(() => {
+    let grid_ = [];
+    for (let i = 0; i < numScreens[0]; i++) {
+      let row = [];
+      for (let j = 0; j < numScreens[1]; j++) {
+        row.push(playId);
+      }
+      grid_.push(row);
+    }
+    setGrid(grid_);
+  }, [numScreens, playId]);
+
+  function gridToFramesData(G) {
+    let ids = [];
+    G.forEach((row) => {
+      row.forEach((x) => {
+        if (!ids.includes(x)) {
+          ids.push(x);
+        }
+      });
+    });
+    const channels = ids.map((id) => ({ id: id, time: 0 }));
+    return { channels: channels, grid: G };
+  }
+
+  useEffect(() => {
+    updateParams({ grid: gridToFramesData(grid) });
+  }, [grid]);
 
   function updateOps(op) {
     const numSchemes = scheme_array.length;
     switch (op) {
       case "reflect":
-        // send("reflect", { reflection: !reflectionToggle });
         updateParams({ reflect: !reflectionToggle });
 
         setReflectionToggle(!reflectionToggle);
         break;
       case "rotate":
-        // send("rotate", { rotate: (rotationCount + 1) % 4 });
         updateParams({ rotate: (rotationCount + 1) % 4 });
         setRotationCount((rotationCount + 1) % 4);
         break;
       case "states":
-        // send("states", { states: (schemeCount + 1) % numSchemes });
-        console.log("Changing states to", (schemeCount + 1) % numSchemes);
         updateParams({ states: scheme_array[(schemeCount + 1) % numSchemes] });
-
         setSchemeCount((schemeCount + 1) % numSchemes);
         break;
       default:
@@ -146,64 +199,52 @@ export default function Controller(props) {
     newNumScreens[1] = Math.min(newNumScreens[1], 20);
     setNumHScreens(newNumScreens);
 
-    // send("numScreens", { numScreens: newNumScreens });
+    send("numScreens", { numScreens: newNumScreens });
     updateParams({ numScreens: newNumScreens });
   }
 
   const [frames, setFrames] = useState(createConstFrames());
 
   useEffect(() => {
-    // send("frames", { frames: frames });
     updateParams({ frames: frames });
   }, [frames]);
 
-  useEffect(() => {
-    let x = prepareFramesForLive(11);
-  }, [instanceSequences]);
-
   function PlayChannel(channelId) {
     const fframes = prepareFramesForLive(channelId);
+    updateParams({ grid: gridToFramesData([[channelId]]) });
+
     if (fframes.length > 0) {
-      // send("frames", { frames: fframes });
       updateParams({ frames: fframes });
+      updateParams({ channelId: channelId });
     }
   }
 
   function updateWidth(width) {
     updateParams({ width: width });
-
-    // send("width", { width: width });
   }
+
   function updateHeight(height) {
     updateParams({ height: height });
-
-    // send("height", { height: height });
   }
+
   function updateCurve(radius) {
     updateParams({ radius: radius });
-
-    // send("radius", { radius: radius });
   }
+
   function updateOpacity(opacity) {
     updateParams({ opacity: opacity });
-
-    // send("opacity", { opacity: opacity });
   }
 
   function updateNoiseVal1(noise1) {
     updateParams({ noise1: noise1 });
-
-    // send("noise1", { noise1: noise1 });
   }
+
   function updateNoiseVal2(noise2) {
     updateParams({ noise2: noise2 });
-
-    // send("noise2", { noise2: noise2 });
   }
+
   function updateNoiseVal3(noise3) {
     updateParams({ noise3: noise3 });
-
-    // send("noise3", { noise3: noise3 });
   }
 
   const displayRef = useRef(null);
@@ -221,9 +262,26 @@ export default function Controller(props) {
     }
   }
 
+  // useEffect(() => {
+  //   getActiveChannels();
+  // }, [instanceSequences]);
+
+  function getActiveChannels() {
+    let inds = [];
+    instanceSequences.forEach((el) => {
+      if (sequenceIds.includes(el.id)) {
+        if (el.data.length) {
+          inds.push(el.id);
+        }
+      }
+    });
+    return inds;
+  }
+
   useEffect(() => {
     updateParams({
       frames: frames,
+      channelId: -1,
       width: 0.8,
       height: 0.6,
       radius: 0.1,
@@ -231,19 +289,13 @@ export default function Controller(props) {
       noise2: 0.4,
       noise3: 0.4,
       opacity: 0.5,
+      grid: gridToFramesData([[-1]]),
     });
   }, []);
 
   useEffect(() => {
     // Initialize the displayRef with default values
     if (isActive) {
-      console.log("Active channel:", id);
-      console.log("Active channel:", id);
-      console.log("Active channel:", id);
-      console.log("Active channel:", id);
-      console.log("Active channel:", id);
-      console.log("Active channel:", id);
-
       sendToFullScreen({
         frames: params.frames,
         width: params.width,
@@ -259,20 +311,22 @@ export default function Controller(props) {
         states: params.states,
         numScreens: params.numScreens,
         speed: params.speed,
+        grid: params.grid,
       });
     }
   }, [isActive]);
 
+  function genIntArray(length) {
+    return Array.from(Array(length).keys());
+  }
+
+  const num_shapes = 10;
+
+  const shapesIndsArray = genIntArray(num_shapes);
+
   useEffect(() => {
     // Initialize the displayRef with default values
     if (isActive) {
-      console.log("Active channel:", id);
-      console.log("Active channel:", id);
-      console.log("Active channel:", id);
-      console.log("Active channel:", params.opacity);
-      console.log("Active channel:", params.opacity);
-      console.log("Active channel:", params.opacity);
-
       sendToFullScreen({
         frames: params.frames,
         width: params.width,
@@ -288,12 +342,35 @@ export default function Controller(props) {
         states: params.states,
         numScreens: params.numScreens,
         speed: params.speed,
+        grid: params.grid,
       });
     }
   }, []);
 
-  const sequenceIds = [11 + id, 22 + id, 33 + id, 44 + id, 55 + id];
-  const [playId, setPlayId] = useState(null);
+  const [shapeIndex, setShapeIndex] = useState(0);
+
+  const clickArea = useCallback(
+    (x) => {
+      let xxx = coloring_shape(
+        x,
+        grid,
+        { color: colorId, shape: shapeIndex },
+        []
+      );
+      setGrid(xxx);
+    },
+    [grid, playId, sendToFullScreen, shapeIndex]
+  );
+
+  const [sequenceIds, setSequenceIds] = useState([
+    11 + id,
+    22 + id,
+    33 + id,
+    44 + id,
+    55 + id,
+  ]);
+
+  // const sequenceIds = [11 + id, 22 + id, 33 + id, 44 + id, 55 + id];
   const [channelPlayIdHist, setChannelPlayIdHist] = useState(sequenceIds[0]);
 
   return (
@@ -334,6 +411,24 @@ export default function Controller(props) {
         />
 
         <StyledButtonContainer>
+          <StyledShapeSelector>
+            {shapesIndsArray.map((i) => (
+              <StyledShape
+                onClick={() => {
+                  setShapeIndex(i);
+                  console.log(id);
+                  getActiveChannels();
+                }}
+                // bc={pickedShape == i ? "rgb(166, 237, 192)" : "rgb(162, 181, 157)"}
+                // bc={
+                //   pickedShape == i ? "rgb(196, 137, 92)" : "rgb(1692, 181, 57)"
+                // }
+                key={"shape" + i}
+              >
+                <img src={`shape${i + 1}.svg`} />
+              </StyledShape>
+            ))}
+          </StyledShapeSelector>
           <StyledButton isActive={isActive} onClick={setActiveChannel}>
             Activate
           </StyledButton>
@@ -341,14 +436,20 @@ export default function Controller(props) {
       </div>
       <div>
         <StyledScreenConture isActive={isActive}>
-          <LiveDisplay ref={displayRef} width={230} height={230}></LiveDisplay>
+          <LiveDisplay
+            ref={displayRef}
+            width={230}
+            height={230}
+            clickArea={clickArea}
+
+            // console.log(x);
+          ></LiveDisplay>
         </StyledScreenConture>
 
         <div style={{ display: "flex", flexDirection: "row" }}>
           {sequenceIds.map((id) => (
             <AnimationStrip
               onPressStart={() => {
-                console.log("Pressed start on channel", id);
                 setChannelPlayIdHist(playId);
                 PlayChannel(id);
               }}
@@ -357,6 +458,7 @@ export default function Controller(props) {
               }}
               onAddClick={() => {
                 // setSequenceId(id);
+
                 setSequenceId_(id);
                 setBrowserOn_(true);
               }}
@@ -364,6 +466,7 @@ export default function Controller(props) {
                 PlayChannel(id);
                 setPlayId(id);
               }}
+              setId={setColorId}
               isPlay={playId === id}
               channelId={id}
             />

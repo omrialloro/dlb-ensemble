@@ -2,11 +2,15 @@ import Controller from "./Controller";
 import { useState, useRef, useEffect } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
 import AnimationLibrary from "../creator/components/animationLibrary/AnimationLibrary.js";
+import { useAnimations } from "./../creator/components/animationData/AnimationContext";
 
 export default function Live() {
   const [activeChannel, setActiveChannel] = useState(1);
   const [browserOn_, setBrowserOn_] = useState(false);
   const [sequenceId_, setSequenceId_] = useState(-1);
+
+  const { instanceSequences, animations } = useAnimations();
+
   const openViewer = () => {
     const viewerWindow = window.open(
       window.location.origin + "/index.html",
@@ -14,10 +18,16 @@ export default function Live() {
     );
 
     // Wait a moment to make sure viewer loads, then send redirect message
-    const interval = setInterval(() => {
+    setTimeout(() => {
       if (viewerWindow) {
         viewerWindow.postMessage({ type: "navigate", path: "/view" }, "*");
       }
+      send("animations", {
+        animations: animations,
+      });
+      send("instanceSequences", {
+        instanceSequences: instanceSequences,
+      });
     }, 100);
 
     // Stop after 2 seconds (fallback if window never loads)
@@ -26,7 +36,6 @@ export default function Live() {
 
     setTimeout(() => {
       setActiveChannel(x);
-      console.log("Active channel reset to:", x);
     }, 500);
   };
 
@@ -39,6 +48,19 @@ export default function Live() {
       send(key, { [key]: value });
     }
   }
+
+  useEffect(() => {
+    send("animations", {
+      animations: animations,
+    });
+  }, [animations]);
+
+  useEffect(() => {
+    send("instanceSequences", {
+      instanceSequences: instanceSequences,
+    });
+  }, [instanceSequences]);
+
   return (
     <div>
       {browserOn_ ? (

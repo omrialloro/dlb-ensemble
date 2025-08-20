@@ -557,6 +557,9 @@ export default function useAnimationsData(props) {
     const index = instanceSequences.findIndex((x) => x.id === seq_id);
     if (index !== -1) {
       sequence = instanceSequences[index].data;
+      console.log(sequence);
+      console.log(sequence);
+      console.log(sequence);
     }
 
     sequence.forEach((element) => {
@@ -754,9 +757,11 @@ export default function useAnimationsData(props) {
     pushAnimationBySequenceId,
     removeInstanceFromSequence,
     prepareFramesForLive,
+    setInstanceSequences,
     instanceSequences,
     instancesEditor,
     currentFrames,
+    setAnimations,
     animations,
     instances,
   };
