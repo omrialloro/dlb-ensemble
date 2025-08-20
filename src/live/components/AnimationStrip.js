@@ -117,6 +117,7 @@ export default function AnimationStrip(props) {
             let ids = instanceSequences.map((x) => x.id);
             if (ids.includes(channelId)) {
               setId(channelId);
+              console.log("setId", channelId);
             }
           }}
         >

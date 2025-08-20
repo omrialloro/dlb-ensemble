@@ -245,6 +245,13 @@ const LiveDisplay = forwardRef((props, ref) => {
 
       channels.forEach((c) => {
         let frames = framesStructRef.current[c.id];
+
+        // for (let i = 0; i < rotateRef.current; i++) {
+        //   A = rotateFrame(A);
+        // }
+        // if (reflectRef.current) {
+        //   reflectFrame(A);
+        // }
         c.time += 2 * (speedRef.current / 60 - 0.5);
         if (c.time > framesStructRef.current[c.id].length - 1) {
           c.time = 0;
@@ -259,7 +266,14 @@ const LiveDisplay = forwardRef((props, ref) => {
         offscreens[c.id] = document.createElement("canvas");
         offscreens[c.id].width = dims.width;
         offscreens[c.id].height = dims.width;
-        drawImage(frames[frame_index], offscreens[c.id].getContext("2d")); // draw on each offscreen canvas
+        let A = frames[frame_index];
+        for (let i = 0; i < rotateRef.current; i++) {
+          A = rotateFrame(A);
+        }
+        if (reflectRef.current) {
+          reflectFrame(A);
+        }
+        drawImage(A, offscreens[c.id].getContext("2d")); // draw on each offscreen canvas
       });
 
       let grid = gridRef.current.grid;

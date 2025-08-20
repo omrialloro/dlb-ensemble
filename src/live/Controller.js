@@ -351,6 +351,7 @@ export default function Controller(props) {
 
   const clickArea = useCallback(
     (x) => {
+      console.log(colorId);
       let xxx = coloring_shape(
         x,
         grid,
@@ -359,7 +360,7 @@ export default function Controller(props) {
       );
       setGrid(xxx);
     },
-    [grid, playId, sendToFullScreen, shapeIndex]
+    [grid, playId, sendToFullScreen, shapeIndex, colorId]
   );
 
   const [sequenceIds, setSequenceIds] = useState([
@@ -451,10 +452,12 @@ export default function Controller(props) {
             <AnimationStrip
               onPressStart={() => {
                 setChannelPlayIdHist(playId);
-                PlayChannel(id);
+                // PlayChannel(id);
+                setPlayId(id);
               }}
               onPressEnd={() => {
-                PlayChannel(channelPlayIdHist);
+                // PlayChannel(channelPlayIdHist);
+                setPlayId(channelPlayIdHist);
               }}
               onAddClick={() => {
                 // setSequenceId(id);
@@ -463,7 +466,7 @@ export default function Controller(props) {
                 setBrowserOn_(true);
               }}
               onPlayClick={() => {
-                PlayChannel(id);
+                // PlayChannel(id);
                 setPlayId(id);
               }}
               setId={setColorId}
