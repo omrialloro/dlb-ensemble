@@ -1,0 +1,11 @@
+<!-- 2x2 color grid favicon -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Top-left: red -->
+  <rect x="0"  y="0"  width="32" height="32" fill="rgb(250,90,40)"/>
+  <!-- Top-right: yellow -->
+  <rect x="32" y="0"  width="32" height="32" fill="rgb(210,180,50)"/>
+  <!-- Bottom-left: blue -->
+  <rect x="0"  y="32" width="32" height="32" fill="rgb(10,40,120)"/>
+  <!-- Bottom-right: white -->
+  <rect x="32" y="32" width="32" height="32" fill="rgb(200,190,180)"/>
+</svg>

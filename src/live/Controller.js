@@ -97,6 +97,8 @@ export default function Controller(props) {
     setActiveChannel,
     setSequenceId_,
     setBrowserOn_,
+    pulseStart,
+    pulseEnd,
   } = props;
   const [speed, setSpeed] = useState(24);
   const [rotationCount, setRotationCount] = useState(0);
@@ -351,7 +353,6 @@ export default function Controller(props) {
 
   const clickArea = useCallback(
     (x) => {
-      console.log(colorId);
       let xxx = coloring_shape(
         x,
         grid,
@@ -417,7 +418,6 @@ export default function Controller(props) {
               <StyledShape
                 onClick={() => {
                   setShapeIndex(i);
-                  console.log(id);
                   getActiveChannels();
                 }}
                 // bc={pickedShape == i ? "rgb(166, 237, 192)" : "rgb(162, 181, 157)"}
@@ -430,10 +430,21 @@ export default function Controller(props) {
               </StyledShape>
             ))}
           </StyledShapeSelector>
-          <StyledButton isActive={isActive} onClick={setActiveChannel}>
-            Activate
-          </StyledButton>
         </StyledButtonContainer>
+        <StyledButton isActive={isActive} onClick={setActiveChannel}>
+          Activate
+        </StyledButton>
+        <StyledButton
+          isActive={isActive}
+          onMouseDown={() => {
+            pulseStart();
+          }}
+          onMouseUp={() => {
+            pulseEnd();
+          }}
+        >
+          pulse
+        </StyledButton>
       </div>
       <div>
         <StyledScreenConture isActive={isActive}>

@@ -6,8 +6,12 @@ import { useAnimations } from "./../creator/components/animationData/AnimationCo
 
 export default function Live() {
   const [activeChannel, setActiveChannel] = useState(1);
+  const [activeChannelHist, setActiveChannelHist] = useState(0);
+
   const [browserOn_, setBrowserOn_] = useState(false);
   const [sequenceId_, setSequenceId_] = useState(-1);
+
+  const [displayedChannel, setDisplayedChannel] = useState(0);
 
   const { instanceSequences, animations } = useAnimations();
 
@@ -87,6 +91,13 @@ export default function Live() {
             id={1}
             isActive={activeChannel === 1}
             setActiveChannel={() => setActiveChannel(1)}
+            pulseStart={() => {
+              setActiveChannelHist(activeChannel);
+              setActiveChannel(1);
+            }}
+            pulseEnd={() => {
+              setActiveChannel(activeChannelHist);
+            }}
             setSequenceId_={setSequenceId_}
             setBrowserOn_={setBrowserOn_}
           />
@@ -136,6 +147,13 @@ export default function Live() {
         <Controller
           sendToFullScreen={(params) => sendToFullScreen(params, 2)}
           id={2}
+          pulseStart={() => {
+            setActiveChannelHist(activeChannel);
+            setActiveChannel(2);
+          }}
+          pulseEnd={() => {
+            setActiveChannel(activeChannelHist);
+          }}
           isActive={activeChannel === 2}
           setActiveChannel={() => setActiveChannel(2)}
           setSequenceId_={setSequenceId_}
