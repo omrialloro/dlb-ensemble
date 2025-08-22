@@ -52,17 +52,21 @@ const StyledButton = styled.div`
 
 const StyledShape = styled.div`
   width: ${(props) => props.size}vh;
+
   width: 60px;
   height: 30px;
+  height: ${(props) => (props.revealShapes ? "28px" : "0px")};
+
   border: 0px solid #000;
-  margin: 1px;
+  margin: 2px;
   margin-top: 5px;
+  visibility: ${(props) => (props.revealShapes ? "visible" : "hidden")};
 
   /* margin: 1px; */
-  /* background-color: ${(props) => props.bc}; */
-  background-color: rgb(202, 141, 57);
+  background-color: ${(props) => props.bc};
+  /* background-color: rgb(202, 141, 57); */
 
-  transition: 0.5s;
+  transition: height 0.5s ease, background-color 0.5s ease;
   border-radius: 5px;
 
   cursor: grabbing;
@@ -70,17 +74,25 @@ const StyledShape = styled.div`
 
 const StyledShapeSelector = styled.div`
   height: 42px;
+  height: ${(props) => (props.revealShapes ? "48px" : "0px")};
+
   width: 290px;
   display: flex;
   justify-content: center;
+  visibility: ${(props) => (props.revealShapes ? "visible" : "hidden")};
+  transition: height 0.5s ease;
 `;
 
 const StyledButtonContainer = styled.div`
   height: 42px;
+  height: ${(props) => (props.revealShapes ? "45px" : "0px")};
+
   width: 290px;
   background-color: rgb(50, 100, 120);
   display: flex;
   position: relative;
+  visibility: ${(props) => (props.revealShapes ? "visible" : "hidden")};
+  transition: height 0.5s ease, background-color 0.5s ease;
 `;
 const StyledScreenConture = styled.div`
   margin-top: 14px;
@@ -138,6 +150,16 @@ export default function Controller(props) {
 
   const [numScreens, setNumHScreens] = useState([1, 1]);
   const [grid, setGrid] = useState(() => [[-1]]);
+
+  const [revealShapes, setRevealShapes] = useState(false);
+
+  useEffect(() => {
+    if (numScreens[0] > 1 || numScreens[1] > 1) {
+      setRevealShapes(true);
+    } else {
+      setRevealShapes(false);
+    }
+  }, [numScreens]);
 
   // Inside Controller
 
@@ -325,6 +347,7 @@ export default function Controller(props) {
   const num_shapes = 10;
 
   const shapesIndsArray = genIntArray(num_shapes);
+  const shapesIndsMap = [0, 1, 4, 5, 2, 3, 8, 7, 6, 9];
 
   useEffect(() => {
     // Initialize the displayRef with default values
@@ -356,7 +379,7 @@ export default function Controller(props) {
       let xxx = coloring_shape(
         x,
         grid,
-        { color: colorId, shape: shapeIndex },
+        { color: colorId, shape: shapesIndsMap[shapeIndex] },
         []
       );
       setGrid(xxx);
@@ -412,15 +435,16 @@ export default function Controller(props) {
           updateDuplication={updateDuplication}
         />
 
-        <StyledButtonContainer>
-          <StyledShapeSelector>
+        <StyledButtonContainer revealShapes={revealShapes}>
+          <StyledShapeSelector revealShapes={revealShapes}>
             {shapesIndsArray.map((i) => (
               <StyledShape
+                revealShapes={revealShapes}
                 onClick={() => {
                   setShapeIndex(i);
                   getActiveChannels();
                 }}
-                // bc={pickedShape == i ? "rgb(166, 237, 192)" : "rgb(162, 181, 157)"}
+                bc={shapeIndex != i ? "rgb(186, 137, 52)" : "rgb(252, 131, 57)"}
                 // bc={
                 //   pickedShape == i ? "rgb(196, 137, 92)" : "rgb(1692, 181, 57)"
                 // }
@@ -431,20 +455,22 @@ export default function Controller(props) {
             ))}
           </StyledShapeSelector>
         </StyledButtonContainer>
-        <StyledButton isActive={isActive} onClick={setActiveChannel}>
-          Activate
-        </StyledButton>
-        <StyledButton
-          isActive={isActive}
-          onMouseDown={() => {
-            pulseStart();
-          }}
-          onMouseUp={() => {
-            pulseEnd();
-          }}
-        >
-          pulse
-        </StyledButton>
+        <div style={{ display: "flex", flexDirection: "row", width: "530px" }}>
+          <StyledButton isActive={isActive} onClick={setActiveChannel}>
+            Activate
+          </StyledButton>
+          <StyledButton
+            isActive={isActive}
+            onMouseDown={() => {
+              pulseStart();
+            }}
+            onMouseUp={() => {
+              pulseEnd();
+            }}
+          >
+            pulse
+          </StyledButton>
+        </div>
       </div>
       <div>
         <StyledScreenConture isActive={isActive}>
@@ -461,9 +487,10 @@ export default function Controller(props) {
         <div style={{ display: "flex", flexDirection: "row" }}>
           {sequenceIds.map((id) => (
             <AnimationStrip
+              isSelected={colorId === id}
+              revealShapes={revealShapes}
               onPressStart={() => {
                 setChannelPlayIdHist(playId);
-                // PlayChannel(id);
                 setPlayId(id);
               }}
               onPressEnd={() => {

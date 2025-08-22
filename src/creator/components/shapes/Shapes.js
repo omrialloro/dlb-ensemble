@@ -53,9 +53,7 @@ export function Shapes(props) {
           <StyledShape
             onClick={() => {
               setShape(i);
-              console.log(i);
             }}
-            // bc={pickedShape == i ? "rgb(166, 237, 192)" : "rgb(162, 181, 157)"}
             bc={pickedShape == i ? "rgb(196, 137, 92)" : "rgb(1692, 181, 57)"}
             key={"shape" + i}
           >

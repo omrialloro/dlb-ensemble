@@ -6,7 +6,7 @@ const StyledPlay = styled.div`
 `;
 
 const StyledButton = styled.div`
-  height: 40px;
+  height: 34px;
   width: 40px;
   border-radius: 50%;
 `;

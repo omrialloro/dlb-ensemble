@@ -14,6 +14,31 @@ const StyledContainer = styled.div`
   flex-direction: column; /* 💥 Add this */
   border: 1px solid rgb(50, 20, 90);
   margin-top: -2px;
+  height: ${(props) => (props.toReveal ? "264px" : "236px")};
+  transition: height 0.5s ease;
+`;
+
+const ScrollBox = styled.div`
+  height: 130px;
+  overflow-y: auto;
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+
+  /* Chrome, Safari, Edge */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 `;
 const StyledFrames = styled.div`
   display: flex;
@@ -43,8 +68,39 @@ const BottomSquare = styled.div`
   border: 1px solid rgb(190, 120, 140);
 `;
 
+const BottonSelect = styled.div`
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  margin: 2px;
+  margin-left: 4px;
+
+  margin-top: 0px;
+
+  font-size: 20px;
+  background-color: rgb(210, 180, 20); // or any color you want
+  color: white;
+  border: 1px solid rgb(190, 120, 140);
+
+  height: ${(props) => (props.revealShapes ? "30px" : "0px")};
+  visibility: ${(props) => (props.revealShapes ? "visible" : "hidden")};
+
+  /* margin: 1px; */
+  background-color: ${(props) => props.bc};
+  /* background-color: rgb(202, 141, 57); */
+
+  transition: height 0.5s ease, background-color 0.5s ease;
+`;
+
 export default function AnimationStrip(props) {
   const {
+    revealShapes,
     channelId,
     onAddClick,
     setId,
@@ -52,6 +108,7 @@ export default function AnimationStrip(props) {
     onPlayClick,
     onPressStart,
     onPressEnd,
+    isSelected,
   } = props;
   const { instanceSequences, removeInstanceFromSequence } = useAnimations();
   const [imgUrls, setImgUrls] = useState([]);
@@ -82,7 +139,11 @@ export default function AnimationStrip(props) {
   }
 
   return (
-    <StyledContainer>
+    <StyledContainer
+      toReveal={
+        revealShapes && instanceSequences.map((x) => x.id).includes(channelId)
+      }
+    >
       <Play isPlay={isPlay} onClick={onPlayClick} />
 
       <Pulse
@@ -94,25 +155,32 @@ export default function AnimationStrip(props) {
         }}
       />
 
-      <StyledFrames>
-        {imgUrls.map((x, index) => (
-          <>
-            <XX src={x} key={Math.random()} id={Math.random()}></XX>
-            <div
-              className="minus"
-              onClick={() => {
-                removeInstanceFromSequence(channelId, index);
-              }}
-            >
-              <img src="delete_frame.svg"></img>
-            </div>
-          </>
-        ))}
-      </StyledFrames>
+      <ScrollBox>
+        <StyledFrames>
+          {imgUrls.map((x, index) => (
+            <>
+              <XX src={x} key={Math.random()} id={Math.random()}></XX>
+              <div
+                className="minus"
+                onClick={() => {
+                  removeInstanceFromSequence(channelId, index);
+                }}
+              >
+                <img src="delete_frame.svg"></img>
+              </div>
+            </>
+          ))}
+        </StyledFrames>
+      </ScrollBox>
 
       <div style={{ position: "absolute", bottom: 0 }}>
         <BottomSquare onClick={onAddClick}> +</BottomSquare>
-        <BottomSquare
+        <BottonSelect
+          revealShapes={
+            revealShapes &&
+            instanceSequences.map((x) => x.id).includes(channelId)
+          }
+          bc={!isSelected ? "rgb(186, 137, 52)" : "rgb(252, 131, 57)"}
           onClick={() => {
             let ids = instanceSequences.map((x) => x.id);
             if (ids.includes(channelId)) {
@@ -120,10 +188,7 @@ export default function AnimationStrip(props) {
               console.log("setId", channelId);
             }
           }}
-        >
-          {" "}
-          -
-        </BottomSquare>
+        />
       </div>
     </StyledContainer>
   );
