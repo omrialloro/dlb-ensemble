@@ -108,10 +108,35 @@ export default function useAnimationsData(props) {
   const [animations, setAnimations] = useState({});
   const [instances, setInstances] = useState([]);
   const [instancesEditor, setInstancesEditor] = useState([]);
+
   const [instanceSequences, setInstanceSequences] = useState([]);
+  const [instanceLive, setInstanceLive] = useState([]);
+  const [instanceAnimationLive, setInstanceAnimationLive] = useState([]);
 
   const [instancesOsc, setInstancesOsc] = useState([]);
   const [colorScheme, setColorScheme] = useState(props.colorScheme);
+
+  const addLiveInstance = (newInstance) => {
+    setInstanceLive((prevInstance) => [...prevInstance, newInstance]);
+  };
+
+  const getLiveInstanceById = (seq_id) => {
+    return instanceLive.find((x) => x.id === seq_id);
+  };
+
+  const removeLiveInstance = (instanceId) => {
+    const updateInstances = instanceLive.filter(
+      (item) => item.id !== instanceId
+    );
+    setInstanceLive(updateInstances);
+  };
+
+  const updateLiveInstance = (instanceId, updatedInstance) => {
+    const updatedInstancesArr = instanceLive.map((item) =>
+      item.id === instanceId ? updatedInstance : item
+    );
+    setInstanceLive(updatedInstancesArr);
+  };
 
   const pushAnimationBySequenceId = (seq_id, animation_instance) => {
     setInstanceSequences((prev) => {
@@ -155,6 +180,34 @@ export default function useAnimationsData(props) {
     });
   };
 
+  const updateInstanceInSequence = (
+    seq_id,
+    animationIndex,
+    updatedInstance
+  ) => {
+    setInstanceSequences((prev) => {
+      const index = prev.findIndex((x) => x.id === seq_id);
+      if (index === -1) return prev; // ID not found
+
+      const sequence = prev[index];
+      if (
+        !sequence.data ||
+        animationIndex < 0 ||
+        animationIndex >= sequence.data.length
+      ) {
+        return prev; // Invalid index
+      }
+
+      const newData = [...sequence.data];
+      newData[animationIndex] = updatedInstance;
+
+      const updated = [...prev];
+      updated[index] = { ...sequence, data: newData };
+
+      return updated;
+    });
+  };
+
   const switchInstancesInSequence = (
     seq_id,
     animationIndex1,
@@ -189,6 +242,26 @@ export default function useAnimationsData(props) {
     });
   };
 
+  const updateInstanceAnimationLive = useCallback(() => {
+    let instanceAnimationLive_ = [];
+    instanceSequences.forEach((seq) => {
+      seq.data.forEach((inst) => {
+        instanceAnimationLive_.push(inst);
+      });
+    });
+    console.log(instanceAnimationLive_);
+    setInstanceAnimationLive(instanceAnimationLive_);
+    console.log(instanceAnimationLive);
+  }, [instanceSequences]);
+
+  useEffect(() => {
+    updateInstanceAnimationLive();
+  }, [instanceSequences]);
+
+  useEffect(() => {
+    console.log(instanceAnimationLive);
+  }, [instanceAnimationLive]);
+
   function isContainingOscillators() {
     let all_colors = getAllColors(currentFrames);
     let oscillatorsIds = instancesOsc.map((x) => x.id);
@@ -201,10 +274,18 @@ export default function useAnimationsData(props) {
       if (el === undefined) {
         el = instancesEditor.find((x) => x.id === instanceId);
       }
+      if (el === undefined) {
+        console.log("DFDFD");
+        console.log("DFDFD");
+        console.log("DFDFD");
+
+        console.log(instanceAnimationLive);
+        el = instanceAnimationLive.find((x) => x.id === instanceId);
+      }
       // return instances.find((x) => x.id === instanceId);
       return el;
     },
-    [instances, instancesEditor]
+    [instances, instancesEditor, instanceAnimationLive]
   );
 
   const getInstanceOscById = useCallback(
@@ -502,6 +583,10 @@ export default function useAnimationsData(props) {
       if (el === undefined) {
         el = instancesEditor.find((el) => el.id === instanceId);
       }
+      if (el === undefined) {
+        el = instanceAnimationLive.find((el) => el.id === instanceId);
+      }
+
       const animationId = el.animationId;
       const opState = el.opState;
       const frames = animations[animationId];
@@ -532,6 +617,7 @@ export default function useAnimationsData(props) {
       instancesEditor,
       animations,
       renderFrameToRGBScheme,
+      instanceAnimationLive,
     ]
   );
 
@@ -755,8 +841,15 @@ export default function useAnimationsData(props) {
     instancesOsc,
     setInstancesEditor,
     pushAnimationBySequenceId,
+    updateInstanceInSequence,
     removeInstanceFromSequence,
+    instanceAnimationLive,
     prepareFramesForLive,
+    addLiveInstance,
+    removeLiveInstance,
+    getLiveInstanceById,
+    updateLiveInstance,
+    instanceLive,
     setInstanceSequences,
     instanceSequences,
     instancesEditor,

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const StyledContainer = styled.div`
   height: 50px;
@@ -35,8 +35,12 @@ const StyledText = styled.div`
   position: relative;
 `;
 export default function Backgrounds(props) {
-  const { setBgColors, bgColors } = props;
+  const { setBgColors, bgColors, paramsVals } = props;
   const [chosenIndex, setChosenIndex] = useState(0);
+
+  useEffect(() => {
+    setChosenIndex(paramsVals.bgColorIndex);
+  }, [paramsVals]);
 
   return (
     <StyledContainer>

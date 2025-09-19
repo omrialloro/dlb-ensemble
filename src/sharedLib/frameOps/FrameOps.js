@@ -159,8 +159,12 @@ function CyclRight(frame) {
 }
 
 function rotateFrame(frame) {
+  console.log(frame);
   let l = frame.length;
-  let N = [...Array(frame.length).keys()];
+  let N = [...Array(frame[0].length).keys()];
+  console.log(N);
+  console.log(N.map((i) => frame.map((x) => x[l - 1 - i])));
+
   return N.map((i) => frame.map((x) => x[l - 1 - i]));
 }
 

@@ -8,8 +8,10 @@ export default function Live() {
   const [activeChannel, setActiveChannel] = useState(1);
   const [activeChannelHist, setActiveChannelHist] = useState(0);
 
+  // const [instanceLive, setInstanceLive] = useState(-1);
   const [browserOn_, setBrowserOn_] = useState(false);
   const [sequenceId_, setSequenceId_] = useState(-1);
+  const [selectedId, setSelectedId] = useState(-1);
 
   const [displayedChannel, setDisplayedChannel] = useState(0);
 
@@ -65,16 +67,24 @@ export default function Live() {
     });
   }, [instanceSequences]);
 
+  function editInstance(id) {
+    // if (getInstanceOscById(id) === undefined) {
+    setSelectedId(id);
+    setBrowserOn_(true);
+    // }
+  }
+
   return (
     <div>
       {browserOn_ ? (
         <AnimationLibrary
+          // instanceLive={instanceLive}
           flag={"live"}
           sequenceId={sequenceId_}
           username={"email"}
           browserdOn={browserOn_}
           setBrowserOn={setBrowserOn_}
-          instanceId={-1}
+          instanceId={selectedId}
           animationId={-1}
         />
       ) : null}
@@ -89,6 +99,20 @@ export default function Live() {
           <Controller
             sendToFullScreen={(params) => sendToFullScreen(params, 1)}
             id={1}
+            updateClip={(channelId, index) => {
+              let channel = instanceSequences.find(
+                (item) => item.id === channelId
+              ).data;
+              let instanceId = channel[index].id;
+              // setInstanceLive(channel[index]);
+              setBrowserOn_(true);
+
+              // console.log(channel[index]);
+              editInstance(instanceId);
+              // console.log("Live Live updateClip", channelId, index);
+              // console.log("instanceSequences", channel[index].id);
+              // editInstance(channelId);
+            }}
             isActive={activeChannel === 1}
             setActiveChannel={() => setActiveChannel(1)}
             pulseStart={() => {
@@ -144,7 +168,7 @@ export default function Live() {
             }}
           ></div>
         </div>
-        <Controller
+        {/* <Controller
           sendToFullScreen={(params) => sendToFullScreen(params, 2)}
           id={2}
           pulseStart={() => {
@@ -158,7 +182,7 @@ export default function Live() {
           setActiveChannel={() => setActiveChannel(2)}
           setSequenceId_={setSequenceId_}
           setBrowserOn_={setBrowserOn_}
-        />
+        /> */}
       </div>
     </div>
   );

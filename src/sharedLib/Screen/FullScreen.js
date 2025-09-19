@@ -5,7 +5,8 @@ import { useAnimations } from "../../creator/components/animationData/AnimationC
 
 const FullScreen = (props) => {
   const displayRef = useRef(null);
-  const { setInstanceSequences, setAnimations } = useAnimations();
+  const { setInstanceSequences, setAnimations, addInstanceAnimationLive } =
+    useAnimations();
 
   useEffect(() => {
     const onMessage = ({ data }) => {

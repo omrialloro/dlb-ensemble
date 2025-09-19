@@ -310,7 +310,14 @@ function prepareAnimation(frames, opState) {
 export default function AnimationLibrary(props) {
   const oooo = useRef();
   const rr = useRef();
-  const { setBrowserOn, browserdOn, instanceId, flag, sequenceId } = props;
+  const {
+    setBrowserOn,
+    browserdOn,
+    instanceId,
+    flag,
+    sequenceId,
+    instanceLive,
+  } = props;
   const {
     addInstance_,
     addInstanceEditor,
@@ -328,7 +335,10 @@ export default function AnimationLibrary(props) {
     pushAnimationBySequenceId,
     instances,
     instancesOsc,
+    instanceSequences,
     renderOscillatorInstance,
+    updateInstanceInSequence,
+    instanceAnimationLive,
   } = useAnimations();
 
   const [opState, setOpState] = useState({
@@ -475,6 +485,30 @@ export default function AnimationLibrary(props) {
         animationId: animationId,
         opState: { ...opState },
       });
+    } else if (flag === "live") {
+      if (instanceId === -1) {
+        return;
+      }
+      for (let i = 0; i < instanceSequences.length; i++) {
+        let seq = instanceSequences[i];
+        let index = seq.data.findIndex((x) => x.id === instanceId);
+        if (index !== -1) {
+          updateInstanceInSequence(seq.id, index, {
+            id: instanceId,
+            animationId: animationId,
+            opState: { ...opState },
+          });
+        }
+      }
+
+      // updateInstance(instanceId, {
+      //   id: instanceId,
+      //   animationId: animationId,
+      //   opState: { ...opState },
+      // });
+      // if (!animations.hasOwnProperty(animationId)) {
+      //   addAnimation_(animationId, rowFrames);
+      // }
     }
   }
 
@@ -501,11 +535,24 @@ export default function AnimationLibrary(props) {
 
   function setInstance(instanceId) {
     const inst = getInstanceById(instanceId);
+
     setOpState({ ...inst.opState });
     setAnimationId(inst.animationId);
     setEditedFrames(renderInstanceFrames(instanceId));
     setRowFrames(animations[inst.animationId]);
   }
+
+  // function setInstanceLive(inst) {
+  //   setOpState({ ...inst.opState });
+  //   setAnimationId(inst.animationId);
+  //   setEditedFrames(renderInstanceFrames(instanceId));
+  //   setRowFrames(animations[inst.animationId]);
+  // }
+  // useEffect(() => {
+  //   if (instanceLive !== -1 && instanceLive !== undefined) {
+  //     setInstanceLive(instanceLive);
+  //   }
+  // }, [instanceLive]);
 
   useEffect(() => {
     if (instanceId === -1) {

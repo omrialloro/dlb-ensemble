@@ -22,8 +22,12 @@ const StyledText = styled.div`
 `;
 
 export default function SpeedTunner(props) {
-  const { setSpeed, speed } = props;
+  const { setSpeed, speed, paramsVals } = props;
   const speedRef = React.useRef();
+  React.useEffect(() => {
+    setSpeed(paramsVals.speed);
+  }, [paramsVals]);
+
   return (
     <StyledContainer>
       <StyledText>SPEED</StyledText>

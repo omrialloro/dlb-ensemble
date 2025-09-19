@@ -52,7 +52,6 @@ const DefaultBtn = (props) => {
         padding: "2px",
         paddingLeft: "4px",
         border: `0.01px solid rgb(150,150,150)`,
-
         color: "rgb(200,190,180)",
         fontSize: "9px",
         fontWeight: "512",
@@ -111,10 +110,27 @@ export function PixelDesigner(props) {
   const animationId = useRef(null);
   const canvasPixelRef = useRef(null);
 
+  const paramsVals = props.paramsVals;
   const hRef = useRef(1);
   const wRef = useRef(1);
   const opRef = useRef(1);
   const rRef = useRef(1);
+
+  useEffect(() => {
+    setWidth(Math.round(paramsVals.width * 160));
+    setHeight(Math.round(paramsVals.height * 160));
+    setCurve(Math.round(paramsVals.radius * 100));
+    setOpacity(Math.round(paramsVals.opacity * 100));
+
+    console.log(Math.round(paramsVals.width * 160));
+    console.log(Math.round(paramsVals.height * 160));
+    console.log(Math.round(paramsVals.radius * 100));
+    console.log(Math.round(paramsVals.opacity * 100));
+    hRef.current = paramsVals.height;
+    wRef.current = paramsVals.width;
+    opRef.current = paramsVals.opacity;
+    rRef.current = paramsVals.radius;
+  }, [paramsVals]);
 
   const widthPxl = 140;
   const heightPxl = 140;
@@ -272,7 +288,6 @@ export function PixelDesigner(props) {
             defaultVal={width}
             onChange={(value) => {
               wRef.current = value / 160;
-
               updateWidth(value / 160);
             }}
           />
@@ -330,6 +345,14 @@ export function NoiseDesigner(props) {
   const updateNoiseVal2 = props.updateNoiseVal2;
   const updateNoiseVal3 = props.updateNoiseVal3;
 
+  const paramsVals = props.paramsVals;
+
+  useEffect(() => {
+    setNoiseVal1(Math.round(paramsVals.noise1 * 100));
+    setNoiseVal2(Math.round(paramsVals.noise2 * 100));
+    setNoiseVal3(Math.round(paramsVals.noise3 * 100000));
+  }, [paramsVals]);
+
   function defaultNoiseController() {
     setNoiseVal1(0);
     setNoiseVal2(0);
@@ -358,7 +381,9 @@ export function NoiseDesigner(props) {
         color2={`rgb(140, 50, 10)`}
         color1={`rgb(140, 100, 10)`}
         color3={`rgb(10, 50, 10)`}
+        // defaultVal={noiseVal1}
         defaultVal={noiseVal1}
+        // value={Math.round(noiseVal1)}
         onChange={(value) => {
           updateNoiseVal1(value / 100);
         }}
@@ -369,6 +394,7 @@ export function NoiseDesigner(props) {
         color1={`rgb(140, 100, 10)`}
         color3={`rgb(10, 50, 10)`}
         maxVal={100}
+        // defaultVal={noiseVal2}
         defaultVal={noiseVal2}
         onChange={(value) => {
           updateNoiseVal2(value / 100);
@@ -380,6 +406,7 @@ export function NoiseDesigner(props) {
         color1={`rgb(140, 100, 10)`}
         color3={`rgb(10, 50, 10)`}
         maxVal={100}
+        // defaultVal={noiseVal3}
         defaultVal={noiseVal3}
         onChange={(value) => {
           updateNoiseVal3(value / 100000);

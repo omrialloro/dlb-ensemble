@@ -12,9 +12,12 @@ import { LiveDisplay } from "../sharedLib/Screen/LiveDisplay";
 
 import ScreenDuplication from "./components/ScreenDuplication";
 import SpeedTunner from "./components/SpeedTunner";
+import { GridDesigner } from "./components/GridDesigner";
+
 import AnimationStrip from "./components/AnimationStrip";
 
 import { useAnimations } from "./../creator/components/animationData/AnimationContext";
+import { ShiftFrame, rotateFrame } from "../sharedLib/frameOps/FrameOps";
 
 import AnimationLibrary from "./../creator/components/animationLibrary/AnimationLibrary.js";
 import { createConstFrame } from "../sharedLib/Utils/generators";
@@ -101,9 +104,50 @@ const StyledScreenConture = styled.div`
   border: ${(props) => (props.isActive ? "2px solid red" : "none")};
 `;
 
+// const StyledContainer = styled.div`
+//   height: 60px; /* or whatever height you want */
+//   width: 320px;
+//   border-radius: 9px;
+//   display: grid;
+
+//   overflow-x: scroll;
+//   grid-template-columns: repeat(11, 1fr);
+//   background: #8c8664;
+// `;
+
+// const StyledXXX = styled.div`
+//   height: 40px;
+//   width: 40px;
+//   background-color: rgb(20, 70, 120);
+//   margin-left: 28px;
+
+//   overflow-x: scroll;
+// `;
+
+const StyledContainer = styled.div`
+  height: 50px;
+  width: 290px;
+  background-color: rgb(120, 90, 100);
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+`;
+
+const StyledXXX = styled.div`
+  height: 40px;
+  width: 40px;
+  background-color: blue;
+  display: flex;
+  margin: 7px;
+  border-radius: 3px;
+  position: relative;
+`;
+
 export default function Controller(props) {
   const {
     id,
+    updateClip,
     sendToFullScreen,
     isActive,
     setActiveChannel,
@@ -118,7 +162,16 @@ export default function Controller(props) {
   const [colorId, setColorId] = useState(-1);
 
   const [reflectionToggle, setReflectionToggle] = useState(0);
-  const { instanceSequences, prepareFramesForLive } = useAnimations();
+
+  const {
+    instanceSequences,
+    prepareFramesForLive,
+    addLiveInstance,
+    getLiveInstanceById,
+    instanceLive,
+    removeLiveInstance,
+  } = useAnimations();
+
   const [playId, setPlayId] = useState(-1);
 
   const colorsArray = [
@@ -147,6 +200,24 @@ export default function Controller(props) {
     numScreens: [1, 1],
     speed: 44,
   });
+
+  const [paramSnap, setParamSnap] = useState(params); // To track changes
+
+  function prepareLiveInstance() {
+    const id = Date.now();
+    addLiveInstance({ data: params, id: id });
+  }
+
+  function getLiveInstanceParams(id) {
+    const inst = getLiveInstanceById(id);
+    if (inst) {
+      setParams(inst.data);
+    }
+  }
+
+  // useEffect(() => {
+  //   prepareLiveInstance();
+  // }, [params]);
 
   const [numScreens, setNumHScreens] = useState([1, 1]);
   const [grid, setGrid] = useState(() => [[-1]]);
@@ -340,6 +411,8 @@ export default function Controller(props) {
     }
   }, [isActive]);
 
+  const shiftArray = ["left", "right", "up", "down"];
+
   function genIntArray(length) {
     return Array.from(Array(length).keys());
   }
@@ -398,12 +471,19 @@ export default function Controller(props) {
   // const sequenceIds = [11 + id, 22 + id, 33 + id, 44 + id, 55 + id];
   const [channelPlayIdHist, setChannelPlayIdHist] = useState(sequenceIds[0]);
 
+  const [paramSnapHist, setParamSnapHist] = useState(paramSnap);
+
+  // useEffect(() => {
+  //   console.log("snap", paramSnap);
+  // }, [paramSnap]);
+
   return (
     <div style={{ display: "flex", padding: 17 }}>
       <div style={{ width: 290, fontFamily: "sans-serif" }}>
         <h3>VJ Controller</h3>
 
         <PixelDesigner
+          paramsVals={paramSnap}
           updateWidth={updateWidth}
           updateHeight={updateHeight}
           updateCurve={updateCurve}
@@ -411,19 +491,26 @@ export default function Controller(props) {
         />
 
         <NoiseDesigner
+          paramsVals={paramSnap}
           updateNoiseVal1={updateNoiseVal1}
           updateNoiseVal2={updateNoiseVal2}
           updateNoiseVal3={updateNoiseVal3}
         />
         <Backgrounds
+          paramsVals={paramSnap}
           setBgColors={(index) => {
             updateParams({ bgColor: colorsArray[index] });
           }}
           bgColors={colorsArray}
         />
-        <FrameOpsController updateOps={updateOps} colors={scheme_array[0]} />
+        <FrameOpsController
+          paramsVals={paramSnap}
+          updateOps={updateOps}
+          colors={scheme_array[0]}
+        />
 
         <SpeedTunner
+          paramsVals={paramSnap}
           speed={speed}
           setSpeed={(v) => {
             setSpeed(v);
@@ -435,41 +522,66 @@ export default function Controller(props) {
           updateDuplication={updateDuplication}
         />
 
-        <StyledButtonContainer revealShapes={revealShapes}>
-          <StyledShapeSelector revealShapes={revealShapes}>
-            {shapesIndsArray.map((i) => (
-              <StyledShape
-                revealShapes={revealShapes}
-                onClick={() => {
-                  setShapeIndex(i);
-                  getActiveChannels();
-                }}
-                bc={shapeIndex != i ? "rgb(186, 137, 52)" : "rgb(252, 131, 57)"}
-                // bc={
-                //   pickedShape == i ? "rgb(196, 137, 92)" : "rgb(1692, 181, 57)"
-                // }
-                key={"shape" + i}
-              >
-                <img src={`shape${i + 1}.svg`} />
-              </StyledShape>
-            ))}
-          </StyledShapeSelector>
-        </StyledButtonContainer>
+        <GridDesigner
+          setGridOps={(T) => {
+            if (T === "rotate") {
+              const G = rotateFrame(grid);
+
+              setGrid(G);
+
+              return;
+            }
+            if (T === "reflect") {
+              const G = [...grid].reverse();
+              setGrid(G);
+              return;
+            }
+            setGrid(ShiftFrame(grid, T));
+          }}
+          shapeIndex={shapeIndex}
+          setShapeIndex={setShapeIndex}
+          revealShapes={revealShapes}
+        />
         <div style={{ display: "flex", flexDirection: "row", width: "530px" }}>
-          <StyledButton isActive={isActive} onClick={setActiveChannel}>
-            Activate
-          </StyledButton>
-          <StyledButton
-            isActive={isActive}
-            onMouseDown={() => {
-              pulseStart();
+          <StyledContainer>
+            <div style={{ display: "flex", width: "100%" }}>
+              {instanceLive.map((x, index) => (
+                <div>
+                  <StyledXXX
+                    onClick={() => {
+                      // setNumHScreens(x.data.numScreens);
+
+                      setParams(x.data);
+                      setParamSnap(x.data);
+                      updateParams(x.data);
+                      // setNumHScreens(x.data.numScreens);
+                    }}
+                  />
+                  <StyledXXX
+                    onMouseDown={() => {
+                      setParamSnapHist(params);
+                      setParams(x.data);
+                      setParamSnap(x.data);
+                      updateParams(x.data);
+                      // setNumHScreens(x.data.numScreens);
+                    }}
+                    onMouseUp={() => {
+                      setParams(paramSnapHist);
+                      setParamSnap(paramSnapHist);
+                      updateParams(paramSnapHist);
+                      // setNumHScreens(paramSnapHist.numScreens);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </StyledContainer>
+          <StyledXXX
+            onClick={() => {
+              prepareLiveInstance();
+              console.log("addLiveInstance", instanceLive);
             }}
-            onMouseUp={() => {
-              pulseEnd();
-            }}
-          >
-            pulse
-          </StyledButton>
+          />
         </div>
       </div>
       <div>
@@ -487,6 +599,7 @@ export default function Controller(props) {
         <div style={{ display: "flex", flexDirection: "row" }}>
           {sequenceIds.map((id) => (
             <AnimationStrip
+              updateClip={updateClip}
               isSelected={colorId === id}
               revealShapes={revealShapes}
               onPressStart={() => {
