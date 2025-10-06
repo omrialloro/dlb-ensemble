@@ -1,14 +1,16 @@
 import Controller from "./Controller";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef, useCallback } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
 import AnimationLibrary from "../creator/components/animationLibrary/AnimationLibrary.js";
 import { useAnimations } from "./../creator/components/animationData/AnimationContext";
-import styled from "styled-components";
-import LowerBar from "./components/LowerBar.js";
+import { useSaveSession } from "../sharedLib/Server/api";
+
 import BrowseSessions from "./components/BrowseSessions.js";
 import { ChooseName, ApproveCancelPopup } from "./components/Popups.js";
 
-export default function Live() {
+// export default function Live() {
+const Live = forwardRef((props, ref) => {
+  const saveSession = useSaveSession();
   const [activeChannel, setActiveChannel] = useState(1);
   const [activeChannelHist, setActiveChannelHist] = useState(0);
   const [SessionContainerOn, setSessionContainerOn] = useState(false);
@@ -23,6 +25,8 @@ export default function Live() {
 
   const handleOpen = () => setIsPopupOpen(true);
   const handleClose = () => setIsPopupOpen(false);
+
+  const email = undefined;
 
   const handleSubmit = (e) => {
     const isValidName = addSessionLive(e);
@@ -62,6 +66,27 @@ export default function Live() {
     sessionsLive,
     ClearSessionLive,
   } = useAnimations();
+
+  const handleSaveSession = (session_data) => {
+    let name = String(Date.now());
+
+    let data = {
+      userID: email,
+      name: name,
+      data: session_data,
+      isDeleted: false,
+      saved: true,
+    };
+    saveSession(data);
+  };
+
+  const handleSaveSessionCallback = useCallback(() => {
+    handleSaveSession(sessionsLive);
+  }, [sessionsLive]);
+
+  useEffect(() => {
+    ref.current = handleSaveSessionCallback;
+  }, [handleSaveSessionCallback]);
 
   const openViewer = () => {
     const viewerWindow = window.open(
@@ -224,4 +249,5 @@ export default function Live() {
       </div>
     </div>
   );
-}
+});
+export default Live;

@@ -69,6 +69,14 @@ let color_scheme8 = [
   "#292928",
   "#0a0a0a",
 ];
+let color_scheme9 = [
+  "#142d00",
+  "#07ff00",
+  "#c1ff00",
+  "#e9ffe9",
+  "#ff3c00",
+  "#828783",
+];
 
 let schemes = {
   omri: color_scheme1,
@@ -79,6 +87,7 @@ let schemes = {
   booboo: color_scheme6,
   looloo: color_scheme7,
   blackandwhite: color_scheme8,
+  Retrodioactive: color_scheme9,
 };
 
 function getSchemes() {

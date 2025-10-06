@@ -176,6 +176,22 @@ function useLoadAnimation() {
   return loadAnimation;
 }
 
+function useLoadSession() {
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
+  async function loadSession(sessionName) {
+    const res = await fetch(serverUrl + `/loadSession/${sessionName}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.json();
+  }
+  return loadSession;
+}
+
 const UploadMp3 = (props) => {
   const StyledLoadMusic = styled.div`
     /* display: flex; */
@@ -298,5 +314,7 @@ export {
   useSaveStoredAnimations,
   useAnimationFromServer,
   useLoadAnimation,
+  useSaveSession,
+  useLoadSession,
   UploadMp3,
 };

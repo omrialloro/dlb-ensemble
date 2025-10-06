@@ -16,7 +16,7 @@ const StyledLi = styled.div`
 
 export const Header = (props) => {
   const { isAuthenticated, logout } = useContext(AuthContext);
-  const { save, selected } = props;
+  const { save, selected, setSelected } = props;
 
   return (
     <header>
@@ -60,6 +60,7 @@ export const Header = (props) => {
         </StyledLi>
         <StyledLi>
           <Link
+            onClick={() => setSelected("live")}
             style={
               selected == "editor"
                 ? {
@@ -86,6 +87,7 @@ export const Header = (props) => {
         </StyledLi>
         <StyledLi>
           <Link
+            onClick={() => setSelected("creator")}
             style={
               selected == "creator"
                 ? {

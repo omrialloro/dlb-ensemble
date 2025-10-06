@@ -12,6 +12,7 @@ import { FullDisplay } from "./sharedLib/Screen/FullDisplay";
 import { FullScreen } from "./sharedLib/Screen/FullScreen";
 
 import Live from "./live/Live";
+import { use } from "react";
 
 function App() {
   useEffect(() => {
@@ -27,12 +28,23 @@ function App() {
   }, []);
 
   const creatorRef = useRef();
+  const liveRef = useRef();
+
   const { isAuthenticated } = useContext(AuthContext);
   const [gif, setGif] = useState(0);
   const [selected, setSelected] = useState("creator");
 
+  useEffect(() => {
+    console.log("selected changed to ", selected);
+  }, [selected]);
+
   const clickSave = () => {
-    creatorRef.current();
+    if (selected === "live") {
+      // console.log("LIVE");
+      liveRef.current();
+    } else {
+      creatorRef.current();
+    }
   };
   const clickGif = () => {
     setGif(gif + 1);
@@ -44,7 +56,12 @@ function App() {
       colorScheme={[...getSchemes()["omri"]]}
     >
       <div style={{ display: "flex" }}>
-        <Header save={clickSave} gif={clickGif} selected={selected} />
+        <Header
+          save={clickSave}
+          gif={clickGif}
+          selected={selected}
+          setSelected={setSelected}
+        />
         <Editor2
           setSelected={setSelected}
           gif={gif}
@@ -60,7 +77,12 @@ function App() {
       colorScheme={[...getSchemes()["omri"]]}
     >
       <div style={{ display: "flex" }}>
-        <Header save={clickSave} gif={clickGif} selected={selected} />
+        <Header
+          save={clickSave}
+          gif={clickGif}
+          selected={selected}
+          setSelected={setSelected}
+        />
         <Creator
           ref={creatorRef}
           gif={gif}
@@ -77,9 +99,14 @@ function App() {
       colorScheme={[...getSchemes()["omri"]]}
     >
       <div style={{ display: "flex" }}>
-        <Header save={clickSave} gif={clickGif} selected={selected} />
+        <Header
+          save={clickSave}
+          gif={clickGif}
+          selected={selected}
+          setSelected={setSelected}
+        />
         <Live
-          ref={creatorRef}
+          ref={liveRef}
           gif={gif}
           resetGif={() => setGif(0)}
           setSelected={setSelected}
