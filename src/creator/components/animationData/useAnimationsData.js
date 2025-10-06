@@ -111,10 +111,14 @@ export default function useAnimationsData(props) {
 
   const [instanceSequences, setInstanceSequences] = useState([]);
   const [instanceLive, setInstanceLive] = useState([]);
+  const [sessionsLive, setSessionsLive] = useState([]);
+
   const [instanceAnimationLive, setInstanceAnimationLive] = useState([]);
 
   const [instancesOsc, setInstancesOsc] = useState([]);
   const [colorScheme, setColorScheme] = useState(props.colorScheme);
+
+  const loadAnimation = useLoadAnimation();
 
   const addLiveInstance = (newInstance) => {
     setInstanceLive((prevInstance) => [...prevInstance, newInstance]);
@@ -137,6 +141,74 @@ export default function useAnimationsData(props) {
     );
     setInstanceLive(updatedInstancesArr);
   };
+
+  const createSessionLiveObject = useCallback(
+    (sessionName) => {
+      const animationIds = Object.keys(animations).map(Number);
+      console.log(animationIds);
+      return {
+        sessionName,
+        instanceLive,
+        instanceSequences,
+        animationIds,
+      };
+    },
+    [instanceLive, instanceSequences, animations]
+  );
+
+  const addSessionLive = (sessionName) => {
+    if (sessionsLive.find((x) => x.sessionName === sessionName)) {
+      return false; // Session already exists
+    }
+    setSessionsLive((prev) => [createSessionLiveObject(sessionName), ...prev]);
+    return true;
+  };
+
+  const ClearSessionLive = (sessionName) => {
+    setInstanceLive([]);
+    setInstanceSequences([]);
+    setAnimations({});
+    return true;
+  };
+
+  const removeSessionLive = (sessionName) => {
+    const updatedSessions = sessionsLive.filter(
+      (session) => session.sessionName !== sessionName
+    );
+    setSessionsLive(updatedSessions);
+  };
+
+  const loadAnimationsFromIds = async (animationIds) => {
+    const results = await Promise.all(
+      animationIds.map(async (id) => {
+        const data = await loadAnimation(id);
+        console.log(data);
+
+        setAnimations((prev) => ({
+          ...prev,
+          [id]: renderAllFramesToStates(renderAllFramesToStates(data.data)),
+        }));
+
+        return data;
+      })
+    );
+
+    return results; // optional, in case you need them later
+  };
+
+  const LoadSessionLive = async (sessionName) => {
+    const session = sessionsLive.find((x) => x.sessionName === sessionName);
+    if (!session) return;
+    await loadAnimationsFromIds(session.animationIds);
+
+    setInstanceLive(session.instanceLive);
+    setInstanceSequences(session.instanceSequences);
+    // setAnimations(session.animations);
+  };
+
+  useEffect(() => {
+    console.log(sessionsLive);
+  }, [sessionsLive]);
 
   const pushAnimationBySequenceId = (seq_id, animation_instance) => {
     setInstanceSequences((prev) => {
@@ -249,9 +321,7 @@ export default function useAnimationsData(props) {
         instanceAnimationLive_.push(inst);
       });
     });
-    console.log(instanceAnimationLive_);
     setInstanceAnimationLive(instanceAnimationLive_);
-    console.log(instanceAnimationLive);
   }, [instanceSequences]);
 
   useEffect(() => {
@@ -275,11 +345,6 @@ export default function useAnimationsData(props) {
         el = instancesEditor.find((x) => x.id === instanceId);
       }
       if (el === undefined) {
-        console.log("DFDFD");
-        console.log("DFDFD");
-        console.log("DFDFD");
-
-        console.log(instanceAnimationLive);
         el = instanceAnimationLive.find((x) => x.id === instanceId);
       }
       // return instances.find((x) => x.id === instanceId);
@@ -643,9 +708,6 @@ export default function useAnimationsData(props) {
     const index = instanceSequences.findIndex((x) => x.id === seq_id);
     if (index !== -1) {
       sequence = instanceSequences[index].data;
-      console.log(sequence);
-      console.log(sequence);
-      console.log(sequence);
     }
 
     sequence.forEach((element) => {
@@ -748,7 +810,7 @@ export default function useAnimationsData(props) {
     return rejectedIds;
   }
 
-  const loadAnimation = useLoadAnimation();
+  // const loadAnimation = useLoadAnimation();
 
   useEffect(() => {
     let frames_ = JSON.parse(sessionStorage.getItem("currentFrames"));
@@ -844,6 +906,11 @@ export default function useAnimationsData(props) {
     updateInstanceInSequence,
     removeInstanceFromSequence,
     instanceAnimationLive,
+    sessionsLive,
+    addSessionLive,
+    LoadSessionLive,
+    ClearSessionLive,
+    removeSessionLive,
     prepareFramesForLive,
     addLiveInstance,
     removeLiveInstance,

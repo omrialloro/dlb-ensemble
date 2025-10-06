@@ -399,11 +399,6 @@ export default function AnimationLibrary(props) {
         const frames_ = A["data"];
         let v = assertAnimationValid(frames_);
         if (!v) {
-          console.error("Invalid animation frames:", animation_id);
-          console.error("Invalid animation frames:", animation_id);
-          console.error("Invalid animation frames:", animation_id);
-          console.error("Invalid animation frames:", animation_id);
-
           return;
         }
         setRowFrames(frames_);

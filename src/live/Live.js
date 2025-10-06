@@ -3,19 +3,65 @@ import { useState, useRef, useEffect } from "react";
 import { vjChannel } from "../sharedLib/Utils/broadcast";
 import AnimationLibrary from "../creator/components/animationLibrary/AnimationLibrary.js";
 import { useAnimations } from "./../creator/components/animationData/AnimationContext";
+import styled from "styled-components";
+import LowerBar from "./components/LowerBar.js";
+import BrowseSessions from "./components/BrowseSessions.js";
+import { ChooseName, ApproveCancelPopup } from "./components/Popups.js";
 
 export default function Live() {
   const [activeChannel, setActiveChannel] = useState(1);
   const [activeChannelHist, setActiveChannelHist] = useState(0);
+  const [SessionContainerOn, setSessionContainerOn] = useState(false);
 
   // const [instanceLive, setInstanceLive] = useState(-1);
   const [browserOn_, setBrowserOn_] = useState(false);
   const [sequenceId_, setSequenceId_] = useState(-1);
   const [selectedId, setSelectedId] = useState(-1);
 
-  const [displayedChannel, setDisplayedChannel] = useState(0);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [name, setName] = useState("untitled");
 
-  const { instanceSequences, animations } = useAnimations();
+  const handleOpen = () => setIsPopupOpen(true);
+  const handleClose = () => setIsPopupOpen(false);
+
+  const handleSubmit = (e) => {
+    const isValidName = addSessionLive(e);
+
+    if (!isValidName) {
+      alert("Session name already exists. Please choose a different name.");
+      return;
+    }
+    // alert(`Hello, ${name}!`);
+    setIsPopupOpen(false); // close popup after submit
+    setName("untitled"); // clear input
+  };
+  const overlayStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const popupStyle = {
+    background: "white",
+    padding: "20px",
+    borderRadius: "10px",
+    minWidth: "250px",
+    textAlign: "center",
+  };
+
+  const {
+    instanceSequences,
+    animations,
+    addSessionLive,
+    sessionsLive,
+    ClearSessionLive,
+  } = useAnimations();
 
   const openViewer = () => {
     const viewerWindow = window.open(
@@ -73,6 +119,7 @@ export default function Live() {
     setBrowserOn_(true);
     // }
   }
+  const [currentSessionName, setCurrentSessionName] = useState("");
 
   return (
     <div>
@@ -104,14 +151,8 @@ export default function Live() {
                 (item) => item.id === channelId
               ).data;
               let instanceId = channel[index].id;
-              // setInstanceLive(channel[index]);
               setBrowserOn_(true);
-
-              // console.log(channel[index]);
               editInstance(instanceId);
-              // console.log("Live Live updateClip", channelId, index);
-              // console.log("instanceSequences", channel[index].id);
-              // editInstance(channelId);
             }}
             isActive={activeChannel === 1}
             setActiveChannel={() => setActiveChannel(1)}
@@ -124,27 +165,33 @@ export default function Live() {
             }}
             setSequenceId_={setSequenceId_}
             setBrowserOn_={setBrowserOn_}
+            onFullScreenClick={openViewer}
+            onSaveSessionClick={handleOpen}
+            onLoadSessionClick={() => setSessionContainerOn(true)}
+            onClearSessionClick={ClearSessionLive}
+            sessionName={name}
           />
-          <div
-            style={{
-              width: "280px",
-              height: "60px",
 
-              textAlign: "center",
-              justifyContent: "center",
-              fontSize: "25px",
-              margin: "30px",
-              padding: "15px",
-              border: "1px solid black",
-              backgroundColor: "rgb(220, 140, 20)",
-            }}
-            onClick={() => {
-              openViewer();
-            }}
-          >
-            {" "}
-            Full Screen
-          </div>
+          {isPopupOpen &&
+            (name == "untitled" ? (
+              <ChooseName
+                handleClose={handleClose}
+                handleSubmit={handleSubmit}
+                setName={setName}
+                name={name}
+              />
+            ) : (
+              <ApproveCancelPopup
+                onApprove={(data) => {
+                  console.log("Approved:", data);
+                  setIsPopupOpen(false);
+                }}
+                onCancel={() => {
+                  console.log("Cancelled");
+                  setIsPopupOpen(false);
+                }}
+              />
+            ))}
         </div>
 
         <div
@@ -168,21 +215,12 @@ export default function Live() {
             }}
           ></div>
         </div>
-        {/* <Controller
-          sendToFullScreen={(params) => sendToFullScreen(params, 2)}
-          id={2}
-          pulseStart={() => {
-            setActiveChannelHist(activeChannel);
-            setActiveChannel(2);
-          }}
-          pulseEnd={() => {
-            setActiveChannel(activeChannelHist);
-          }}
-          isActive={activeChannel === 2}
-          setActiveChannel={() => setActiveChannel(2)}
-          setSequenceId_={setSequenceId_}
-          setBrowserOn_={setBrowserOn_}
-        /> */}
+        {SessionContainerOn && (
+          <BrowseSessions
+            setSessionName={setName}
+            onCloseClick={() => setSessionContainerOn(false)}
+          />
+        )}
       </div>
     </div>
   );

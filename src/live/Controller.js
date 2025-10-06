@@ -22,6 +22,9 @@ import { ShiftFrame, rotateFrame } from "../sharedLib/frameOps/FrameOps";
 import AnimationLibrary from "./../creator/components/animationLibrary/AnimationLibrary.js";
 import { createConstFrame } from "../sharedLib/Utils/generators";
 import { coloring_shape } from "./../creator/components/shapes/ops";
+import InstancesPanel from "./components/InstancesPanel.js";
+import LowerBar from "./components/LowerBar.js";
+import { height } from "@mui/system";
 
 // const states = scheme_array[0];
 
@@ -150,12 +153,15 @@ export default function Controller(props) {
     updateClip,
     sendToFullScreen,
     isActive,
-    setActiveChannel,
     setSequenceId_,
     setBrowserOn_,
-    pulseStart,
-    pulseEnd,
+    onFullScreenClick,
+    onSaveSessionClick,
+    onLoadSessionClick,
+    onClearSessionClick,
+    sessionName,
   } = props;
+
   const [speed, setSpeed] = useState(24);
   const [rotationCount, setRotationCount] = useState(0);
   const [schemeCount, setSchemeCount] = useState(0);
@@ -167,9 +173,7 @@ export default function Controller(props) {
     instanceSequences,
     prepareFramesForLive,
     addLiveInstance,
-    getLiveInstanceById,
     instanceLive,
-    removeLiveInstance,
   } = useAnimations();
 
   const [playId, setPlayId] = useState(-1);
@@ -207,17 +211,6 @@ export default function Controller(props) {
     const id = Date.now();
     addLiveInstance({ data: params, id: id });
   }
-
-  function getLiveInstanceParams(id) {
-    const inst = getLiveInstanceById(id);
-    if (inst) {
-      setParams(inst.data);
-    }
-  }
-
-  // useEffect(() => {
-  //   prepareLiveInstance();
-  // }, [params]);
 
   const [numScreens, setNumHScreens] = useState([1, 1]);
   const [grid, setGrid] = useState(() => [[-1]]);
@@ -478,9 +471,9 @@ export default function Controller(props) {
   // }, [paramSnap]);
 
   return (
-    <div style={{ display: "flex", padding: 17 }}>
+    <div style={{ display: "flex", padding: 17, height: "400px" }}>
       <div style={{ width: 290, fontFamily: "sans-serif" }}>
-        <h3>VJ Controller</h3>
+        <h3>{sessionName}</h3>
 
         <PixelDesigner
           paramsVals={paramSnap}
@@ -543,45 +536,39 @@ export default function Controller(props) {
           revealShapes={revealShapes}
         />
         <div style={{ display: "flex", flexDirection: "row", width: "530px" }}>
-          <StyledContainer>
-            <div style={{ display: "flex", width: "100%" }}>
-              {instanceLive.map((x, index) => (
-                <div>
-                  <StyledXXX
-                    onClick={() => {
-                      // setNumHScreens(x.data.numScreens);
-
-                      setParams(x.data);
-                      setParamSnap(x.data);
-                      updateParams(x.data);
-                      // setNumHScreens(x.data.numScreens);
-                    }}
-                  />
-                  <StyledXXX
-                    onMouseDown={() => {
-                      setParamSnapHist(params);
-                      setParams(x.data);
-                      setParamSnap(x.data);
-                      updateParams(x.data);
-                      // setNumHScreens(x.data.numScreens);
-                    }}
-                    onMouseUp={() => {
-                      setParams(paramSnapHist);
-                      setParamSnap(paramSnapHist);
-                      updateParams(paramSnapHist);
-                      // setNumHScreens(paramSnapHist.numScreens);
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </StyledContainer>
-          <StyledXXX
-            onClick={() => {
-              prepareLiveInstance();
-              console.log("addLiveInstance", instanceLive);
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center", // optional
             }}
-          />
+          >
+            <InstancesPanel
+              prepareLiveInstance={prepareLiveInstance}
+              onClick={(instParams) => {
+                setParams(instParams);
+                setParamSnap(instParams);
+                updateParams(instParams);
+              }}
+              onMouseDown={(instParams) => {
+                setParamSnapHist(params);
+                setParams(instParams);
+                setParamSnap(instParams);
+                updateParams(instParams);
+              }}
+              onMouseUp={() => {
+                setParams(paramSnapHist);
+                setParamSnap(paramSnapHist);
+                updateParams(paramSnapHist);
+              }}
+            />
+            <LowerBar
+              onFullScreenClick={onFullScreenClick}
+              onSaveSessionClick={onSaveSessionClick}
+              onLoadSessionClick={onLoadSessionClick}
+              onClearSessionClick={onClearSessionClick}
+            />
+          </div>
         </div>
       </div>
       <div>
@@ -607,17 +594,13 @@ export default function Controller(props) {
                 setPlayId(id);
               }}
               onPressEnd={() => {
-                // PlayChannel(channelPlayIdHist);
                 setPlayId(channelPlayIdHist);
               }}
               onAddClick={() => {
-                // setSequenceId(id);
-
                 setSequenceId_(id);
                 setBrowserOn_(true);
               }}
               onPlayClick={() => {
-                // PlayChannel(id);
                 setPlayId(id);
               }}
               setId={setColorId}

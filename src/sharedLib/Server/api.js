@@ -95,6 +95,19 @@ function useSaveAnimation() {
   };
   return { saveAnimation, error, loading };
 }
+function useSaveSession() {
+  const { token } = useContext(AuthContext);
+  return async function (data) {
+    await fetch(serverUrl + "/saveSession", {
+      method: "POST", // or 'PUT'
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  };
+}
 
 function useSaveStoredAnimations() {
   const { token } = useContext(AuthContext);

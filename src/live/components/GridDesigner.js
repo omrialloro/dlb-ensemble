@@ -33,8 +33,8 @@ const StyledShape = styled.div`
 const StyledArrowsContainer = styled.div`
   height: 92px;
   height: ${(props) => (props.revealShapes ? "90px" : "0px")};
-  padding: 2px;
-  padding-top: 5px;
+  padding: 0px;
+  padding-top: px;
 
   width: 114px;
   background-color: rgb(60, 110, 120);
@@ -50,7 +50,7 @@ const StyledArrowsContainer = styled.div`
 const StyledShapsContainer = styled.div`
   height: 82px;
   height: ${(props) => (props.revealShapes ? "90px" : "0px")};
-  padding: 6px;
+  padding: 0px;
 
   width: 200px;
   background-color: rgb(100, 130, 120);
