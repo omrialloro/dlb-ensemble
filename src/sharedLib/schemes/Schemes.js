@@ -78,6 +78,23 @@ let color_scheme9 = [
   "#828783",
 ];
 
+let color_scheme10 = [
+  "#003dff",
+  "#ef6843",
+  "#ffd9ff",
+  "#dddddd",
+  "#ffef2e",
+  "#00fff2",
+];
+let color_scheme11 = [
+  "#37008e",
+  "#07ff00",
+  "#bc5ebf",
+  "#5fffef",
+  "#ffd400",
+  "#ff22cb",
+];
+
 let schemes = {
   omri: color_scheme1,
   caribean: color_scheme2,
@@ -88,6 +105,8 @@ let schemes = {
   looloo: color_scheme7,
   blackandwhite: color_scheme8,
   Retrodioactive: color_scheme9,
+  softprime: color_scheme10,
+  infectedeggplant: color_scheme11,
 };
 
 function getSchemes() {
