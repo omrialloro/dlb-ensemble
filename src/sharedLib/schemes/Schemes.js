@@ -95,6 +95,15 @@ let color_scheme11 = [
   "#ff22cb",
 ];
 
+let color_scheme12 = [
+  "#0217aa",
+  "#07ff00",
+  "#5700aa",
+  "#ff8b00",
+  "#ef0000",
+  "#fff200",
+];
+
 let schemes = {
   omri: color_scheme1,
   caribean: color_scheme2,
@@ -107,6 +116,7 @@ let schemes = {
   Retrodioactive: color_scheme9,
   softprime: color_scheme10,
   infectedeggplant: color_scheme11,
+  ColorClash: color_scheme12,
 };
 
 function getSchemes() {
