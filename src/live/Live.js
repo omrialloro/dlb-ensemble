@@ -23,6 +23,10 @@ const Live = forwardRef((props, ref) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [name, setName] = useState("untitled");
 
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const recordingIntervalRef = useRef(null);
+
   const handleOpen = () => setIsPopupOpen(true);
   const handleClose = () => setIsPopupOpen(false);
 
@@ -119,6 +123,36 @@ const Live = forwardRef((props, ref) => {
   const send = (type, payload = {}) =>
     vjChannel.postMessage({ type, ...payload });
 
+  const toggleRecording = () => {
+    send("record", { action: isRecording ? "stop" : "start" });
+  };
+
+  useEffect(() => {
+    const onMessage = ({ data }) => {
+      if (data.type === "recordingStatus") {
+        setIsRecording(data.recording);
+      }
+    };
+    vjChannel.addEventListener("message", onMessage);
+    return () => vjChannel.removeEventListener("message", onMessage);
+  }, []);
+
+  useEffect(() => {
+    if (isRecording) {
+      setRecordingSeconds(0);
+      recordingIntervalRef.current = setInterval(() => {
+        setRecordingSeconds((s) => s + 1);
+      }, 1000);
+    } else {
+      clearInterval(recordingIntervalRef.current);
+    }
+    return () => clearInterval(recordingIntervalRef.current);
+  }, [isRecording]);
+
+  const formattedRecordingTime = `${String(
+    Math.floor(recordingSeconds / 60)
+  ).padStart(2, "0")}:${String(recordingSeconds % 60).padStart(2, "0")}`;
+
   function sendToFullScreen(params, channelId) {
     if (channelId !== activeChannel) return;
     for (const [key, value] of Object.entries(params)) {
@@ -194,6 +228,8 @@ const Live = forwardRef((props, ref) => {
             onSaveSessionClick={handleOpen}
             onLoadSessionClick={() => setSessionContainerOn(true)}
             onClearSessionClick={ClearSessionLive}
+            onRecordClick={toggleRecording}
+            isRecording={isRecording}
             sessionName={name}
           />
 
@@ -232,13 +268,28 @@ const Live = forwardRef((props, ref) => {
             style={{
               height: "50px",
               display: "flex",
-
+              alignItems: "center",
+              gap: "6px",
               textAlign: "center",
               justifyContent: "center",
               fontSize: "20px",
               marginTop: "40px",
+              color: isRecording ? "red" : "transparent",
+              fontWeight: 700,
             }}
-          ></div>
+          >
+            {isRecording && (
+              <div
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  backgroundColor: "red",
+                }}
+              />
+            )}
+            {isRecording ? formattedRecordingTime : ""}
+          </div>
         </div>
         {SessionContainerOn && (
           <BrowseSessions

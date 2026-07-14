@@ -24,6 +24,8 @@ export default function LowerBar(props) {
     onSaveSessionClick,
     onLoadSessionClick,
     onClearSessionClick,
+    onRecordClick,
+    isRecording,
   } = props;
 
   return (
@@ -110,6 +112,23 @@ export default function LowerBar(props) {
             stroke-width="3"
             // stroke-linecap="round"
             // stroke-linejoin="round"
+          />
+        </svg>
+      </Icon>
+      <Icon onClick={onRecordClick} style={{ cursor: "pointer" }}>
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="9"
+            fill={isRecording ? "red" : "none"}
+            stroke="red"
+            strokeWidth="2"
           />
         </svg>
       </Icon>

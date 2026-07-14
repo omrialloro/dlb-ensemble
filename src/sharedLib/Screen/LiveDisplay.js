@@ -110,6 +110,7 @@ const LiveDisplay = forwardRef((props, ref) => {
     statesRef,
     numScreensRef,
     gridRef,
+    canvasRef,
   }));
 
   const pixelSizeX = dims.width / size[0];

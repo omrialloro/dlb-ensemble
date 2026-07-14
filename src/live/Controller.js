@@ -159,6 +159,8 @@ export default function Controller(props) {
     onSaveSessionClick,
     onLoadSessionClick,
     onClearSessionClick,
+    onRecordClick,
+    isRecording,
     sessionName,
   } = props;
 
@@ -567,6 +569,8 @@ export default function Controller(props) {
               onSaveSessionClick={onSaveSessionClick}
               onLoadSessionClick={onLoadSessionClick}
               onClearSessionClick={onClearSessionClick}
+              onRecordClick={onRecordClick}
+              isRecording={isRecording}
             />
           </div>
         </div>
